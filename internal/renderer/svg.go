@@ -109,26 +109,66 @@ func renderStandardLayout(langs []github.LanguageStat, opts RenderOptions) strin
 	}
 
 	// Layout spacing constants
-	barY := 52
-	if opts.HideTitle {
-		barY = 28
-	}
+	titleToBar := 24
 	barHeight := 10
+	barToList := 24
 	barWidth := width - (paddingX * 2)
 
 	rowHeight := 26
-	listStartY := barY + barHeight + 22
+	barY := paddingY + titleToBar
+	if opts.HideTitle {
+		barY = paddingY
+	}
+	listStartY := barY + barHeight + barToList
 	height := listStartY + (rows * rowHeight) + 14
 
 	if opts.CardHeight > 0 {
 		height = opts.CardHeight
-		availHeight := height - listStartY - 16
-		if rows > 0 {
-			calcRowH := availHeight / rows
-			if calcRowH >= 24 {
-				rowHeight = calcRowH
+		intervals := rows - 1
+		if intervals < 1 {
+			intervals = 1
+		}
+
+		headerSpan := titleToBar + barHeight + barToList
+		if opts.HideTitle {
+			headerSpan = barHeight + barToList
+		}
+
+		// Calculate row height to fit gracefully
+		calcRowH := 50
+		availForRows := height - headerSpan - 80
+		if intervals > 0 {
+			h := availForRows / intervals
+			if h >= 26 && h <= 52 {
+				calcRowH = h
+			} else if h > 52 {
+				calcRowH = 50
+			} else if h < 26 {
+				calcRowH = 26
 			}
 		}
+		rowHeight = calcRowH
+
+		// Symmetrize margins:
+		// Distance from top border to title visual top is: paddingY - 12
+		// Distance from bottom border to last row visual bottom is: height - (lastRowY + 3)
+		// With lastRowY = paddingY + headerSpan + (intervals * rowHeight)
+		// For topGap == bottomGap:
+		// paddingY - 12 == height - (paddingY + headerSpan + intervals*rowHeight + 3)
+		// 2 * paddingY = height + 9 - headerSpan - (intervals * rowHeight)
+		rem := height + 9 - headerSpan - (intervals * rowHeight)
+		if opts.HideTitle {
+			rem = height + 3 - headerSpan - (intervals * rowHeight)
+		}
+		calcPadY := rem / 2
+		if calcPadY >= 20 {
+			paddingY = calcPadY
+		}
+		barY = paddingY + titleToBar
+		if opts.HideTitle {
+			barY = paddingY
+		}
+		listStartY = barY + barHeight + barToList
 	}
 
 	var sb strings.Builder
