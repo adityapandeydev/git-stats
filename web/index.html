@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>GitStats - Customizable GitHub Language Stats Card Generator</title>
+  <meta name="description" content="Generate beautiful, customizable GitHub language statistics SVG cards for your profile README. Display more than 6 languages, customize themes, and hide unwanted languages.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/static/css/style.css">
+</head>
+<body>
+  <!-- Background Glow Accents -->
+  <div class="glow-bg glow-1"></div>
+  <div class="glow-bg glow-2"></div>
+
+  <!-- Header -->
+  <header class="app-header">
+    <div class="header-content">
+      <div class="brand">
+        <div class="brand-icon">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M6 3v12"></path>
+            <circle cx="6" cy="18" r="3"></circle>
+            <circle cx="6" cy="6" r="3"></circle>
+            <path d="M18 9a9 9 0 0 1-9 9"></path>
+            <circle cx="18" cy="9" r="3"></circle>
+          </svg>
+        </div>
+        <div class="brand-title">
+          <h1>GitStats <span>Studio</span></h1>
+          <span class="badge">Dynamic SVG Generator</span>
+        </div>
+      </div>
+      <div class="header-actions">
+        <a href="#quick-docs" class="nav-link" id="nav-docs-link">Documentation</a>
+        <a href="/api/top-langs?username=demo" target="_blank" class="btn btn-secondary btn-sm" id="btn-api-demo">API Endpoint</a>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Container -->
+  <main class="main-layout">
+    <!-- Left Panel: Controls / Customizer -->
+    <section class="controls-panel" aria-label="Card Customizer Controls">
+      
+      <!-- Section: User Account -->
+      <div class="panel-card" id="user-section">
+        <div class="panel-card-header">
+          <div class="step-num">1</div>
+          <h2>GitHub User</h2>
+        </div>
+        <div class="form-group">
+          <label for="username-input">GitHub Username</label>
+          <div class="input-with-action">
+            <input type="text" id="username-input" placeholder="e.g. torvalds or demo" value="demo" autocomplete="off" spellcheck="false">
+            <button class="btn btn-primary" id="btn-fetch-langs">
+              <span class="btn-text">Fetch</span>
+              <span class="btn-loader" style="display:none;"></span>
+            </button>
+          </div>
+          <span class="field-hint">Press Fetch to detect your languages and populate the hide checklist.</span>
+        </div>
+
+        <details class="accordion" id="token-accordion">
+          <summary class="accordion-header">
+            <span>GitHub Personal Token (Optional)</span>
+            <span class="tag-optional">Higher Rate Limits</span>
+          </summary>
+          <div class="accordion-body">
+            <div class="form-group">
+              <label for="token-input">Personal Access Token (PAT)</label>
+              <input type="password" id="token-input" placeholder="ghp_xxxxxxxxxxxx" autocomplete="off">
+              <span class="field-hint">Enables private repository stats and unlocks 5,000 requests/hour API rate limit. Never shared; stored only in your local browser session.</span>
+            </div>
+          </div>
+        </details>
+      </div>
+
+      <!-- Section: Language Count & Hide Config -->
+      <div class="panel-card" id="languages-section">
+        <div class="panel-card-header">
+          <div class="step-num">2</div>
+          <h2>Languages & Filtering</h2>
+        </div>
+
+        <!-- Languages Count Slider -->
+        <div class="form-group">
+          <div class="label-with-value">
+            <label for="langs-count-slider">Show Languages Count</label>
+            <span class="value-badge" id="langs-count-val">8</span>
+          </div>
+          <input type="range" id="langs-count-slider" min="1" max="20" value="8" step="1" class="custom-range">
+          <div class="range-marks">
+            <span>4</span>
+            <span class="mark-bold">6 (Old Limit)</span>
+            <span class="mark-accent">8</span>
+            <span>12</span>
+            <span>16</span>
+            <span>20</span>
+          </div>
+        </div>
+
+        <!-- Hide Languages Interactive Checklist -->
+        <div class="form-group">
+          <div class="label-with-value">
+            <label>Hide Languages</label>
+            <div class="quick-filter-actions">
+              <button type="button" class="btn-chip" id="chip-hide-markup">Hide HTML/CSS/MD</button>
+              <button type="button" class="btn-chip" id="chip-clear-hidden">Clear</button>
+            </div>
+          </div>
+
+          <div class="lang-chips-container" id="lang-chips-matrix" aria-label="Detected Languages to Hide">
+            <!-- Populated dynamically by JS -->
+            <div class="chips-loading">Fetching languages...</div>
+          </div>
+
+          <div class="custom-hide-manual">
+            <label for="hide-input-manual" class="sub-label">Manual Hide List (comma separated)</label>
+            <input type="text" id="hide-input-manual" placeholder="e.g. html, css, jupyter notebook" spellcheck="false">
+          </div>
+        </div>
+
+        <!-- Exclude Repositories -->
+        <div class="form-group">
+          <label for="exclude-repo-input">Exclude Specific Repositories</label>
+          <input type="text" id="exclude-repo-input" placeholder="e.g. dotfiles, my-old-project" spellcheck="false">
+          <span class="field-hint">Comma separated list of repo names to exclude from calculation.</span>
+        </div>
+      </div>
+
+      <!-- Section: Layout & Presentation -->
+      <div class="panel-card" id="layout-section">
+        <div class="panel-card-header">
+          <div class="step-num">3</div>
+          <h2>Layout & Structure</h2>
+        </div>
+
+        <div class="form-group">
+          <label>Card Layout</label>
+          <div class="radio-pill-group" id="layout-pill-group">
+            <label class="radio-pill active">
+              <input type="radio" name="layout" value="standard" checked>
+              <span>Standard (Bar + Grid)</span>
+            </label>
+            <label class="radio-pill">
+              <input type="radio" name="layout" value="donut">
+              <span>Donut Chart</span>
+            </label>
+            <label class="radio-pill">
+              <input type="radio" name="layout" value="compact">
+              <span>Compact Bar</span>
+            </label>
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group col-half" id="col-group">
+            <label for="columns-select">Grid Columns</label>
+            <select id="columns-select" class="custom-select">
+              <option value="0" selected>Auto</option>
+              <option value="1">1 Column</option>
+              <option value="2">2 Columns (Screenshot style)</option>
+              <option value="3">3 Columns (Wide)</option>
+            </select>
+          </div>
+
+          <div class="form-group col-half">
+            <div class="label-with-value">
+              <label for="card-width-slider">Card Width</label>
+              <span class="value-badge" id="card-width-val">450px</span>
+            </div>
+            <input type="range" id="card-width-slider" min="320" max="700" value="450" step="10" class="custom-range">
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="custom-title-input">Custom Card Title</label>
+          <input type="text" id="custom-title-input" placeholder="Most Used Languages" spellcheck="false">
+        </div>
+
+        <div class="toggle-group">
+          <label class="toggle-label" for="toggle-hide-title">
+            <input type="checkbox" id="toggle-hide-title" class="custom-toggle">
+            <span class="toggle-slider"></span>
+            <span class="toggle-text">Hide Title Header</span>
+          </label>
+
+          <label class="toggle-label" for="toggle-animate">
+            <input type="checkbox" id="toggle-animate" class="custom-toggle" checked>
+            <span class="toggle-slider"></span>
+            <span class="toggle-text">Enable CSS Progress Animation</span>
+          </label>
+
+          <label class="toggle-label" for="toggle-hide-border">
+            <input type="checkbox" id="toggle-hide-border" class="custom-toggle">
+            <span class="toggle-slider"></span>
+            <span class="toggle-text">Hide Border</span>
+          </label>
+        </div>
+      </div>
+
+      <!-- Section: Themes & Colors -->
+      <div class="panel-card" id="theme-section">
+        <div class="panel-card-header">
+          <div class="step-num">4</div>
+          <h2>Theme & Color Palette</h2>
+        </div>
+
+        <div class="theme-presets-grid" id="theme-grid">
+          <!-- Populated by JS -->
+        </div>
+
+        <details class="accordion" id="colors-accordion">
+          <summary class="accordion-header">
+            <span>Custom Color Overrides</span>
+            <span class="tag-optional">Hex Colors</span>
+          </summary>
+          <div class="accordion-body">
+            <div class="color-picker-grid">
+              <div class="color-picker-item">
+                <label for="color-title">Title Color</label>
+                <div class="color-input-wrapper">
+                  <input type="color" id="color-title" value="#388bfd">
+                  <input type="text" id="hex-title" value="#388bfd" class="hex-text" maxlength="7">
+                </div>
+              </div>
+
+              <div class="color-picker-item">
+                <label for="color-text">Text Color</label>
+                <div class="color-input-wrapper">
+                  <input type="color" id="color-text" value="#c0caf5">
+                  <input type="text" id="hex-text" value="#c0caf5" class="hex-text" maxlength="7">
+                </div>
+              </div>
+
+              <div class="color-picker-item">
+                <label for="color-bg">Background</label>
+                <div class="color-input-wrapper">
+                  <input type="color" id="color-bg" value="#151520">
+                  <input type="text" id="hex-bg" value="#151520" class="hex-text" maxlength="7">
+                </div>
+              </div>
+
+              <div class="color-picker-item">
+                <label for="color-border">Border</label>
+                <div class="color-input-wrapper">
+                  <input type="color" id="color-border" value="#2a2a3c">
+                  <input type="text" id="hex-border" value="#2a2a3c" class="hex-text" maxlength="7">
+                </div>
+              </div>
+            </div>
+            <button type="button" class="btn btn-secondary btn-sm" id="btn-reset-colors" style="margin-top: 10px;">Reset to Theme Default</button>
+          </div>
+        </details>
+      </div>
+    </section>
+
+    <!-- Right Panel: Live SVG Preview & Embed Code -->
+    <aside class="preview-panel" aria-label="Live Card Preview and Embed Codes">
+      <div class="sticky-container">
+        
+        <!-- Preview Box -->
+        <div class="preview-card">
+          <div class="preview-header">
+            <div class="preview-title">
+              <span class="pulse-indicator"></span>
+              <h3>Live SVG Preview</h3>
+            </div>
+            
+            <!-- Canvas background switcher -->
+            <div class="canvas-bg-switcher" title="Change preview background to test contrast">
+              <span class="switcher-label">Preview Canvas:</span>
+              <button class="bg-opt active" data-canvas="#090d16" title="Dark Slate"></button>
+              <button class="bg-opt" data-canvas="#0d1117" title="GitHub Dark"></button>
+              <button class="bg-opt" data-canvas="#151520" title="Tokyo Night"></button>
+              <button class="bg-opt" data-canvas="#000000" title="Pure OLED Black"></button>
+              <button class="bg-opt" data-canvas="#ffffff" title="Pure White"></button>
+            </div>
+          </div>
+
+          <!-- SVG Display Area -->
+          <div class="preview-stage" id="preview-stage">
+            <div class="svg-wrapper" id="svg-container">
+              <!-- Rendered SVG injected here -->
+            </div>
+          </div>
+
+          <!-- Quick Preview Actions -->
+          <div class="preview-footer">
+            <div class="meta-info">
+              <span id="meta-lang-count">8 languages</span>
+              <span class="meta-dot"></span>
+              <span id="meta-theme">tokyonight</span>
+            </div>
+            <div class="preview-buttons">
+              <button class="btn btn-secondary btn-sm" id="btn-download-svg">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+                Download SVG
+              </button>
+              <a href="#" target="_blank" class="btn btn-secondary btn-sm" id="btn-open-new-tab">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" y1="14" x2="21" y2="3"></line></svg>
+                Direct URL
+              </a>
+            </div>
+          </div>
+        </div>
+
+        <!-- Embed Code Card -->
+        <div class="embed-card">
+          <div class="embed-header">
+            <h3>Add to Your GitHub README</h3>
+            <div class="tab-buttons" role="tablist">
+              <button class="tab-btn active" data-tab="markdown" role="tab">Markdown</button>
+              <button class="tab-btn" data-tab="html" role="tab">HTML</button>
+              <button class="tab-btn" data-tab="url" role="tab">Direct URL</button>
+            </div>
+          </div>
+
+          <div class="code-snippet-box">
+            <div class="code-header">
+              <span class="code-lang" id="code-lang-label">Markdown</span>
+              <button class="btn btn-copy" id="btn-copy-code" aria-label="Copy to clipboard">
+                <span class="copy-icon">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+                </span>
+                <span class="copy-text">Copy Code</span>
+              </button>
+            </div>
+            <pre><code id="snippet-code">Loading...</code></pre>
+          </div>
+        </div>
+
+      </div>
+    </aside>
+  </main>
+
+  <!-- Toast Notification -->
+  <div class="toast" id="toast-notification" role="status" aria-live="polite">
+    Copied to clipboard!
+  </div>
+
+  <script src="/static/js/app.js"></script>
+</body>
+</html>
