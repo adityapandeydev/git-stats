@@ -13,6 +13,7 @@ import (
 type RenderOptions struct {
 	Theme         Theme
 	CardWidth     int
+	CardHeight    int
 	LangsCount    int
 	Columns       int
 	Layout        string // "standard", "donut", "compact"
@@ -117,8 +118,18 @@ func renderStandardLayout(langs []github.LanguageStat, opts RenderOptions) strin
 
 	rowHeight := 26
 	listStartY := barY + barHeight + 22
-	contentBottom := listStartY + (rows * rowHeight)
-	height := contentBottom + 12
+	height := listStartY + (rows * rowHeight) + 14
+
+	if opts.CardHeight > 0 {
+		height = opts.CardHeight
+		availHeight := height - listStartY - 16
+		if rows > 0 {
+			calcRowH := availHeight / rows
+			if calcRowH >= 24 {
+				rowHeight = calcRowH
+			}
+		}
+	}
 
 	var sb strings.Builder
 

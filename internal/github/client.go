@@ -9,6 +9,7 @@ import (
 	"net/http"
 	"sort"
 	"strings"
+	"sync"
 	"time"
 
 	"git-stats/internal/cache"
@@ -45,8 +46,12 @@ func (c *Client) GetUserLanguages(ctx context.Context, username string, token st
 		authToken = c.globalToken
 	}
 
-	// Generate cache key
-	cacheKey := fmt.Sprintf("%s:%s", strings.ToLower(username), strings.ToLower(strings.Join(excludedRepos, ",")))
+	// Generate cache key (differentiate token-authenticated vs unauthenticated queries)
+	tokenTag := "anon"
+	if authToken != "" {
+		tokenTag = fmt.Sprintf("auth_%d", len(authToken))
+	}
+	cacheKey := fmt.Sprintf("%s:%s:%s", strings.ToLower(username), tokenTag, strings.ToLower(strings.Join(excludedRepos, ",")))
 	if cached, ok := c.cache.Get(cacheKey); ok {
 		return cached, nil
 	}
@@ -220,48 +225,79 @@ func (c *Client) fetchREST(ctx context.Context, username string, token string, e
 	langTotals := make(map[string]int64)
 	langColorsMap := make(map[string]string)
 	var totalBytes int64
+	var mu sync.Mutex
 
-	// Fetch languages for top repos (cap at 20 repos to avoid excessive API calls if unauthenticated)
-	limit := len(repos)
-	if token == "" && limit > 15 {
-		limit = 15
+	// Filter valid repos to query
+	var validRepos []RestRepo
+	for _, repo := range repos {
+		if !repo.Fork && !excludedSet[strings.ToLower(repo.Name)] {
+			validRepos = append(validRepos, repo)
+		}
 	}
 
-	for i := 0; i < limit; i++ {
-		repo := repos[i]
-		if repo.Fork || excludedSet[strings.ToLower(repo.Name)] {
-			continue
-		}
+	// Fetch languages for all valid repos concurrently with a worker pool
+	concurrency := 10
+	if len(validRepos) < concurrency {
+		concurrency = len(validRepos)
+	}
+	if concurrency < 1 {
+		concurrency = 1
+	}
 
-		langUrl := fmt.Sprintf("https://api.github.com/repos/%s/%s/languages", username, repo.Name)
-		langReq, err := http.NewRequestWithContext(ctx, "GET", langUrl, nil)
-		if err != nil {
-			continue
-		}
-		if token != "" {
-			langReq.Header.Set("Authorization", "Bearer "+token)
-		}
-		langReq.Header.Set("User-Agent", "git-stats-card-generator")
+	repoChan := make(chan RestRepo, len(validRepos))
+	for _, r := range validRepos {
+		repoChan <- r
+	}
+	close(repoChan)
 
-		langResp, err := c.httpClient.Do(langReq)
-		if err != nil {
-			continue
-		}
+	var wg sync.WaitGroup
+	for w := 0; w < concurrency; w++ {
+		wg.Add(1)
+		go func() {
+			defer wg.Done()
+			for repo := range repoChan {
+				select {
+				case <-ctx.Done():
+					return
+				default:
+				}
 
-		var repoLangs map[string]int64
-		if langResp.StatusCode == http.StatusOK {
-			json.NewDecoder(langResp.Body).Decode(&repoLangs)
-		}
-		langResp.Body.Close()
+				langUrl := fmt.Sprintf("https://api.github.com/repos/%s/%s/languages", username, repo.Name)
+				langReq, err := http.NewRequestWithContext(ctx, "GET", langUrl, nil)
+				if err != nil {
+					continue
+				}
+				if token != "" {
+					langReq.Header.Set("Authorization", "Bearer "+token)
+				}
+				langReq.Header.Set("User-Agent", "git-stats-card-generator")
 
-		for name, size := range repoLangs {
-			langTotals[name] += size
-			totalBytes += size
-			if _, exists := langColorsMap[name]; !exists {
-				langColorsMap[name] = GetLanguageColor(name, "")
+				langResp, err := c.httpClient.Do(langReq)
+				if err != nil {
+					continue
+				}
+
+				var repoLangs map[string]int64
+				if langResp.StatusCode == http.StatusOK {
+					json.NewDecoder(langResp.Body).Decode(&repoLangs)
+				}
+				langResp.Body.Close()
+
+				if len(repoLangs) > 0 {
+					mu.Lock()
+					for name, size := range repoLangs {
+						langTotals[name] += size
+						totalBytes += size
+						if _, exists := langColorsMap[name]; !exists {
+							langColorsMap[name] = GetLanguageColor(name, "")
+						}
+					}
+					mu.Unlock()
+				}
 			}
-		}
+		}()
 	}
+	wg.Wait()
 
 	return buildUserStats(username, langTotals, langColorsMap, totalBytes), nil
 }

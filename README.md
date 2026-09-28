@@ -1,161 +1,160 @@
 # ⚡ GitStats - Dynamic GitHub Stats & Language Card System
 
-A fast, lightweight standalone Go service that generates customizable SVG language statistics cards for your GitHub Profile README.
+A fast, lightweight, and **100% serverless** GitHub language statistics card generator built with Go and powered by GitHub Actions.
 
-Designed to overcome the limitations of existing cards (such as the default 6-language cap) with complete customization, language hiding, interactive web studio, and support for themes.
+Designed to overcome the limitations of existing stats cards with complete customization: **display 8, 10, 12, 16+ languages**, hide unwanted languages with automatic percentage recalculation, and perfectly match your profile layout dimensions with zero awkward whitespace.
 
-![GitStats Tokyo Night](http://localhost:8080/api/top-langs?username=demo&langs_count=8&theme=tokyonight)
+<div align="center">
+  <img src="https://raw.githubusercontent.com/adityapandeydev/git-stats/main/languages.svg" alt="GitStats Most Used Languages" />
+</div>
 
 ---
 
 ## ✨ Features
 
-- **Break the 6-Language Limit**: Display **8, 10, 12, 16+** languages cleanly in responsive multi-column layouts.
-- **Language Hiding & Filtering**: Hide specific languages (e.g. `hide=html,css,jupyter notebook`) with automatic percentage recalculation.
-- **Interactive Web Customizer**: Live browser playground at `http://localhost:8080/` with real-time SVG preview, sliders, detected language chips, theme picker, and 1-click Markdown/HTML copy.
-- **Zero Heavy Dependencies**: Pure Go with standard library + vanilla modern CSS/JS. Compiles into a single portable binary.
+- **Break the 6-Language Limit**: Display **8, 10, 12, 16+** languages in an auto-adjusting multi-column layout.
+- **100% Serverless & Free**: Runs via GitHub Actions on a schedule and on every code push. Zero hosting costs, zero servers to maintain.
+- **Private Repository Support**: Securely scans both public and private repositories via your encrypted GitHub secret token.
+- **Language Hiding & Filtering**: Filter out languages you don't want (e.g. `html`, `css`, `jinja`) with automatic percentage recalculation.
+- **Column-Major Layout**: Ranks flow top-to-bottom on the left column, then continue on the right column. Odd counts cleanly show one less on the right.
+- **Customizable Dimensions**: Customize width and height to match the combined height of your Streak and Stats cards perfectly.
 - **Multiple Layouts**:
-  - `standard` (Segmented progress bar + multi-column language grid)
-  - `donut` (Radial donut chart with legend)
-  - `compact` (Minimal horizontal bar for tight spaces)
-- **Preset Themes**: Tokyo Night, GitHub Dark, Dracula, Catppuccin Mocha, Nord, Synthwave, One Dark, Radical, OLED Midnight, GitHub Light.
-- **Full Styling Overrides**: Custom hex colors for title, text, background, border, custom card width, border radius, and animations.
-- **In-Memory Cache**: Built-in thread-safe TTL cache protects your GitHub API rate limits.
-- **GraphQL & REST Support**: Efficient GraphQL aggregation with fallback to REST API.
+  - `standard` (Segmented progress bar + multi-column grid)
+  - `donut` (Centered radial donut chart with bottom 3-column grid)
+  - `compact` (Minimal badge bar)
+- **10 Curated Themes**: Tokyo Night, GitHub Dark, Catppuccin Mocha, Dracula, Nord, Synthwave, One Dark, Radical, OLED Midnight, and GitHub Light.
+- **Interactive Web Studio**: Optional local/browser customizer with live real-time SVG preview and palette toggles.
 
 ---
 
-## 🚀 Quick Start
+## 🚀 Quick Setup for Your GitHub Profile (3 Minutes)
 
-### 1. Run with Go
+### Step 1: Fork this Repository
+Click the **Fork** button at the top right of this repository to create your own copy (e.g. `yourname/git-stats`).
 
-```bash
-# Clone the repository
-git clone https://github.com/your-username/git-stats.git
-cd git-stats
+### Step 2: Add Your GitHub Secret Token (For Private Repos)
+To allow the Action to scan your private repositories and grant a 5,000 req/hr rate limit:
+1. Generate a Personal Access Token on GitHub at: [github.com/settings/tokens](https://github.com/settings/tokens) *(Classic token with `repo` scope)*.
+2. In your forked repository, go to: **Settings** ➔ **Secrets and variables** ➔ **Actions**.
+3. Click **New repository secret**:
+   - Name: `GH_TOKEN`
+   - Value: Paste your GitHub Personal Access Token.
 
-# Run the server
-go run ./cmd/server
+*(Note: If you only want to track public repositories, you can skip this step—the workflow will automatically use GitHub's built-in token!)*
+
+### Step 3: Run the Workflow
+1. Go to the **Actions** tab in your repository.
+2. Select **Generate GitHub Language Stats** in the left sidebar.
+3. Click **Run workflow** ➔ **Run workflow**.
+
+The workflow will run, generate your customized `languages.svg`, and commit it directly to your `main` branch.
+
+### Step 4: Embed into Your Profile `README.md`
+In your GitHub profile repository (`username/username/README.md`), add:
+
+```markdown
+[![Most Used Languages](https://raw.githubusercontent.com/YOUR_USERNAME/git-stats/main/languages.svg)](https://github.com/YOUR_USERNAME/git-stats)
 ```
 
-Or run the pre-built binary:
-```bash
-./git-stats.exe
-```
-
-Open your browser at: **`http://localhost:8080/`** to use the interactive customizer.
+*(Replace `YOUR_USERNAME` with your GitHub username).*
 
 ---
 
-## 📋 Markdown Embedding
+## 📐 Perfect Profile Layout Alignment
 
-Add the card to your GitHub profile `README.md`:
+If you use a **Streak Stats** card and an **Overall Stats** card stacked on the left, you can place this **Languages Card** on the right so both columns have matching heights and widths with zero awkward whitespace:
 
-### Standard Card (8 Languages, Tokyo Night):
-```markdown
-[![Most Used Languages](https://YOUR_DOMAIN/api/top-langs?username=yourusername&langs_count=8&theme=tokyonight)](https://github.com/yourusername)
-```
-
-### 10 Languages with HTML/CSS hidden:
-```markdown
-[![Most Used Languages](https://YOUR_DOMAIN/api/top-langs?username=yourusername&langs_count=10&hide=html,css&theme=tokyonight)](https://github.com/yourusername)
-```
-
-### Donut Chart Layout:
-```markdown
-[![Most Used Languages](https://YOUR_DOMAIN/api/top-langs?username=yourusername&layout=donut&theme=catppuccin)](https://github.com/yourusername)
+```html
+<div align="center">
+  <table>
+    <tr>
+      <!-- Left Column: Streak + Overall Stats stacked -->
+      <td valign="top">
+        <img src="https://github-readme-streak-stats.herokuapp.com/?user=YOUR_USERNAME&theme=tokyonight" /><br/>
+        <img src="https://github-readme-stats.vercel.app/api?username=YOUR_USERNAME&show_icons=true&theme=tokyonight" />
+      </td>
+      <!-- Right Column: 12-Language Card filling the full combined height -->
+      <td valign="top">
+        <a href="https://github.com/YOUR_USERNAME/git-stats">
+          <img src="https://raw.githubusercontent.com/YOUR_USERNAME/git-stats/main/languages.svg" />
+        </a>
+      </td>
+    </tr>
+  </table>
+</div>
 ```
 
 ---
 
-## ⚙️ URL Query Parameters
+## ⚙️ Customizing Your Card
 
-| Parameter | Type | Default | Description |
-|:---|:---:|:---:|:---|
-| `username` | string | `demo` | GitHub username (required) |
-| `langs_count` | integer | `8` | Number of languages to display (1 to 20+) |
-| `hide` | string | `""` | Comma-separated languages to hide (e.g. `html,css,jupyter notebook`) |
-| `layout` | string | `standard` | Card layout: `standard`, `donut`, `compact` |
-| `columns` | integer | `0` | Grid columns for standard layout (`0` = auto, `1`, `2`, `3`) |
-| `theme` | string | `tokyonight` | Color preset (see themes below) |
-| `card_width` | integer | `450` | Card width in pixels (320px - 1000px) |
-| `title` | string | `""` | Custom card header title |
-| `hide_title` | boolean | `false` | Set to `true` to remove the header |
-| `hide_border` | boolean | `false` | Set to `true` to remove card border |
-| `border_radius` | integer | `10` | Corner radius in pixels |
-| `animation` | boolean | `true` | Enable/disable SVG load animations |
-| `exclude_repo` | string | `""` | Comma-separated repository names to ignore |
-| `title_color` | string | - | Custom title hex code (without `#`) |
-| `text_color` | string | - | Custom text hex code (without `#`) |
-| `bg_color` | string | - | Custom background hex code (without `#`) |
-| `border_color` | string | - | Custom border hex code (without `#`) |
-| `token` | string | - | Personal access token for private repos or testing |
+You can customize your card settings by editing the workflow file at `.github/workflows/generate-stats.yml`:
+
+```yaml
+- name: Generate Language Stats SVG Card
+  env:
+    GH_TOKEN: ${{ secrets.GH_TOKEN || secrets.GITHUB_TOKEN }}
+  run: |
+    go run ./cmd/server --generate \
+      --username="${{ github.repository_owner }}" \
+      --langs-count=12 \
+      --theme="tokyonight" \
+      --layout="standard" \
+      --columns=2 \
+      --card-width=495 \
+      --card-height=405 \
+      --hide="html,css" \
+      --output="languages.svg"
+```
+
+### CLI Flag Reference
+
+| Flag | Default | Description |
+| :--- | :---: | :--- |
+| `--username`, `-u` | `GITHUB_REPOSITORY_OWNER` | Target GitHub username |
+| `--langs-count`, `-n` | `12` | Number of languages to display (e.g. 8, 10, 12, 16+) |
+| `--hide` | `""` | Comma-separated languages to hide (e.g. `html,css,jinja`) |
+| `--theme` | `tokyonight` | Card theme (`tokyonight`, `github_dark`, `catppuccin`, `dracula`, `nord`, etc.) |
+| `--layout` | `standard` | Card layout: `standard` (bar + grid), `donut`, `compact` |
+| `--columns` | `2` | Number of grid columns (`0` for auto, `1`, `2`, `3`) |
+| `--card-width` | `495` | Card width in pixels |
+| `--card-height` | `405` | Card height in pixels (matches 2 left cards combined) |
+| `--output`, `-o` | `languages.svg` | Output file path |
+| `--exclude-repo` | `""` | Comma-separated repository names to ignore |
+| `--hide-title` | `false` | Hide the card header title |
+| `--hide-border` | `false` | Hide the card outline border |
+| `--animate` | `true` | Enable/disable SVG load animations |
 
 ---
 
 ## 🎨 Built-in Themes
 
 | Theme Name | Description |
-|:---|:---|
-| `tokyonight` | Sleek dark navy matching modern developer portfolios (default) |
-| `github_dark` | GitHub's native dark mode palette (`#0d1117`) |
+| :--- | :--- |
+| `tokyonight` | Modern dark navy developer palette (matches screenshot default) |
+| `github_dark` | GitHub's native dark mode (`#0d1117`) |
 | `dracula` | Classic Dracula vampire theme |
 | `catppuccin` | Catppuccin Mocha cozy pastel dark palette |
-| `nord` | Arctic, north-bluish palette |
-| `synthwave` | Vibrant 80s neon synthwave with glowing magenta |
+| `nord` | Arctic north-bluish palette |
+| `synthwave` | Vibrant 80s neon magenta & cyan |
 | `onedark` | Atom One Dark theme |
-| `radical` | High-contrast neon retro theme |
+| `radical` | High-contrast retro theme |
 | `midnight` | Deep OLED black (`#050508`) with electric indigo |
 | `github_light` | Clean GitHub light mode theme |
 
 ---
 
-## 🔑 GitHub Token Configuration
+## 💻 Optional: Running the Web Studio Locally
 
-By default, without a token GitHub limits unauthenticated requests to 60/hr. To unlock **5,000 requests/hour** and access private repositories:
+If you'd like to use the visual customizer playground with live real-time previews:
 
-1. Create a Personal Access Token (classic) on GitHub with `repo` scope.
-2. Create a `.env` file in the root directory:
-   ```env
-   PORT=8080
-   GITHUB_TOKEN=ghp_yourPersonalAccessTokenHere
-   CACHE_TTL_MINUTES=120
-   ```
-3. Restart the server.
+```bash
+# Clone the repository
+git clone https://github.com/adityapandeydev/git-stats.git
+cd git-stats
 
----
-
-## 📁 Project Architecture
-
+# Run the local server
+go run ./cmd/server
 ```
-git-stats/
-├── cmd/
-│   └── server/
-│       └── main.go          # HTTP server entrypoint and route definitions
-├── internal/
-│   ├── cache/
-│   │   └── cache.go         # Thread-safe in-memory generic TTL cache
-│   ├── config/
-│   │   └── config.go        # Environment and .env configuration parser
-│   ├── github/
-│   │   ├── client.go        # GraphQL and REST GitHub API client
-│   │   ├── colors.go        # Official GitHub Linguist language colors map
-│   │   └── models.go        # Data structures for repos and language stats
-│   ├── handlers/
-│   │   ├── stats.go         # /api/top-langs dynamic SVG generator handler
-│   │   ├── languages.go     # /api/languages JSON inspection endpoint
-│   │   ├── themes_handler.go# /api/themes JSON endpoint
-│   │   └── error_svg.go     # Graceful error SVG renderer
-│   └── renderer/
-│       ├── svg.go           # Scalable SVG generator (standard, donut, compact)
-│       ├── themes.go        # Preset themes and custom color overrides
-│       └── svg_test.go      # Layout & SVG rendering unit tests
-├── web/
-│   ├── index.html           # Interactive customizer studio
-│   └── static/
-│       ├── css/style.css    # Modern dark mode glassmorphism UI
-│       └── js/app.js        # Live preview, state, and embed generation
-├── .env.example
-├── go.mod
-└── README.md
-```
+
+Open your browser to: **`http://localhost:8080/`**

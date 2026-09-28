@@ -137,6 +137,10 @@
       params.set('exclude_repo', state.excludeRepo.trim());
     }
 
+    if (state.token && state.token.trim()) {
+      params.set('token', state.token.trim());
+    }
+
     // Color overrides
     if (state.colorOverrides.title) params.set('title_color', state.colorOverrides.title.replace('#', ''));
     if (state.colorOverrides.text) params.set('text_color', state.colorOverrides.text.replace('#', ''));
@@ -339,6 +343,8 @@
 
     tokenInput.addEventListener('input', (e) => {
       state.token = e.target.value.trim();
+      try { sessionStorage.setItem('gitstats_token', state.token); } catch(err){}
+      triggerPreviewUpdate(400);
     });
 
     // Languages count slider
@@ -521,6 +527,14 @@
 
   // Initialization
   async function init() {
+    try {
+      const savedToken = sessionStorage.getItem('gitstats_token');
+      if (savedToken) {
+        state.token = savedToken;
+        tokenInput.value = savedToken;
+      }
+    } catch(err) {}
+
     initListeners();
     await loadThemes();
     await fetchUserLanguages();

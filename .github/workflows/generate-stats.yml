@@ -1,0 +1,49 @@
+name: Generate GitHub Language Stats
+
+on:
+  push:
+    branches:
+      - main
+      - master
+  schedule:
+    # Runs every 4 hours (6 times a day) to automatically aggregate private repo commits
+    - cron: '0 */4 * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build-stats:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Set up Go
+        uses: actions/setup-go@v5
+        with:
+          go-version: '1.24'
+          cache: true
+
+      - name: Generate Language Stats SVG Card
+        env:
+          # Uses GH_TOKEN secret if provided (for private repo stats), otherwise falls back to default GITHUB_TOKEN
+          GH_TOKEN: ${{ secrets.GH_TOKEN || secrets.GITHUB_TOKEN }}
+        run: |
+          go run ./cmd/server --generate \
+            --username="${{ github.repository_owner }}" \
+            --langs-count=12 \
+            --theme="tokyonight" \
+            --layout="standard" \
+            --columns=2 \
+            --card-width=495 \
+            --card-height=405 \
+            --output="languages.svg"
+
+      - name: Commit and Push Updated Card
+        run: |
+          git config --local user.email "github-actions[bot]@users.noreply.github.com"
+          git config --local user.name "github-actions[bot]"
+          git add languages.svg
+          git diff --staged --quiet || (git commit -m "chore(stats): update language statistics card [skip ci]" && git push)

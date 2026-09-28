@@ -50,6 +50,13 @@ func (h *StatsHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		}
 	}
 
+	cardHeight := 0
+	if hStr := q.Get("card_height"); hStr != "" {
+		if val, err := strconv.Atoi(hStr); err == nil && val >= 100 && val <= 1500 {
+			cardHeight = val
+		}
+	}
+
 	w.Header().Set("Content-Type", "image/svg+xml; charset=utf-8")
 	w.Header().Set("Access-Control-Allow-Origin", "*")
 
@@ -127,6 +134,7 @@ func (h *StatsHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	opts := renderer.RenderOptions{
 		Theme:        activeTheme,
 		CardWidth:    cardWidth,
+		CardHeight:   cardHeight,
 		LangsCount:   langsCount,
 		Columns:      cols,
 		Layout:       layout,
