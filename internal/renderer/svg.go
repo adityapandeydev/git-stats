@@ -195,11 +195,10 @@ func renderStandardLayout(langs []github.LanguageStat, opts RenderOptions) strin
 	}
 	sb.WriteString(`</g>`)
 
-	// Multi-column Language List
+	// Multi-column Language List (Column-major: fills left column first; odd counts have 1 less on right)
 	colWidth := float64(barWidth) / float64(cols)
 	for i, l := range langs {
-		colIdx := i % cols
-		rowIdx := i / cols
+		colIdx, rowIdx := getColumnMajorPos(i, len(langs), cols)
 
 		itemX := float64(paddingX) + (float64(colIdx) * colWidth)
 		itemY := listStartY + (rowIdx * rowHeight)
@@ -237,7 +236,30 @@ func renderStandardLayout(langs []github.LanguageStat, opts RenderOptions) strin
 	return sb.String()
 }
 
-// renderDonutLayout renders languages as a circular donut chart with legend.
+// getColumnMajorPos computes column and row position filling left columns first.
+// When total is odd, the left column gets (total+1)/2 and the right column gets 1 less.
+func getColumnMajorPos(i int, total int, cols int) (int, int) {
+	if cols <= 1 {
+		return 0, i
+	}
+	base := total / cols
+	rem := total % cols
+
+	curIndex := 0
+	for c := 0; c < cols; c++ {
+		count := base
+		if c < rem {
+			count++
+		}
+		if i < curIndex+count {
+			return c, i - curIndex
+		}
+		curIndex += count
+	}
+	return cols - 1, 0
+}
+
+// renderDonutLayout renders languages as a centered circular donut chart with a bottom 3-column grid.
 func renderDonutLayout(langs []github.LanguageStat, opts RenderOptions) string {
 	width := opts.CardWidth
 	paddingX := 25
@@ -247,22 +269,40 @@ func renderDonutLayout(langs []github.LanguageStat, opts RenderOptions) string {
 		title = opts.CustomTitle
 	}
 
-	chartRadius := 50.0
-	chartStroke := 14.0
-	chartCenterX := float64(paddingX) + chartRadius + 10
-	chartCenterY := 95.0
+	// Donut centered horizontally
+	chartCenterX := float64(width) / 2.0
+	chartRadius := 44.0
+	chartStroke := 12.0
+	chartCenterY := 92.0
 	if opts.HideTitle {
-		chartCenterY = 75.0
+		chartCenterY = 66.0
 	}
 
-	// Height calculation
-	legendStartY := 55
-	if opts.HideTitle {
-		legendStartY = 30
+	// Bottom languages grid in 3 columns (or 2 if small)
+	cols := opts.Columns
+	if cols <= 0 {
+		if len(langs) <= 4 {
+			cols = 2
+		} else if width < 420 {
+			cols = 2
+		} else {
+			cols = 3
+		}
 	}
-	legendRows := len(langs)
-	legendHeight := legendRows * 22
-	height := int(math.Max(float64(legendStartY+legendHeight+20), chartCenterY+chartRadius+30))
+	if cols < 1 {
+		cols = 1
+	}
+	if cols > 4 {
+		cols = 4
+	}
+
+	rowHeight := 24
+	gridStartY := int(chartCenterY + chartRadius + 26)
+	rows := int(math.Ceil(float64(len(langs)) / float64(cols)))
+	if rows < 1 {
+		rows = 1
+	}
+	height := gridStartY + (rows * rowHeight) + 16
 
 	var sb strings.Builder
 	sb.WriteString(fmt.Sprintf(`<svg width="%d" height="%d" viewBox="0 0 %d %d" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="%s">`,
@@ -272,16 +312,30 @@ func renderDonutLayout(langs []github.LanguageStat, opts RenderOptions) string {
 	sb.WriteString(fmt.Sprintf(`
 		.card-bg { fill: %s; stroke: %s; stroke-width: 1px; rx: %dpx; }
 		.card-title { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; font-size: 16px; font-weight: 600; fill: %s; }
-		.lang-name { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; font-size: 12.5px; font-weight: 500; fill: %s; }
-		.lang-pct { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; font-size: 12px; font-weight: 400; fill: %s; }
+		.lang-name { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; font-size: 12px; font-weight: 500; fill: %s; }
+		.lang-pct { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; font-size: 11.5px; font-weight: 400; fill: %s; }
 		.donut-track { fill: none; stroke: %s; stroke-width: %.1f; }
 		.donut-segment { fill: none; stroke-width: %.1f; transition: stroke-dasharray 0.5s ease; }
 	`, opts.Theme.BgColor, opts.Theme.BorderColor, opts.BorderRadius, opts.Theme.TitleColor, opts.Theme.TextColor, opts.Theme.MutedColor, opts.Theme.BarBgColor, chartStroke, chartStroke))
+
+	if opts.Animate {
+		sb.WriteString(`
+		@keyframes fadeIn {
+			from { opacity: 0; transform: translateY(4px); }
+			to { opacity: 1; transform: translateY(0); }
+		}
+		.animate-item { animation: fadeIn 0.4s ease-out forwards; }
+		`)
+	}
 	sb.WriteString(`</style>`)
 
 	// Background
-	sb.WriteString(fmt.Sprintf(`<rect class="card-bg" x="0.5" y="0.5" width="%d" height="%d" rx="%d"/>`,
-		width-1, height-1, opts.BorderRadius))
+	strokeAttr := fmt.Sprintf(`stroke="%s"`, opts.Theme.BorderColor)
+	if opts.HideBorder {
+		strokeAttr = `stroke="transparent"`
+	}
+	sb.WriteString(fmt.Sprintf(`<rect class="card-bg" x="0.5" y="0.5" width="%d" height="%d" rx="%d" fill="%s" %s/>`,
+		width-1, height-1, opts.BorderRadius, opts.Theme.BgColor, strokeAttr))
 
 	if !opts.HideTitle {
 		sb.WriteString(fmt.Sprintf(`<text x="%d" y="%d" class="card-title">%s</text>`,
@@ -309,19 +363,44 @@ func renderDonutLayout(langs []github.LanguageStat, opts RenderOptions) string {
 	}
 
 	// Donut Center Text
-	sb.WriteString(fmt.Sprintf(`<text x="%.1f" y="%.1f" text-anchor="middle" font-family="sans-serif" font-size="12" font-weight="600" fill="%s">%d Langs</text>`,
-		chartCenterX, chartCenterY+4, opts.Theme.TextColor, len(langs)))
+	sb.WriteString(fmt.Sprintf(`<text x="%.1f" y="%.1f" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="13" font-weight="700" fill="%s">%d</text>`,
+		chartCenterX, chartCenterY-1, opts.Theme.TitleColor, len(langs)))
+	sb.WriteString(fmt.Sprintf(`<text x="%.1f" y="%.1f" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="9.5" font-weight="500" fill="%s">LANGS</text>`,
+		chartCenterX, chartCenterY+12, opts.Theme.MutedColor))
 
-	// Legend (right side)
-	legendX := chartCenterX + chartRadius + 30
+	// Bottom Languages Grid (filled across the bottom in 3 columns)
+	gridWidth := float64(width - (paddingX * 2))
+	colWidth := gridWidth / float64(cols)
+
 	for i, l := range langs {
-		itemY := legendStartY + (i * 22)
-		sb.WriteString(fmt.Sprintf(`<circle cx="%.1f" cy="%.1f" r="4.5" fill="%s"/>`,
-			legendX, float64(itemY)-4.0, l.Color))
-		sb.WriteString(fmt.Sprintf(`<text x="%.1f" y="%d" class="lang-name">%s</text>`,
-			legendX+12, itemY, html.EscapeString(l.Name)))
-		sb.WriteString(fmt.Sprintf(`<text x="%d" y="%d" text-anchor="end" class="lang-pct">%.2f%%</text>`,
-			width-paddingX, itemY, l.Percentage))
+		colIdx, rowIdx := getColumnMajorPos(i, len(langs), cols)
+		itemX := float64(paddingX) + (float64(colIdx) * colWidth)
+		itemY := gridStartY + (rowIdx * rowHeight)
+
+		delayStyle := ""
+		if opts.Animate {
+			delayStyle = fmt.Sprintf(` style="animation-delay: %dms;"`, 80+(i*35))
+		}
+
+		dotRadius := 4.0
+		dotY := float64(itemY) - 4.0
+		textY := float64(itemY)
+
+		sb.WriteString(fmt.Sprintf(`<g class="animate-item"%s>`, delayStyle))
+		// Color Dot
+		sb.WriteString(fmt.Sprintf(`<circle cx="%.1f" cy="%.1f" r="%.1f" fill="%s"/>`,
+			itemX+4, dotY, dotRadius, l.Color))
+
+		// Language Name
+		sb.WriteString(fmt.Sprintf(`<text x="%.1f" y="%.1f" class="lang-name">%s</text>`,
+			itemX+14, textY, html.EscapeString(l.Name)))
+
+		// Percentage
+		pctX := itemX + colWidth - 10
+		sb.WriteString(fmt.Sprintf(`<text x="%.1f" y="%.1f" text-anchor="end" class="lang-pct">%.1f%%</text>`,
+			pctX, textY, l.Percentage))
+
+		sb.WriteString(`</g>`)
 	}
 
 	sb.WriteString(`</svg>`)

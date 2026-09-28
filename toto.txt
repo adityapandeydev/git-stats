@@ -1,0 +1,1 @@
+any number of languages possible till a higher limit, not necessary to have only even number of langs, if odd wanted then we just show one less on the right side

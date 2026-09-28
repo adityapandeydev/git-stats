@@ -160,18 +160,74 @@ body {
 .main-layout {
   position: relative;
   z-index: 1;
-  max-width: 1400px;
-  margin: 28px auto 60px;
+  max-width: 1440px;
+  margin: 14px auto 0;
   padding: 0 24px;
   display: grid;
-  grid-template-columns: minmax(0, 1fr) 520px;
-  gap: 28px;
+  grid-template-columns: minmax(0, 1fr) 530px;
+  gap: 26px;
   align-items: start;
+  height: calc(100vh - 85px);
+  overflow: hidden;
+}
+
+.controls-panel {
+  height: 100%;
+  overflow-y: auto;
+  padding-right: 12px;
+  padding-bottom: 80px;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(255, 255, 255, 0.16) transparent;
+}
+
+.controls-panel::-webkit-scrollbar {
+  width: 6px;
+}
+
+.controls-panel::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.16);
+  border-radius: 3px;
+}
+
+.preview-panel {
+  height: 100%;
+  overflow-y: auto;
+  padding-right: 4px;
+  padding-bottom: 60px;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(255, 255, 255, 0.12) transparent;
+}
+
+.preview-panel::-webkit-scrollbar {
+  width: 6px;
+}
+
+.preview-panel::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.12);
+  border-radius: 3px;
 }
 
 @media (max-width: 1080px) {
+  body {
+    overflow-y: auto;
+  }
   .main-layout {
+    height: auto;
+    overflow: visible;
     grid-template-columns: 1fr;
+    margin-bottom: 60px;
+  }
+  .controls-panel {
+    height: auto;
+    overflow-y: visible;
+    padding-right: 0;
+    padding-bottom: 0;
+  }
+  .preview-panel {
+    height: auto;
+    overflow-y: visible;
+    padding-right: 0;
+    padding-bottom: 0;
   }
 }
 
@@ -779,11 +835,9 @@ select:focus {
 
 /* Right Panel: Preview & Embed */
 .sticky-container {
-  position: sticky;
-  top: 90px;
   display: flex;
   flex-direction: column;
-  gap: 20px;
+  gap: 16px;
 }
 
 .preview-card {

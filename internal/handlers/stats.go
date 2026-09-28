@@ -100,7 +100,7 @@ func (h *StatsHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	// Parse langs_count
 	langsCount := 8
 	if lcStr := q.Get("langs_count"); lcStr != "" {
-		if val, err := strconv.Atoi(lcStr); err == nil && val > 0 && val <= 30 {
+		if val, err := strconv.Atoi(lcStr); err == nil && val > 0 && val <= 50 {
 			langsCount = val
 		}
 	}

@@ -314,6 +314,16 @@ func (c *Client) getDemoStats() *UserStats {
 		{"SQL", 7500},
 		{"Lua", 5200},
 		{"Dart", 3800},
+		{"Kotlin", 3200},
+		{"Swift", 2900},
+		{"C#", 2400},
+		{"Ruby", 2100},
+		{"PHP", 1800},
+		{"Vue", 1500},
+		{"Svelte", 1200},
+		{"Zig", 1000},
+		{"Elixir", 850},
+		{"Scala", 700},
 	}
 
 	var total int64

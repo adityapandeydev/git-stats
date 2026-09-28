@@ -385,9 +385,9 @@
         input.checked = true;
         state.layout = input.value;
 
-        // Toggle columns visibility if donut or compact
+        // Toggle columns visibility (supported in standard and donut)
         const colGroup = document.getElementById('col-group');
-        if (state.layout === 'standard') {
+        if (state.layout === 'standard' || state.layout === 'donut') {
           colGroup.style.display = 'block';
         } else {
           colGroup.style.display = 'none';
