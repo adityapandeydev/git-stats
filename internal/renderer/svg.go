@@ -109,36 +109,36 @@ func renderStandardLayout(langs []github.LanguageStat, opts RenderOptions) strin
 	}
 
 	// Layout spacing constants
-	titleToBar := 24
+	barY := 52
+	if opts.HideTitle {
+		barY = 28
+	}
 	barHeight := 10
-	barToList := 24
 	barWidth := width - (paddingX * 2)
 
 	rowHeight := 26
-	barY := paddingY + titleToBar
-	if opts.HideTitle {
-		barY = paddingY
-	}
-	listStartY := barY + barHeight + barToList
+	listStartY := barY + barHeight + 22
 	height := listStartY + (rows * rowHeight) + 14
 
 	if opts.CardHeight > 0 {
 		height = opts.CardHeight
+		// Keep title & progress bar at top as requested.
+		// Shift languages down: increase gap between bar and languages,
+		// and reduce bottom margin so it matches top margin (~28-30px).
+		targetBottomMargin := paddingY + 2
+		lastRowY := height - targetBottomMargin
+
 		intervals := rows - 1
 		if intervals < 1 {
 			intervals = 1
 		}
 
-		headerSpan := titleToBar + barHeight + barToList
-		if opts.HideTitle {
-			headerSpan = barHeight + barToList
-		}
+		barBottom := barY + barHeight
+		availMiddle := lastRowY - barBottom
 
-		// Calculate row height to fit gracefully
 		calcRowH := 50
-		availForRows := height - headerSpan - 80
 		if intervals > 0 {
-			h := availForRows / intervals
+			h := (availMiddle - 50) / intervals
 			if h >= 26 && h <= 52 {
 				calcRowH = h
 			} else if h > 52 {
@@ -148,27 +148,7 @@ func renderStandardLayout(langs []github.LanguageStat, opts RenderOptions) strin
 			}
 		}
 		rowHeight = calcRowH
-
-		// Symmetrize margins:
-		// Distance from top border to title visual top is: paddingY - 12
-		// Distance from bottom border to last row visual bottom is: height - (lastRowY + 3)
-		// With lastRowY = paddingY + headerSpan + (intervals * rowHeight)
-		// For topGap == bottomGap:
-		// paddingY - 12 == height - (paddingY + headerSpan + intervals*rowHeight + 3)
-		// 2 * paddingY = height + 9 - headerSpan - (intervals * rowHeight)
-		rem := height + 9 - headerSpan - (intervals * rowHeight)
-		if opts.HideTitle {
-			rem = height + 3 - headerSpan - (intervals * rowHeight)
-		}
-		calcPadY := rem / 2
-		if calcPadY >= 20 {
-			paddingY = calcPadY
-		}
-		barY = paddingY + titleToBar
-		if opts.HideTitle {
-			barY = paddingY
-		}
-		listStartY = barY + barHeight + barToList
+		listStartY = lastRowY - (intervals * rowHeight)
 	}
 
 	var sb strings.Builder
