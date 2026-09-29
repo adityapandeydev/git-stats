@@ -138,7 +138,7 @@ func (c *Client) GetUserLanguages(ctx context.Context, username string, token st
 func (c *Client) fetchGraphQL(ctx context.Context, username string, token string, excludedSet map[string]bool) (*UserStats, error) {
 	query := `query($login: String!) {
 		user(login: $login) {
-			repositories(ownerAffiliations: OWNER, isFork: false, first: 100, orderBy: {field: PUSHED_AT, direction: DESC}) {
+			repositories(affiliations: [OWNER, ORGANIZATION_MEMBER], isFork: false, first: 100, orderBy: {field: PUSHED_AT, direction: DESC}) {
 				pageInfo {
 					hasNextPage
 					endCursor

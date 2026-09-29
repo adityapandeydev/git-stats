@@ -39,7 +39,7 @@ jobs:
             --columns=2 \
             --card-width=424 \
             --card-height=380 \
-            --hide="jupyter notebook,qml,javascript,html,css,tex,jinja,dockerfile,powershell,vim script" \
+            --hide="jupyter notebook,qml,javascript,html,css,tex" \
             --output="languages.svg"
 
       - name: Commit and Push Updated Card
