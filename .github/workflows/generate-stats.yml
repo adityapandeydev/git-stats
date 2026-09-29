@@ -33,13 +33,13 @@ jobs:
         run: |
           go run ./cmd/server --generate \
             --username="${{ github.repository_owner }}" \
-            --langs-count=8 \
+            --langs-count=12 \
             --theme="tokyonight" \
             --layout="standard" \
             --columns=2 \
             --card-width=424 \
             --card-height=380 \
-            --hide="jupyter notebook,qml,javascript,lua,html,css,tex" \
+            --hide="jupyter notebook,qml,javascript,html,css,tex,jinja,dockerfile,powershell,vim script" \
             --output="languages.svg"
 
       - name: Commit and Push Updated Card
