@@ -44,13 +44,13 @@ func main() {
 
 	cfg := config.Load()
 
-	// Resolve token: flag > GH_TOKEN > GITHUB_TOKEN > cfg
-	authToken := *tokenFlag
+	// Resolve token: flag > GH_TOKEN > cfg
+	authToken := github.CleanToken(*tokenFlag)
 	if authToken == "" {
-		authToken = os.Getenv("GH_TOKEN")
+		authToken = github.CleanToken(os.Getenv("GH_TOKEN"))
 	}
 	if authToken == "" {
-		authToken = cfg.GitHubToken
+		authToken = github.CleanToken(cfg.GitHubToken)
 	}
 
 	ghClient := github.NewClient(authToken, cfg.CacheTTL)
@@ -76,6 +76,12 @@ func main() {
 
 		ctx := context.Background()
 		fmt.Printf("⚡ Fetching GitHub stats for user '%s'...\n", username)
+		if authToken != "" {
+			fmt.Printf("🔑 Authenticated using token: %s\n", github.MaskToken(authToken))
+		} else {
+			fmt.Println("ℹ️  Running in unauthenticated mode (public repos only)")
+		}
+
 		stats, err := ghClient.GetUserLanguages(ctx, username, authToken, excludedRepos)
 		if err != nil {
 			log.Fatalf("❌ Error fetching stats: %v", err)

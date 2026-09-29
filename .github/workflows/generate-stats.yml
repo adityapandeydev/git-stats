@@ -28,8 +28,8 @@ jobs:
 
       - name: Generate Language Stats SVG Card
         env:
-          # Uses GH_TOKEN secret if provided (for private repo stats), otherwise falls back to default GITHUB_TOKEN
-          GH_TOKEN: ${{ secrets.GH_TOKEN || secrets.GITHUB_TOKEN }}
+          # Uses GH_TOKEN repository secret if provided
+          GH_TOKEN: ${{ secrets.GH_TOKEN }}
         run: |
           go run ./cmd/server --generate \
             --username="${{ github.repository_owner }}" \

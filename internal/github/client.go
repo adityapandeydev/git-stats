@@ -22,13 +22,39 @@ type Client struct {
 	cache       *cache.MemoryCache[*UserStats]
 }
 
+// CleanToken strips whitespace, quotes, and redundant authorization prefixes.
+func CleanToken(token string) string {
+	t := strings.TrimSpace(token)
+	t = strings.Trim(t, `"'`)
+	if strings.EqualFold(t, "true") || strings.EqualFold(t, "false") {
+		return ""
+	}
+	t = strings.TrimPrefix(t, "Bearer ")
+	t = strings.TrimPrefix(t, "bearer ")
+	t = strings.TrimPrefix(t, "token ")
+	t = strings.TrimPrefix(t, "Token ")
+	return strings.TrimSpace(t)
+}
+
+// MaskToken returns a safe-to-log masked representation of a token.
+func MaskToken(token string) string {
+	token = CleanToken(token)
+	if token == "" {
+		return "none"
+	}
+	if len(token) <= 8 {
+		return fmt.Sprintf("*** (len: %d)", len(token))
+	}
+	return fmt.Sprintf("%s...%s (len: %d)", token[:4], token[len(token)-4:], len(token))
+}
+
 // NewClient initializes a new GitHub client with in-memory caching.
 func NewClient(globalToken string, cacheTTL time.Duration) *Client {
 	return &Client{
 		httpClient: &http.Client{
 			Timeout: 15 * time.Second,
 		},
-		globalToken: globalToken,
+		globalToken: CleanToken(globalToken),
 		cache:       cache.New[*UserStats](cacheTTL, 10*time.Minute),
 	}
 }
@@ -41,9 +67,9 @@ func (c *Client) GetUserLanguages(ctx context.Context, username string, token st
 	}
 
 	// Use provided token or fallback to server global token
-	authToken := token
+	authToken := CleanToken(token)
 	if authToken == "" {
-		authToken = c.globalToken
+		authToken = CleanToken(c.globalToken)
 	}
 
 	// Generate cache key (differentiate token-authenticated vs unauthenticated queries)
@@ -71,11 +97,23 @@ func (c *Client) GetUserLanguages(ctx context.Context, username string, token st
 
 	if authToken != "" {
 		stats, err = c.fetchGraphQL(ctx, username, authToken, excludedSet)
+		if err != nil {
+			if strings.Contains(err.Error(), "401") {
+				fmt.Printf("⚠️  GitHub GraphQL returned HTTP 401 Bad credentials for token %s. Falling back to public REST API...\n", MaskToken(authToken))
+			} else {
+				fmt.Printf("⚠️  GitHub GraphQL query failed: %v. Falling back to public REST API...\n", err)
+			}
+		}
 	}
 
 	// If GraphQL was skipped or failed, fallback to REST API
-	if stats == nil || err != nil {
+	if stats == nil {
 		restStats, restErr := c.fetchREST(ctx, username, authToken, excludedSet)
+		if restErr != nil && authToken != "" && strings.Contains(restErr.Error(), "401") {
+			// Token itself might be invalid, retry REST anonymously for public repos
+			fmt.Println("⚠️  Token rejected by REST API. Retrying unauthenticated query for public repositories...")
+			restStats, restErr = c.fetchREST(ctx, username, "", excludedSet)
+		}
 		if restErr == nil && restStats != nil && len(restStats.Languages) > 0 {
 			stats = restStats
 			err = nil
@@ -139,7 +177,9 @@ func (c *Client) fetchGraphQL(ctx context.Context, username string, token string
 		return nil, err
 	}
 
-	req.Header.Set("Authorization", "Bearer "+token)
+	if cleanTok := CleanToken(token); cleanTok != "" {
+		req.Header.Set("Authorization", "Bearer "+cleanTok)
+	}
 	req.Header.Set("Content-Type", "application/json")
 	req.Header.Set("User-Agent", "git-stats-card-generator")
 
@@ -197,8 +237,8 @@ func (c *Client) fetchREST(ctx context.Context, username string, token string, e
 		return nil, err
 	}
 
-	if token != "" {
-		req.Header.Set("Authorization", "Bearer "+token)
+	if cleanTok := CleanToken(token); cleanTok != "" {
+		req.Header.Set("Authorization", "Bearer "+cleanTok)
 	}
 	req.Header.Set("User-Agent", "git-stats-card-generator")
 	req.Header.Set("Accept", "application/vnd.github.v3+json")
@@ -267,8 +307,8 @@ func (c *Client) fetchREST(ctx context.Context, username string, token string, e
 				if err != nil {
 					continue
 				}
-				if token != "" {
-					langReq.Header.Set("Authorization", "Bearer "+token)
+				if cleanTok := CleanToken(token); cleanTok != "" {
+					langReq.Header.Set("Authorization", "Bearer "+cleanTok)
 				}
 				langReq.Header.Set("User-Agent", "git-stats-card-generator")
 
