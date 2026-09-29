@@ -37,8 +37,9 @@ jobs:
             --theme="tokyonight" \
             --layout="standard" \
             --columns=2 \
-            --card-width=424 \
+            --card-width=400 \
             --card-height=380 \
+            --border-radius=4.5 \
             --hide="jupyter notebook,qml,javascript,html,css,tex" \
             --output="languages.svg"
 

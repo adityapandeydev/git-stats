@@ -39,6 +39,7 @@ func main() {
 	textColorFlag := flag.String("text-color", "", "Custom text hex color")
 	bgColorFlag := flag.String("bg-color", "", "Custom background hex color")
 	borderColorFlag := flag.String("border-color", "", "Custom border hex color")
+	borderRadiusFlag := flag.Float64("border-radius", 4.5, "Corner radius in pixels (default 4.5 to match GitHub stats cards)")
 
 	flag.Parse()
 
@@ -136,7 +137,7 @@ func main() {
 			HideTitle:    *hideTitleFlag,
 			CustomTitle:  *titleFlag,
 			Animate:      *animateFlag,
-			BorderRadius: activeTheme.BorderRadius,
+			BorderRadius: *borderRadiusFlag,
 			HideBorder:   *hideBorderFlag,
 			ShowPercent:  true,
 		}

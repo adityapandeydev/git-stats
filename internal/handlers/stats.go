@@ -27,9 +27,9 @@ func (h *StatsHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	baseTheme := renderer.GetTheme(themeName)
 
 	// Apply query overrides to theme
-	radius := -1
+	radius := -1.0
 	if rStr := q.Get("border_radius"); rStr != "" {
-		if rVal, err := strconv.Atoi(rStr); err == nil {
+		if rVal, err := strconv.ParseFloat(rStr, 64); err == nil {
 			radius = rVal
 		}
 	}

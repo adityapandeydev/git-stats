@@ -12,8 +12,8 @@ type Theme struct {
 	MutedColor   string `json:"muted_color"`
 	BorderColor  string `json:"border_color"`
 	BarBgColor   string `json:"bar_bg_color"`
-	AccentColor  string `json:"accent_color"`
-	BorderRadius int    `json:"border_radius"`
+	AccentColor  string  `json:"accent_color"`
+	BorderRadius float64 `json:"border_radius"`
 }
 
 // Themes holds all pre-configured card themes.
@@ -28,7 +28,7 @@ var Themes = map[string]Theme{
 		BorderColor:  "#2a2a3c",
 		BarBgColor:   "#212337",
 		AccentColor:  "#7aa2f7",
-		BorderRadius: 10,
+		BorderRadius: 4.5,
 	},
 	"github_dark": {
 		Name:         "github_dark",
@@ -40,7 +40,7 @@ var Themes = map[string]Theme{
 		BorderColor:  "#30363d",
 		BarBgColor:   "#161b22",
 		AccentColor:  "#1f6feb",
-		BorderRadius: 10,
+		BorderRadius: 4.5,
 	},
 	"dracula": {
 		Name:         "dracula",
@@ -52,7 +52,7 @@ var Themes = map[string]Theme{
 		BorderColor:  "#44475a",
 		BarBgColor:   "#1e1f29",
 		AccentColor:  "#bd93f9",
-		BorderRadius: 10,
+		BorderRadius: 4.5,
 	},
 	"catppuccin": {
 		Name:         "catppuccin",
@@ -64,7 +64,7 @@ var Themes = map[string]Theme{
 		BorderColor:  "#313244",
 		BarBgColor:   "#181825",
 		AccentColor:  "#cba6f7",
-		BorderRadius: 10,
+		BorderRadius: 4.5,
 	},
 	"nord": {
 		Name:         "nord",
@@ -76,7 +76,7 @@ var Themes = map[string]Theme{
 		BorderColor:  "#3b4252",
 		BarBgColor:   "#242933",
 		AccentColor:  "#81a1c1",
-		BorderRadius: 10,
+		BorderRadius: 4.5,
 	},
 	"synthwave": {
 		Name:         "synthwave",
@@ -88,7 +88,7 @@ var Themes = map[string]Theme{
 		BorderColor:  "#ff007f",
 		BarBgColor:   "#120924",
 		AccentColor:  "#05d9e8",
-		BorderRadius: 10,
+		BorderRadius: 4.5,
 	},
 	"onedark": {
 		Name:         "onedark",
@@ -100,7 +100,7 @@ var Themes = map[string]Theme{
 		BorderColor:  "#3e4451",
 		BarBgColor:   "#21252b",
 		AccentColor:  "#98c379",
-		BorderRadius: 10,
+		BorderRadius: 4.5,
 	},
 	"radical": {
 		Name:         "radical",
@@ -112,7 +112,7 @@ var Themes = map[string]Theme{
 		BorderColor:  "#2a2b3d",
 		BarBgColor:   "#0f0e1a",
 		AccentColor:  "#f8d847",
-		BorderRadius: 10,
+		BorderRadius: 4.5,
 	},
 	"midnight": {
 		Name:         "midnight",
@@ -124,7 +124,7 @@ var Themes = map[string]Theme{
 		BorderColor:  "#1e1e2f",
 		BarBgColor:   "#0f0f17",
 		AccentColor:  "#818cf8",
-		BorderRadius: 12,
+		BorderRadius: 4.5,
 	},
 	"github_light": {
 		Name:         "github_light",
@@ -136,7 +136,7 @@ var Themes = map[string]Theme{
 		BorderColor:  "#d0d7de",
 		BarBgColor:   "#eaeef2",
 		AccentColor:  "#0969da",
-		BorderRadius: 10,
+		BorderRadius: 4.5,
 	},
 }
 
@@ -150,7 +150,7 @@ func GetTheme(name string) Theme {
 }
 
 // ApplyThemeOverrides applies optional custom color and style parameters.
-func ApplyThemeOverrides(base Theme, bg, title, text, border, barBg string, radius int) Theme {
+func ApplyThemeOverrides(base Theme, bg, title, text, border, barBg string, radius float64) Theme {
 	t := base
 	if bg != "" {
 		t.BgColor = formatHex(bg)

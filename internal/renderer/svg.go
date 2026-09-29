@@ -20,7 +20,7 @@ type RenderOptions struct {
 	HideTitle     bool
 	CustomTitle   string
 	Animate       bool
-	BorderRadius  int
+	BorderRadius  float64
 	HideBorder    bool
 	ShowPercent   bool
 }
@@ -39,7 +39,7 @@ func RenderSVG(stats *github.UserStats, opts RenderOptions) string {
 	if opts.BorderRadius <= 0 {
 		opts.BorderRadius = opts.Theme.BorderRadius
 		if opts.BorderRadius <= 0 {
-			opts.BorderRadius = 10
+			opts.BorderRadius = 4.5
 		}
 	}
 
@@ -177,7 +177,7 @@ func renderStandardLayout(langs []github.LanguageStat, opts RenderOptions) strin
 	// Style Definitions
 	sb.WriteString(`<style>`)
 	sb.WriteString(fmt.Sprintf(`
-		.card-bg { fill: %s; stroke: %s; stroke-width: 1px; rx: %dpx; }
+		.card-bg { fill: %s; stroke: %s; stroke-width: 1px; rx: %gpx; }
 		.card-title { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; font-size: 16px; font-weight: 600; fill: %s; }
 		.lang-name { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; font-size: 12.5px; font-weight: 500; fill: %s; }
 		.lang-pct { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; font-size: 12px; font-weight: 400; fill: %s; }
@@ -206,7 +206,7 @@ func renderStandardLayout(langs []github.LanguageStat, opts RenderOptions) strin
 	if opts.HideBorder {
 		strokeAttr = `stroke="transparent"`
 	}
-	sb.WriteString(fmt.Sprintf(`<rect class="card-bg" x="0.5" y="0.5" width="%d" height="%d" rx="%d" fill="%s" %s/>`,
+	sb.WriteString(fmt.Sprintf(`<rect class="card-bg" x="0.5" y="0.5" width="%d" height="%d" rx="%g" fill="%s" %s/>`,
 		width-1, height-1, opts.BorderRadius, opts.Theme.BgColor, strokeAttr))
 
 	// Card Title
@@ -358,7 +358,7 @@ func renderDonutLayout(langs []github.LanguageStat, opts RenderOptions) string {
 
 	sb.WriteString(`<style>`)
 	sb.WriteString(fmt.Sprintf(`
-		.card-bg { fill: %s; stroke: %s; stroke-width: 1px; rx: %dpx; }
+		.card-bg { fill: %s; stroke: %s; stroke-width: 1px; rx: %gpx; }
 		.card-title { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; font-size: 16px; font-weight: 600; fill: %s; }
 		.lang-name { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; font-size: 12px; font-weight: 500; fill: %s; }
 		.lang-pct { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; font-size: 11.5px; font-weight: 400; fill: %s; }
@@ -382,7 +382,7 @@ func renderDonutLayout(langs []github.LanguageStat, opts RenderOptions) string {
 	if opts.HideBorder {
 		strokeAttr = `stroke="transparent"`
 	}
-	sb.WriteString(fmt.Sprintf(`<rect class="card-bg" x="0.5" y="0.5" width="%d" height="%d" rx="%d" fill="%s" %s/>`,
+	sb.WriteString(fmt.Sprintf(`<rect class="card-bg" x="0.5" y="0.5" width="%d" height="%d" rx="%g" fill="%s" %s/>`,
 		width-1, height-1, opts.BorderRadius, opts.Theme.BgColor, strokeAttr))
 
 	if !opts.HideTitle {
@@ -481,14 +481,14 @@ func renderCompactLayout(langs []github.LanguageStat, opts RenderOptions) string
 
 	sb.WriteString(`<style>`)
 	sb.WriteString(fmt.Sprintf(`
-		.card-bg { fill: %s; stroke: %s; stroke-width: 1px; rx: %dpx; }
+		.card-bg { fill: %s; stroke: %s; stroke-width: 1px; rx: %gpx; }
 		.card-title { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; font-size: 14px; font-weight: 600; fill: %s; }
 		.lang-name { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; font-size: 11px; font-weight: 500; fill: %s; }
 		.bar-bg { fill: %s; rx: 4px; }
 	`, opts.Theme.BgColor, opts.Theme.BorderColor, opts.BorderRadius, opts.Theme.TitleColor, opts.Theme.TextColor, opts.Theme.BarBgColor))
 	sb.WriteString(`</style>`)
 
-	sb.WriteString(fmt.Sprintf(`<rect class="card-bg" x="0.5" y="0.5" width="%d" height="%d" rx="%d"/>`,
+	sb.WriteString(fmt.Sprintf(`<rect class="card-bg" x="0.5" y="0.5" width="%d" height="%d" rx="%g"/>`,
 		width-1, height-1, opts.BorderRadius))
 
 	if !opts.HideTitle {
