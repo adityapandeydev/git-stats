@@ -22,7 +22,7 @@ func main() {
 	generateFlag := flag.Bool("generate", false, "Generate SVG card directly to disk and exit (CLI mode)")
 	usernameFlag := flag.String("username", "", "GitHub username (or reads GITHUB_REPOSITORY_OWNER)")
 	outputFlag := flag.String("output", "languages.svg", "Output SVG file path")
-	langsCountFlag := flag.Int("langs-count", 12, "Number of languages to display")
+	langsCountFlag := flag.Int("langs-count", 8, "Number of languages to display")
 	hideFlag := flag.String("hide", "", "Comma-separated languages to hide (e.g. html,css)")
 	themeFlag := flag.String("theme", "tokyonight", "Card theme preset")
 	layoutFlag := flag.String("layout", "standard", "Layout style: standard, donut, compact")
@@ -93,6 +93,10 @@ func main() {
 			for _, h := range strings.Split(*hideFlag, ",") {
 				if clean := strings.ToLower(strings.TrimSpace(h)); clean != "" {
 					hiddenMap[clean] = true
+					if clean == "jyputer notebook" || clean == "jupyter notebook" {
+						hiddenMap["jupyter notebook"] = true
+						hiddenMap["jyputer notebook"] = true
+					}
 				}
 			}
 		}

@@ -123,9 +123,8 @@ func renderStandardLayout(langs []github.LanguageStat, opts RenderOptions) strin
 	if opts.CardHeight > 0 {
 		height = opts.CardHeight
 		// Keep title & progress bar at top as requested.
-		// Shift languages down: increase gap between bar and languages,
-		// and reduce bottom margin so it matches top margin (~28-30px).
-		targetBottomMargin := paddingY + 2
+		// Maintain a clean bottom margin (~30-35px) matching top margin.
+		targetBottomMargin := paddingY + 7
 		lastRowY := height - targetBottomMargin
 
 		intervals := rows - 1
@@ -136,19 +135,25 @@ func renderStandardLayout(langs []github.LanguageStat, opts RenderOptions) strin
 		barBottom := barY + barHeight
 		availMiddle := lastRowY - barBottom
 
-		calcRowH := 50
-		if intervals > 0 {
-			h := (availMiddle - 50) / intervals
-			if h >= 26 && h <= 52 {
-				calcRowH = h
-			} else if h > 52 {
-				calcRowH = 50
-			} else if h < 26 {
-				calcRowH = 26
+		// Proportionally distribute between barToList and row intervals
+		// Total slots = intervals + 1 (the slot from bar to row 0, plus slots between rows)
+		totalSlots := intervals + 1
+		unitSpacing := availMiddle / totalSlots
+		if unitSpacing > 80 {
+			unitSpacing = 80
+		} else if unitSpacing < 26 {
+			unitSpacing = 26
+		}
+
+		rowHeight = unitSpacing
+		barToList := availMiddle - (intervals * rowHeight)
+		if barToList < 35 {
+			barToList = 35
+			if intervals > 0 {
+				rowHeight = (availMiddle - barToList) / intervals
 			}
 		}
-		rowHeight = calcRowH
-		listStartY = lastRowY - (intervals * rowHeight)
+		listStartY = barBottom + barToList
 	}
 
 	var sb strings.Builder
