@@ -15,3 +15,7 @@ dist/
 Thumbs.db
 .vscode/
 .idea/
+
+# Zig
+.zig-cache/
+zig-out/
