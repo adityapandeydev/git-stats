@@ -1,4 +1,4 @@
-# ⚡ GitStats - Dynamic GitHub Stats & Language Card System
+# GitStats - Dynamic GitHub Stats & Language Card System
 
 A fast, lightweight, and **100% serverless** GitHub language statistics card generator built with Go and powered by GitHub Actions.
 
@@ -10,7 +10,7 @@ Designed to overcome the limitations of existing stats cards with complete custo
 
 ---
 
-## ✨ Features
+## Features
 
 - **Break the 6-Language Limit**: Display **8, 10, 12, 16+** languages in an auto-adjusting multi-column layout.
 - **100% Serverless & Free**: Runs via GitHub Actions on a schedule and on every code push. Zero hosting costs, zero servers to maintain.
@@ -27,7 +27,7 @@ Designed to overcome the limitations of existing stats cards with complete custo
 
 ---
 
-## 🚀 Quick Setup for Your GitHub Profile (3 Minutes)
+## Quick Setup for Your GitHub Profile (3 Minutes)
 
 ### Step 1: Fork this Repository
 Click the **Fork** button at the top right of this repository to create your own copy (e.g. `yourname/git-stats`).
@@ -35,7 +35,7 @@ Click the **Fork** button at the top right of this repository to create your own
 ### Step 2: Add Your GitHub Secret Token (For Private Repos)
 To allow the Action to scan your private repositories and grant a 5,000 req/hr rate limit:
 1. Generate a Personal Access Token on GitHub at: [github.com/settings/tokens](https://github.com/settings/tokens) *(Classic token with `repo` scope)*.
-2. In your forked repository, go to: **Settings** ➔ **Secrets and variables** ➔ **Actions**.
+2. In your forked repository, go to: **Settings** -> **Secrets and variables** -> **Actions**.
 3. Click **New repository secret**:
    - Name: `GH_TOKEN`
    - Value: Paste your GitHub Personal Access Token.
@@ -45,7 +45,7 @@ To allow the Action to scan your private repositories and grant a 5,000 req/hr r
 ### Step 3: Run the Workflow
 1. Go to the **Actions** tab in your repository.
 2. Select **Generate GitHub Language Stats** in the left sidebar.
-3. Click **Run workflow** ➔ **Run workflow**.
+3. Click **Run workflow** -> **Run workflow**.
 
 The workflow will run, generate your customized `languages.svg`, and commit it directly to your `main` branch.
 
@@ -60,7 +60,7 @@ In your GitHub profile repository (`username/username/README.md`), add:
 
 ---
 
-## 📐 Perfect Profile Layout Alignment
+## Perfect Profile Layout Alignment
 
 If you use a **Streak Stats** card and an **Overall Stats** card stacked on the left, you can place this **Languages Card** on the right so both columns have matching heights and widths with zero awkward whitespace:
 
@@ -86,7 +86,7 @@ If you use a **Streak Stats** card and an **Overall Stats** card stacked on the 
 
 ---
 
-## ⚙️ Customizing Your Card
+## Customizing Your Card
 
 You can customize your card settings by editing the workflow file at `.github/workflows/generate-stats.yml`:
 
@@ -127,7 +127,7 @@ You can customize your card settings by editing the workflow file at `.github/wo
 
 ---
 
-## 🎨 Built-in Themes
+## Built-in Themes
 
 | Theme Name | Description |
 | :--- | :--- |
@@ -144,7 +144,7 @@ You can customize your card settings by editing the workflow file at `.github/wo
 
 ---
 
-## 💻 Optional: Running the Web Studio Locally
+## Optional: Running the Web Studio Locally
 
 If you'd like to use the visual customizer playground with live real-time previews:
 
@@ -158,3 +158,4 @@ go run ./cmd/server
 ```
 
 Open your browser to: **`http://localhost:8080/`**
+
