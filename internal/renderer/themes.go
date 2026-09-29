@@ -21,13 +21,13 @@ var Themes = map[string]Theme{
 	"tokyonight": {
 		Name:         "tokyonight",
 		Label:        "Tokyo Night",
-		BgColor:      "#151520",
-		TitleColor:   "#388bfd",
+		BgColor:      "#1a1b27",
+		TitleColor:   "#70a5fd",
 		TextColor:    "#c0caf5",
 		MutedColor:   "#7982a9",
-		BorderColor:  "#2a2a3c",
+		BorderColor:  "#1f2335",
 		BarBgColor:   "#212337",
-		AccentColor:  "#7aa2f7",
+		AccentColor:  "#70a5fd",
 		BorderRadius: 4.5,
 	},
 	"github_dark": {

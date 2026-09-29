@@ -99,20 +99,17 @@ func (c *Client) GetUserLanguages(ctx context.Context, username string, token st
 		stats, err = c.fetchGraphQL(ctx, username, authToken, excludedSet)
 		if err != nil {
 			if strings.Contains(err.Error(), "401") {
-				fmt.Printf("⚠️  GitHub GraphQL returned HTTP 401 Bad credentials for token %s. Falling back to public REST API...\n", MaskToken(authToken))
-			} else {
-				fmt.Printf("⚠️  GitHub GraphQL query failed: %v. Falling back to public REST API...\n", err)
+				return nil, fmt.Errorf("GitHub authentication failed (HTTP 401 Bad credentials) using token %s. Please update your GH_TOKEN repository secret in GitHub Settings -> Secrets and variables -> Actions", MaskToken(authToken))
 			}
+			fmt.Printf("⚠️  GitHub GraphQL query failed: %v. Falling back to REST API...\n", err)
 		}
 	}
 
-	// If GraphQL was skipped or failed, fallback to REST API
+	// If GraphQL was skipped or failed with non-auth error, fallback to REST API
 	if stats == nil {
 		restStats, restErr := c.fetchREST(ctx, username, authToken, excludedSet)
 		if restErr != nil && authToken != "" && strings.Contains(restErr.Error(), "401") {
-			// Token itself might be invalid, retry REST anonymously for public repos
-			fmt.Println("⚠️  Token rejected by REST API. Retrying unauthenticated query for public repositories...")
-			restStats, restErr = c.fetchREST(ctx, username, "", excludedSet)
+			return nil, fmt.Errorf("GitHub authentication failed (HTTP 401 Bad credentials) using token %s. Please update your GH_TOKEN repository secret in GitHub Settings -> Secrets and variables -> Actions", MaskToken(authToken))
 		}
 		if restErr == nil && restStats != nil && len(restStats.Languages) > 0 {
 			stats = restStats

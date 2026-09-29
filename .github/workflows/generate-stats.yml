@@ -38,7 +38,7 @@ jobs:
             --layout="standard" \
             --columns=2 \
             --card-width=400 \
-            --card-height=380 \
+            --card-height=368 \
             --border-radius=4.5 \
             --hide="jupyter notebook,qml,javascript,html,css,tex" \
             --output="languages.svg"
