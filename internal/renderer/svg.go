@@ -76,6 +76,11 @@ func RenderSVG(stats *github.UserStats, opts RenderOptions) string {
 // renderStandardLayout produces the segmented bar + multi-column grid layout (matching user's screenshot).
 func renderStandardLayout(langs []github.LanguageStat, opts RenderOptions) string {
 	width := opts.CardWidth
+	if width < 300 {
+		width = 300
+	} else if width > 1200 {
+		width = 1200
+	}
 	paddingX := 25
 	paddingY := 28
 
@@ -118,12 +123,19 @@ func renderStandardLayout(langs []github.LanguageStat, opts RenderOptions) strin
 
 	rowHeight := 26
 	listStartY := barY + barHeight + 22
-	height := listStartY + (rows * rowHeight) + 14
+	minRequiredHeight := listStartY + (rows * rowHeight) + 16
+	height := minRequiredHeight
 
 	if opts.CardHeight > 0 {
 		height = opts.CardHeight
-		// Keep title & progress bar at top as requested.
-		// Maintain a clean bottom margin (~30-35px) matching top margin.
+		if height < minRequiredHeight {
+			height = minRequiredHeight
+		}
+		if height > 1500 {
+			height = 1500
+		}
+
+		// Maintain clean top (28px) and bottom (~30-35px) margins
 		targetBottomMargin := paddingY + 7
 		lastRowY := height - targetBottomMargin
 
