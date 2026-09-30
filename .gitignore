@@ -19,3 +19,6 @@ Thumbs.db
 # Zig
 .zig-cache/
 zig-out/
+
+Todo.txt
+*.svg

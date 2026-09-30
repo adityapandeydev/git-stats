@@ -1,4 +1,4 @@
-name: Generate GitHub Language Stats
+name: Generate GitHub Profile Stats
 
 on:
   push:
@@ -6,7 +6,7 @@ on:
       - main
       - master
   schedule:
-    # Runs every 4 hours (6 times a day) to automatically aggregate private repo commits
+    # Runs every 4 hours (6 times a day) to automatically aggregate private repo commits and streak
     - cron: '0 */4 * * *'
   workflow_dispatch:
 
@@ -25,12 +25,16 @@ jobs:
         with:
           version: "0.16.0"
 
-      - name: Generate Language Stats SVG Card
+      - name: Build and Generate Profile Stats SVG Cards
         env:
           # Uses GH_TOKEN repository secret if provided
           GH_TOKEN: ${{ secrets.GH_TOKEN }}
         run: |
-          zig build -Doptimize=ReleaseFast run -- --generate \
+          # 1. Build release binary
+          zig build -Doptimize=ReleaseFast
+
+          # 2. Generate Languages Card
+          ./zig-out/bin/git_stats --generate \
             --username="${{ github.repository_owner }}" \
             --langs-count=12 \
             --theme="tokyonight" \
@@ -42,9 +46,28 @@ jobs:
             --hide="jupyter notebook,qml,javascript,html,css,tex" \
             --output="languages.svg"
 
-      - name: Commit and Push Updated Card
+          # 3. Generate Reimagined Streak Card (with 14-day momentum sparkline)
+          ./zig-out/bin/git_stats --streak \
+            --username="${{ github.repository_owner }}" \
+            --theme="tokyonight" \
+            --card-width=424 \
+            --card-height=180 \
+            --border-radius=4.5 \
+            --output="streak.svg"
+
+          # 4. Generate Developer Stats Card (Rating Ring + 2x2 Matrix)
+          ./zig-out/bin/git_stats --stats \
+            --username="${{ github.repository_owner }}" \
+            --theme="tokyonight" \
+            --timeframe="all-time" \
+            --card-width=424 \
+            --card-height=180 \
+            --border-radius=4.5 \
+            --output="stats.svg"
+
+      - name: Commit and Push Updated Cards
         run: |
           git config --local user.email "github-actions[bot]@users.noreply.github.com"
           git config --local user.name "github-actions[bot]"
-          git add languages.svg
-          git diff --staged --quiet || (git commit -m "chore(stats): update language statistics card [skip ci]" && git push)
+          git add -f languages.svg streak.svg stats.svg
+          git diff --staged --quiet || (git commit -m "chore(stats): update profile statistics cards [skip ci]" && git push)
