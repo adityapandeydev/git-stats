@@ -5,9 +5,13 @@ const colors = git_stats.colors;
 const github_client = git_stats.client;
 const themes = git_stats.themes;
 const svg_renderer = git_stats.svg;
+const streak_renderer = git_stats.streak;
+const stats_renderer = git_stats.stats;
 
 const CliConfig = struct {
     generate: bool = false,
+    card: []const u8 = "languages", // "languages", "streak", or "stats"
+    timeframe: []const u8 = "all-time", // "all-time" or "this-year"
     username: ?[]const u8 = null,
     output: []const u8 = "languages.svg",
     langs_count: usize = 8,
@@ -24,6 +28,7 @@ const CliConfig = struct {
     hide_title: bool = false,
     hide_border: bool = false,
     animate: bool = true,
+    show_sparkline: bool = true,
     title_color: ?[]const u8 = null,
     text_color: ?[]const u8 = null,
     bg_color: ?[]const u8 = null,
@@ -58,6 +63,20 @@ fn parseCliArgs(args: []const []const u8) CliConfig {
 
         if (std.mem.eql(u8, arg, "--generate")) {
             cfg.generate = true;
+        } else if (std.mem.startsWith(u8, arg, "--card=")) {
+            cfg.card = arg["--card=".len..];
+        } else if (std.mem.eql(u8, arg, "--card") and i + 1 < args.len) {
+            i += 1;
+            cfg.card = args[i];
+        } else if (std.mem.eql(u8, arg, "--streak")) {
+            cfg.card = "streak";
+        } else if (std.mem.eql(u8, arg, "--stats")) {
+            cfg.card = "stats";
+        } else if (std.mem.startsWith(u8, arg, "--timeframe=")) {
+            cfg.timeframe = arg["--timeframe=".len..];
+        } else if (std.mem.eql(u8, arg, "--timeframe") and i + 1 < args.len) {
+            i += 1;
+            cfg.timeframe = args[i];
         } else if (std.mem.startsWith(u8, arg, "--username=")) {
             cfg.username = arg["--username=".len..];
         } else if (std.mem.eql(u8, arg, "--username") and i + 1 < args.len) {
@@ -139,6 +158,10 @@ fn parseCliArgs(args: []const []const u8) CliConfig {
             cfg.bg_color = arg["--bg-color=".len..];
         } else if (std.mem.startsWith(u8, arg, "--border-color=")) {
             cfg.border_color = arg["--border-color=".len..];
+        } else if (std.mem.eql(u8, arg, "--hide-sparkline") or std.mem.eql(u8, arg, "--show-sparkline=false")) {
+            cfg.show_sparkline = false;
+        } else if (std.mem.eql(u8, arg, "--show-sparkline=true") or std.mem.eql(u8, arg, "--show-sparkline")) {
+            cfg.show_sparkline = true;
         }
     }
 
@@ -214,6 +237,128 @@ pub fn main(init: std.process.Init) !void {
 
     var client = github_client.Client.init(arena, io, auth_token);
 
+    // Apply theme
+    const base_theme = themes.getTheme(cli.theme);
+    const active_theme = themes.applyThemeOverrides(
+        base_theme,
+        cli.bg_color,
+        cli.title_color,
+        cli.text_color,
+        cli.border_color,
+        null,
+        cli.border_radius,
+    );
+
+    // Check if generating streak card
+    if (std.mem.eql(u8, cli.card, "streak")) {
+        std.debug.print("⚡ Fetching GitHub streak data for user '{s}'...\n", .{username});
+        const streak_stats = client.getStreakStats(username, auth_token) catch |err| {
+            std.debug.print("❌ Error fetching streak stats: {}\n", .{err});
+            return err;
+        };
+
+        std.debug.print("🔥 Current Streak: {d} days ({s} - {s})\n", .{
+            streak_stats.current_streak,
+            streak_stats.current_streak_start,
+            streak_stats.current_streak_end,
+        });
+        std.debug.print("🏆 Longest Streak: {d} days ({s} - {s})\n", .{
+            streak_stats.longest_streak,
+            streak_stats.longest_streak_start,
+            streak_stats.longest_streak_end,
+        });
+        std.debug.print("📊 Total Contributions: {d} ({s} - {s})\n", .{
+            streak_stats.total_contributions,
+            streak_stats.first_contribution_date,
+            streak_stats.latest_contribution_date,
+        });
+
+        const streak_opts = streak_renderer.StreakRenderOptions{
+            .theme = active_theme,
+            .card_width = if (cli.card_width != 400) cli.card_width else 424,
+            .card_height = if (cli.card_height != 368) cli.card_height else 180,
+            .border_radius = cli.border_radius,
+            .hide_border = cli.hide_border,
+            .animate = cli.animate,
+            .show_sparkline = cli.show_sparkline,
+            .mode = cli.layout,
+        };
+
+        const svg_content = try streak_renderer.renderStreakSVG(arena, streak_stats, streak_opts);
+
+        const out_file = if (std.mem.eql(u8, cli.output, "languages.svg")) "streak.svg" else cli.output;
+
+        if (std.fs.path.dirname(out_file)) |dir| {
+            if (dir.len > 0 and !std.mem.eql(u8, dir, ".")) {
+                cwd.createDirPath(io, dir) catch {};
+            }
+        }
+
+        try cwd.writeFile(io, .{ .sub_path = out_file, .data = svg_content });
+
+        std.debug.print("✅ Successfully generated streak card '{s}' for '{s}' ({d}x{d} px)\n", .{
+            out_file,
+            username,
+            streak_opts.card_width,
+            streak_opts.card_height,
+        });
+        return;
+    }
+
+    // Check if generating developer stats card
+    if (std.mem.eql(u8, cli.card, "stats")) {
+        std.debug.print("⚡ Fetching GitHub developer stats ({s}) for user '{s}'...\n", .{ cli.timeframe, username });
+        const overall_stats = client.getOverallStats(username, auth_token, cli.timeframe) catch |err| {
+            std.debug.print("❌ Error fetching developer stats: {}\n", .{err});
+            return err;
+        };
+
+        const rating = overall_stats.rating;
+        std.debug.print("🏆 Developer Rating: {s} ({d}/1000) - {s} [{s}]\n", .{
+            rating.tier,
+            rating.score,
+            rating.title,
+            rating.percentile,
+        });
+        std.debug.print("📦 Commits: {d} | Merged PRs: {d}/{d} | Stars: {d} | Repos: {d}\n", .{
+            overall_stats.total_commits,
+            overall_stats.merged_prs,
+            overall_stats.total_prs,
+            overall_stats.total_stars,
+            overall_stats.contributed_repos,
+        });
+
+        const stats_opts = stats_renderer.StatsRenderOptions{
+            .theme = active_theme,
+            .card_width = if (cli.card_width != 400) cli.card_width else 424,
+            .card_height = if (cli.card_height != 368) cli.card_height else 180,
+            .border_radius = cli.border_radius,
+            .hide_border = cli.hide_border,
+            .hide_title = cli.hide_title,
+            .animate = cli.animate,
+        };
+
+        const svg_content = try stats_renderer.renderStatsSVG(arena, overall_stats, stats_opts);
+
+        const out_file = if (std.mem.eql(u8, cli.output, "languages.svg")) "stats.svg" else cli.output;
+
+        if (std.fs.path.dirname(out_file)) |dir| {
+            if (dir.len > 0 and !std.mem.eql(u8, dir, ".")) {
+                cwd.createDirPath(io, dir) catch {};
+            }
+        }
+
+        try cwd.writeFile(io, .{ .sub_path = out_file, .data = svg_content });
+
+        std.debug.print("✅ Successfully generated developer stats card '{s}' for '{s}' ({d}x{d} px)\n", .{
+            out_file,
+            username,
+            stats_opts.card_width,
+            stats_opts.card_height,
+        });
+        return;
+    }
+
     const stats = client.getUserLanguages(username, auth_token, excluded_repos.items) catch |err| {
         std.debug.print("❌ Error fetching stats: {}\n", .{err});
         return err;
@@ -263,18 +408,6 @@ pub fn main(init: std.process.Init) !void {
         .total_bytes = stats.total_bytes,
         .languages = visible_langs.items,
     };
-
-    // Apply theme
-    const base_theme = themes.getTheme(cli.theme);
-    const active_theme = themes.applyThemeOverrides(
-        base_theme,
-        cli.bg_color,
-        cli.title_color,
-        cli.text_color,
-        cli.border_color,
-        null,
-        cli.border_radius,
-    );
 
     const render_opts = svg_renderer.RenderOptions{
         .theme = active_theme,
