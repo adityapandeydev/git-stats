@@ -131,8 +131,8 @@ pub fn renderStatsSVG(
         \\      50% {{ transform: scale(1.12); opacity: 1.0; }}
         \\    }}
         \\    .stat-heading {{ font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; font-weight: 700; }}
-        \\    .matrix-val {{ font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; font-weight: 800; }}
-        \\    .matrix-lbl {{ font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; font-weight: 600; }}
+        \\    .matrix-val {{ font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; font-weight: 800; font-size: 18.5px; fill: #c0caf5; }}
+        \\    .matrix-lbl {{ font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; font-weight: 700; font-size: 8.5px; letter-spacing: 0.7px; }}
         \\    .matrix-sub {{ font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; font-weight: 500; }}
         \\    .tier-badge-txt {{ font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; font-weight: 900; }}
         \\    .tier-sub-txt {{ font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; font-weight: 700; }}
@@ -159,9 +159,9 @@ pub fn renderStatsSVG(
     if (!opts.hide_title) {
         try w.print(
             \\  <!-- Header -->
-            \\  <text x="24" y="{d:.1}" class="stat-heading" font-size="12.5" letter-spacing="1.2" fill="{s}">DEVELOPER STATS</text>
-            \\  <circle cx="180" cy="{d:.1}" r="2.5" fill="{s}"/>
-            \\  <text x="188" y="{d:.1}" class="matrix-sub" font-size="9" letter-spacing="0.5" fill="#787c99">{s}</text>
+            \\  <text x="22" y="{d:.1}" class="stat-heading" font-size="12.5" letter-spacing="1.2" fill="{s}">DEVELOPER STATS</text>
+            \\  <circle cx="178" cy="{d:.1}" r="2.5" fill="{s}"/>
+            \\  <text x="186" y="{d:.1}" class="matrix-sub" font-size="9" letter-spacing="0.5" fill="#787c99">{s}</text>
             \\
         , .{
             header_y,
@@ -175,22 +175,25 @@ pub fn renderStatsSVG(
 
     // 2x2 Glass Matrix Layout
     const m_start_y: f64 = if (opts.hide_title) 22.0 else 38.0;
-    const col1_x: f64 = 24.0;
-    const col2_x: f64 = 136.0;
-    const tile_w: f64 = 104.0;
+    const col1_x: f64 = 22.0;
+    const col2_x: f64 = 138.0;
+    const tile_w: f64 = 108.0;
     const tile_h: f64 = if (opts.hide_title) 62.0 else 56.0;
     const row2_y: f64 = m_start_y + tile_h + 8.0;
+    const lbl_y: f64 = if (opts.hide_title) 23.0 else 21.0;
+    const badge_cy: f64 = if (opts.hide_title) 19.0 else 17.0;
+    const val_y: f64 = if (opts.hide_title) 50.0 else 45.5;
 
     // Tile 1: Total Commits
     try w.print(
         \\  <!-- Tile 1: Commits -->
         \\  <g transform="translate({d:.1}, {d:.1})">
-        \\    <rect width="{d:.1}" height="{d:.1}" rx="6" fill="#1f2335" fill-opacity="0.45" stroke="#292e42" stroke-width="0.8"/>
-        \\    <!-- Commit Node Icon -->
-        \\    <circle cx="15" cy="18" r="4.5" fill="none" stroke="{s}" stroke-width="1.8"/>
-        \\    <circle cx="15" cy="18" r="2" fill="{s}"/>
-        \\    <text x="15" y="{d:.1}" class="matrix-val" font-size="16.5" fill="#c0caf5">{s}</text>
-        \\    <text x="15" y="{d:.1}" class="matrix-lbl" font-size="9" letter-spacing="0.6" fill="#7aa2f7">COMMITS</text>
+        \\    <rect width="{d:.1}" height="{d:.1}" rx="6" fill="#1f2335" fill-opacity="0.5" stroke="#292e42" stroke-width="0.8"/>
+        \\    <text x="13" y="{d:.1}" class="matrix-lbl" fill="#7aa2f7">COMMITS</text>
+        \\    <circle cx="92" cy="{d:.1}" r="10" fill="#7aa2f7" fill-opacity="0.12"/>
+        \\    <circle cx="92" cy="{d:.1}" r="4.2" fill="none" stroke="{s}" stroke-width="1.6"/>
+        \\    <circle cx="92" cy="{d:.1}" r="1.8" fill="{s}"/>
+        \\    <text x="13" y="{d:.1}" class="matrix-val">{s}</text>
         \\  </g>
         \\
     , .{
@@ -198,25 +201,30 @@ pub fn renderStatsSVG(
         m_start_y,
         tile_w,
         tile_h,
+        lbl_y,
+        badge_cy,
+        badge_cy,
         opts.theme.title_color,
+        badge_cy,
         opts.theme.title_color,
-        tile_h - 18.0,
+        val_y,
         commits_str,
-        tile_h - 6.0,
     });
 
     // Tile 2: Merged PRs
     try w.print(
         \\  <!-- Tile 2: Merged PRs -->
         \\  <g transform="translate({d:.1}, {d:.1})">
-        \\    <rect width="{d:.1}" height="{d:.1}" rx="6" fill="#1f2335" fill-opacity="0.45" stroke="#292e42" stroke-width="0.8"/>
-        \\    <!-- PR Icon -->
-        \\    <path d="M 12 12 L 12 24 M 18 12 L 18 17 C 18 20 12 20 12 20" fill="none" stroke="{s}" stroke-width="1.6" stroke-linecap="round"/>
-        \\    <circle cx="12" cy="12" r="2.2" fill="{s}"/>
-        \\    <circle cx="18" cy="12" r="2.2" fill="{s}"/>
-        \\    <circle cx="12" cy="24" r="2.2" fill="{s}"/>
-        \\    <text x="15" y="{d:.1}" class="matrix-val" font-size="16.5" fill="#c0caf5">{s}</text>
-        \\    <text x="15" y="{d:.1}" class="matrix-lbl" font-size="9" letter-spacing="0.6" fill="#bb9af7">MERGED PRS</text>
+        \\    <rect width="{d:.1}" height="{d:.1}" rx="6" fill="#1f2335" fill-opacity="0.5" stroke="#292e42" stroke-width="0.8"/>
+        \\    <text x="13" y="{d:.1}" class="matrix-lbl" fill="#bb9af7">MERGED PRS</text>
+        \\    <circle cx="92" cy="{d:.1}" r="10" fill="#bb9af7" fill-opacity="0.12"/>
+        \\    <g transform="translate(92, {d:.1})">
+        \\      <path d="M -3 -5 L -3 5 M 3 -5 L 3 -1 C 3 2 -3 2 -3 2" fill="none" stroke="#bb9af7" stroke-width="1.4" stroke-linecap="round"/>
+        \\      <circle cx="-3" cy="-5" r="1.6" fill="#bb9af7"/>
+        \\      <circle cx="3" cy="-5" r="1.6" fill="#bb9af7"/>
+        \\      <circle cx="-3" cy="5" r="1.6" fill="#bb9af7"/>
+        \\    </g>
+        \\    <text x="13" y="{d:.1}" class="matrix-val">{s}</text>
         \\  </g>
         \\
     , .{
@@ -224,24 +232,24 @@ pub fn renderStatsSVG(
         m_start_y,
         tile_w,
         tile_h,
-        rating.glow_color,
-        rating.glow_color,
-        rating.glow_color,
-        rating.glow_color,
-        tile_h - 18.0,
+        lbl_y,
+        badge_cy,
+        badge_cy,
+        val_y,
         prs_str,
-        tile_h - 6.0,
     });
 
     // Tile 3: Total Stars
     try w.print(
         \\  <!-- Tile 3: Stars Earned -->
         \\  <g transform="translate({d:.1}, {d:.1})">
-        \\    <rect width="{d:.1}" height="{d:.1}" rx="6" fill="#1f2335" fill-opacity="0.45" stroke="#292e42" stroke-width="0.8"/>
-        \\    <!-- Star Icon -->
-        \\    <path d="M 15 11 L 16.5 14.5 L 20 14.8 L 17.4 17.2 L 18.2 21 L 15 19.1 L 11.8 21 L 12.6 17.2 L 10 14.8 L 13.5 14.5 Z" fill="#e0af68"/>
-        \\    <text x="15" y="{d:.1}" class="matrix-val" font-size="16.5" fill="#c0caf5">{s}</text>
-        \\    <text x="15" y="{d:.1}" class="matrix-lbl" font-size="9" letter-spacing="0.6" fill="#e0af68">TOTAL STARS</text>
+        \\    <rect width="{d:.1}" height="{d:.1}" rx="6" fill="#1f2335" fill-opacity="0.5" stroke="#292e42" stroke-width="0.8"/>
+        \\    <text x="13" y="{d:.1}" class="matrix-lbl" fill="#e0af68">TOTAL STARS</text>
+        \\    <circle cx="92" cy="{d:.1}" r="10" fill="#e0af68" fill-opacity="0.12"/>
+        \\    <g transform="translate(92, {d:.1})">
+        \\      <path d="M 0 -5 L 1.3 -1.5 L 5 -1.2 L 2.3 1.2 L 3 5 L 0 3.1 L -3 5 L -2.3 1.2 L -5 -1.2 L -1.3 -1.5 Z" fill="#e0af68"/>
+        \\    </g>
+        \\    <text x="13" y="{d:.1}" class="matrix-val">{s}</text>
         \\  </g>
         \\
     , .{
@@ -249,20 +257,24 @@ pub fn renderStatsSVG(
         row2_y,
         tile_w,
         tile_h,
-        tile_h - 18.0,
+        lbl_y,
+        badge_cy,
+        badge_cy,
+        val_y,
         stars_str,
-        tile_h - 6.0,
     });
 
     // Tile 4: Contributed Repos
     try w.print(
         \\  <!-- Tile 4: Repositories -->
         \\  <g transform="translate({d:.1}, {d:.1})">
-        \\    <rect width="{d:.1}" height="{d:.1}" rx="6" fill="#1f2335" fill-opacity="0.45" stroke="#292e42" stroke-width="0.8"/>
-        \\    <!-- Repo Book Icon -->
-        \\    <path d="M 11 12 C 13 11 16 11 16 13 L 16 23 C 16 21 13 21 11 22 Z M 21 12 C 19 11 16 11 16 13 L 16 23 C 16 21 19 21 21 22 Z" fill="none" stroke="#73daca" stroke-width="1.5" stroke-linejoin="round"/>
-        \\    <text x="15" y="{d:.1}" class="matrix-val" font-size="16.5" fill="#c0caf5">{s}</text>
-        \\    <text x="15" y="{d:.1}" class="matrix-lbl" font-size="9" letter-spacing="0.6" fill="#73daca">REPOSITORIES</text>
+        \\    <rect width="{d:.1}" height="{d:.1}" rx="6" fill="#1f2335" fill-opacity="0.5" stroke="#292e42" stroke-width="0.8"/>
+        \\    <text x="13" y="{d:.1}" class="matrix-lbl" letter-spacing="0.6" fill="#73daca">REPOSITORIES</text>
+        \\    <circle cx="92" cy="{d:.1}" r="10" fill="#73daca" fill-opacity="0.12"/>
+        \\    <g transform="translate(92, {d:.1})">
+        \\      <path d="M -4.5 -4.5 C -2.5 -5.5 0 -5.5 0 -3.5 L 0 4.5 C 0 2.5 -2.5 2.5 -4.5 3.5 Z M 4.5 -4.5 C 2.5 -5.5 0 -5.5 0 -3.5 L 0 4.5 C 0 2.5 2.5 2.5 4.5 3.5 Z" fill="none" stroke="#73daca" stroke-width="1.3" stroke-linejoin="round"/>
+        \\    </g>
+        \\    <text x="13" y="{d:.1}" class="matrix-val">{s}</text>
         \\  </g>
         \\
     , .{
@@ -270,9 +282,11 @@ pub fn renderStatsSVG(
         row2_y,
         tile_w,
         tile_h,
-        tile_h - 18.0,
+        lbl_y,
+        badge_cy,
+        badge_cy,
+        val_y,
         repos_str,
-        tile_h - 6.0,
     });
 
     // Vertical Divider Line
