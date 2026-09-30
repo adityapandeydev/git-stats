@@ -5,7 +5,7 @@ const themes = @import("themes.zig");
 pub const RenderOptions = struct {
     theme: themes.Theme = themes.tokyonight,
     card_width: u32 = 400,
-    card_height: u32 = 368,
+    card_height: u32 = 364,
     langs_count: usize = 8,
     columns: usize = 2,
     layout: []const u8 = "standard",
@@ -169,7 +169,6 @@ fn renderStandardLayout(allocator: std.mem.Allocator, langs: []const models.Lang
     // Styles
     try stream.writer.print(
         \\<style>
-        \\        .card-bg {{ fill: {s}; stroke: {s}; stroke-width: 1px; rx: {d:.1}px; }}
         \\        .card-title {{ font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; font-size: 16px; font-weight: 600; fill: {s}; }}
         \\        .lang-name {{ font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; font-size: 12.5px; font-weight: 500; fill: {s}; }}
         \\        .lang-pct {{ font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; font-size: 12px; font-weight: 400; fill: {s}; }}
@@ -177,9 +176,6 @@ fn renderStandardLayout(allocator: std.mem.Allocator, langs: []const models.Lang
         \\        .bar-segment {{ transition: all 0.3s ease; }}
         \\    
     , .{
-        opts.theme.bg_color,
-        opts.theme.border_color,
-        opts.border_radius,
         opts.theme.title_color,
         opts.theme.text_color,
         opts.theme.muted_color,
@@ -207,13 +203,13 @@ fn renderStandardLayout(allocator: std.mem.Allocator, langs: []const models.Lang
     // Background
     var stroke_buf: [128]u8 = undefined;
     const stroke_attr = if (opts.hide_border)
-        "stroke=\"transparent\""
+        "stroke=\"none\""
     else
-        try std.fmt.bufPrint(&stroke_buf, "stroke=\"{s}\"", .{opts.theme.border_color});
+        try std.fmt.bufPrint(&stroke_buf, "stroke=\"{s}\" stroke-width=\"1\"", .{opts.theme.border_color});
 
     try stream.writer.print(
-        \\<rect class="card-bg" x="0.5" y="0.5" width="{d}" height="{d}" rx="{d:.1}" fill="{s}" {s}/>
-    , .{ width - 1, height - 1, opts.border_radius, opts.theme.bg_color, stroke_attr });
+        \\<rect width="{d}" height="{d}" rx="{d:.1}" fill="{s}" {s}/>
+    , .{ width, height, opts.border_radius, opts.theme.bg_color, stroke_attr });
 
     // Title
     if (!opts.hide_title) {
@@ -334,7 +330,6 @@ fn renderDonutLayout(allocator: std.mem.Allocator, langs: []const models.Languag
 
     try stream.writer.print(
         \\<style>
-        \\        .card-bg {{ fill: {s}; stroke: {s}; stroke-width: 1px; rx: {d:.1}px; }}
         \\        .card-title {{ font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; font-size: 16px; font-weight: 600; fill: {s}; }}
         \\        .lang-name {{ font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; font-size: 12px; font-weight: 500; fill: {s}; }}
         \\        .lang-pct {{ font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; font-size: 11.5px; font-weight: 400; fill: {s}; }}
@@ -342,9 +337,6 @@ fn renderDonutLayout(allocator: std.mem.Allocator, langs: []const models.Languag
         \\        .donut-segment {{ fill: none; stroke-width: {d:.1}; transition: stroke-dasharray 0.5s ease; }}
         \\    
     , .{
-        opts.theme.bg_color,
-        opts.theme.border_color,
-        opts.border_radius,
         opts.theme.title_color,
         opts.theme.text_color,
         opts.theme.muted_color,
@@ -368,13 +360,13 @@ fn renderDonutLayout(allocator: std.mem.Allocator, langs: []const models.Languag
 
     var stroke_buf: [128]u8 = undefined;
     const stroke_attr = if (opts.hide_border)
-        "stroke=\"transparent\""
+        "stroke=\"none\""
     else
-        try std.fmt.bufPrint(&stroke_buf, "stroke=\"{s}\"", .{opts.theme.border_color});
+        try std.fmt.bufPrint(&stroke_buf, "stroke=\"{s}\" stroke-width=\"1\"", .{opts.theme.border_color});
 
     try stream.writer.print(
-        \\<rect class="card-bg" x="0.5" y="0.5" width="{d}" height="{d}" rx="{d:.1}" fill="{s}" {s}/>
-    , .{ width - 1, height - 1, opts.border_radius, opts.theme.bg_color, stroke_attr });
+        \\<rect width="{d}" height="{d}" rx="{d:.1}" fill="{s}" {s}/>
+    , .{ width, height, opts.border_radius, opts.theme.bg_color, stroke_attr });
 
     if (!opts.hide_title) {
         try stream.writer.print(
@@ -483,13 +475,21 @@ fn renderCompactLayout(allocator: std.mem.Allocator, langs: []const models.Langu
     try stream.writer.print(
         \\<svg width="{d}" height="{d}" viewBox="0 0 {d} {d}" fill="none" xmlns="http://www.w3.org/2000/svg">
         \\<style>
-        \\        .card-bg {{ fill: {s}; stroke: {s}; stroke-width: 1px; rx: {d:.1}px; }}
         \\        .card-title {{ font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; font-size: 14px; font-weight: 600; fill: {s}; }}
         \\        .lang-name {{ font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; font-size: 11px; font-weight: 500; fill: {s}; }}
         \\        .bar-bg {{ fill: {s}; rx: 4px; }}
         \\    </style>
-        \\<rect class="card-bg" x="0.5" y="0.5" width="{d}" height="{d}" rx="{d:.1}"/>
-    , .{ width, height, width, height, opts.theme.bg_color, opts.theme.border_color, opts.border_radius, opts.theme.title_color, opts.theme.text_color, opts.theme.bar_bg_color, width - 1, height - 1, opts.border_radius });
+    , .{ width, height, width, height, opts.theme.title_color, opts.theme.text_color, opts.theme.bar_bg_color });
+
+    var stroke_buf: [128]u8 = undefined;
+    const stroke_attr = if (opts.hide_border)
+        "stroke=\"none\""
+    else
+        try std.fmt.bufPrint(&stroke_buf, "stroke=\"{s}\" stroke-width=\"1\"", .{opts.theme.border_color});
+
+    try stream.writer.print(
+        \\<rect width="{d}" height="{d}" rx="{d:.1}" fill="{s}" {s}/>
+    , .{ width, height, opts.border_radius, opts.theme.bg_color, stroke_attr });
 
     if (!opts.hide_title) {
         try stream.writer.print(
