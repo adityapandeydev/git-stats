@@ -44,7 +44,7 @@ jobs:
             --card-height=364 \
             --border-radius=4.5 \
             --hide="jupyter notebook,qml,javascript,html,css,tex" \
-            --output="languages.svg"
+            --output="generated/languages.svg"
 
           # 3. Generate Reimagined Streak Card (with 14-day momentum sparkline)
           ./zig-out/bin/git_stats --streak \
@@ -53,7 +53,7 @@ jobs:
             --card-width=424 \
             --card-height=180 \
             --border-radius=4.5 \
-            --output="streak.svg"
+            --output="generated/streak.svg"
 
           # 4. Generate Developer Stats Card (Rating Ring + 2x2 Matrix)
           ./zig-out/bin/git_stats --stats \
@@ -63,11 +63,11 @@ jobs:
             --card-width=424 \
             --card-height=180 \
             --border-radius=4.5 \
-            --output="stats.svg"
+            --output="generated/stats.svg"
 
       - name: Commit and Push Updated Cards
         run: |
           git config --local user.email "github-actions[bot]@users.noreply.github.com"
           git config --local user.name "github-actions[bot]"
-          git add -f languages.svg streak.svg stats.svg
+          git add -f generated/*.svg
           git diff --staged --quiet || (git commit -m "chore(stats): update profile statistics cards [skip ci]" && git push)
