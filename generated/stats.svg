@@ -52,7 +52,7 @@
     <circle cx="92" cy="17.0" r="10" fill="#7aa2f7" fill-opacity="0.12"/>
     <circle cx="92" cy="17.0" r="4.2" fill="none" stroke="#70a5fd" stroke-width="1.6"/>
     <circle cx="92" cy="17.0" r="1.8" fill="#70a5fd"/>
-    <text x="13" y="45.5" class="matrix-val">1,974</text>
+    <text x="13" y="45.5" class="matrix-val">1,976</text>
   </g>
   <!-- Tile 2: Merged PRs -->
   <g transform="translate(138.0, 38.0)">

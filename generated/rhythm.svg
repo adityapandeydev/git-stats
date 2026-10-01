@@ -144,7 +144,7 @@
     <rect x="0.0" y="48.0" width="8.0" height="8.5" rx="2" fill="#2e3c64"/>
     <rect x="10.0" y="48.0" width="8.0" height="8.5" rx="2" fill="#2e3c64"/>
     <rect x="20.0" y="48.0" width="8.0" height="8.5" rx="2" fill="#1f2335" fill-opacity="0.35"/>
-    <rect x="30.0" y="48.0" width="8.0" height="8.5" rx="2" fill="#2e3c64"/>
+    <rect x="30.0" y="48.0" width="8.0" height="8.5" rx="2" fill="#3d59a1"/>
     <rect x="40.0" y="48.0" width="8.0" height="8.5" rx="2" fill="#2e3c64"/>
     <rect x="50.0" y="48.0" width="8.0" height="8.5" rx="2" fill="#2e3c64"/>
     <rect x="60.0" y="48.0" width="8.0" height="8.5" rx="2" fill="#1f2335" fill-opacity="0.35"/>
@@ -248,6 +248,6 @@
     </g>
 
     <!-- Analyzed Commits Footnote -->
-    <text x="59" y="156" text-anchor="middle" class="rhythm-count-txt">654 Commits Mapped</text>
+    <text x="59" y="156" text-anchor="middle" class="rhythm-count-txt">656 Commits Mapped</text>
   </g>
 </svg>
