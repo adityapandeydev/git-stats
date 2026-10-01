@@ -1,4 +1,4 @@
-# ⚡ GitStats
+# GitStats
 
 > Fast, lightweight, and **100% serverless** GitHub profile card suite built in native **Zig 0.16.0** and automated via GitHub Actions.
 
@@ -10,7 +10,7 @@ GitStats delivers fully customizable, automated vector SVG cards for your GitHub
 
 ---
 
-## 🖼️ Cards & Layouts
+## Cards & Layouts
 
 ### 1. Most Used Languages
 Display top languages in multi-column grids or circular charts with language exclusion and automatic percentage recalculation.
@@ -52,7 +52,7 @@ A comprehensive engineering metrics card featuring a radial rating ring, percent
 ---
 
 ### 4. Circadian Commit Rhythm Matrix
-A 24-hour × 7-day commit punchcard heatmap ($168$ cells) featuring peak flow hour glow, developer persona badges (`⚡ Day Architect`, `🌙 Night Owl`, `🌅 Early Bird`, `⚔️ Weekend Warrior`), a 4-hour peak flow window, and daytime vs. nighttime split tracking.
+A 24-hour × 7-day commit punchcard heatmap (168 cells) featuring peak flow hour glow, developer persona badges (Day Architect, Night Owl, Early Bird, Weekend Warrior), a 4-hour peak flow window, and daytime vs. nighttime split tracking.
 
 <div align="center">
   <img src="preview/rhythm/standard.svg" width="424" alt="Circadian Rhythm Card" />
@@ -60,7 +60,7 @@ A 24-hour × 7-day commit punchcard heatmap ($168$ cells) featuring peak flow ho
 
 ---
 
-## 🚀 Quick Setup
+## Quick Setup
 
 ### 1. Fork this Repository
 Click **Fork** at the top right to create your own copy.
@@ -77,7 +77,7 @@ To allow the workflow to scan private repositories and grant high API rate limit
 1. Go to the **Actions** tab in your repository.
 2. Select **Generate GitHub Profile Stats** and click **Run workflow**.
 
-The workflow runs on a schedule (every 4 hours) and on every push, generating your cards directly into the `generated/` directory.
+The workflow runs on a schedule (every 4 hours) and on workflow updates, generating your cards directly into the `generated/` directory.
 
 ### 4. Embed into Your Profile README
 Add the cards to your personal profile repository (`username/username/README.md`):
@@ -98,18 +98,18 @@ Add the cards to your personal profile repository (`username/username/README.md`
 
 ---
 
-## 📂 Repository Structure
+## Repository Structure
 
 | Directory | Description |
 | :--- | :--- |
 | **`generated/`** | Destination directory where the automated GitHub Actions workflow outputs your live profile SVG cards. |
 | **`preview/`** | Visual showcase gallery demonstrating all card types, dimensions, and layout variations. |
 | **`src/`** | Native Zig 0.16.0 engine (GraphQL API client, Linguist color mapping, SVG renderers). |
-| **`.github/workflows/`** | Automated GitHub Actions workflow (`generate-stats.yml`) running on a cron schedule and repository push. |
+| **`.github/workflows/`** | Automated GitHub Actions workflow (`generate-stats.yml`) running on a cron schedule and workflow updates. |
 
 ---
 
-## 🛠️ CLI Reference & Local Usage
+## CLI Reference & Local Usage
 
 The engine is built in native **Zig 0.16.0** with zero external C dependencies.
 
@@ -173,7 +173,7 @@ zig build -Doptimize=ReleaseFast
 
 ---
 
-## 🎨 Built-in Themes
+## Built-in Themes
 
 | Theme Name | Description |
 | :--- | :--- |
@@ -190,6 +190,6 @@ zig build -Doptimize=ReleaseFast
 
 ---
 
-## 📄 License
+## License
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
