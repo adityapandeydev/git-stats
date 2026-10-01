@@ -46,7 +46,7 @@ jobs:
             --hide="jupyter notebook,qml,javascript,html,css,tex" \
             --output="generated/languages.svg"
 
-          # 3. Generate Reimagined Streak Card (with 14-day momentum sparkline)
+          # 3. Generate Streak Card (with 14-day momentum sparkline)
           ./zig-out/bin/git_stats --streak \
             --username="${{ github.repository_owner }}" \
             --theme="tokyonight" \
@@ -64,16 +64,6 @@ jobs:
             --card-height=180 \
             --border-radius=4.5 \
             --output="generated/stats.svg"
-
-          # 5. Generate Circadian Commit Rhythm Matrix Card (24h x 7d Matrix + Persona)
-          ./zig-out/bin/git_stats --rhythm \
-            --username="${{ github.repository_owner }}" \
-            --theme="tokyonight" \
-            --tz=5.5 \
-            --card-width=424 \
-            --card-height=180 \
-            --border-radius=4.5 \
-            --output="generated/rhythm.svg"
 
 
       - name: Commit and Push Updated Cards

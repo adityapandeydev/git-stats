@@ -685,17 +685,17 @@ pub const Client = struct {
     pub fn getDemoStreakStats(self: *Client) !*models.StreakStats {
         const streak_ptr = try self.allocator.create(models.StreakStats);
         streak_ptr.* = .{
-            .username = try self.allocator.dupe(u8, "adityapandeydev"),
-            .total_contributions = 2026,
-            .first_contribution_date = try self.allocator.dupe(u8, "Oct 7, 2022"),
+            .username = try self.allocator.dupe(u8, "demo"),
+            .total_contributions = 1420,
+            .first_contribution_date = try self.allocator.dupe(u8, "Jan 15, 2023"),
             .latest_contribution_date = try self.allocator.dupe(u8, "Present"),
-            .current_streak = 551,
-            .current_streak_start = try self.allocator.dupe(u8, "Mar 28, 2025"),
-            .current_streak_end = try self.allocator.dupe(u8, "Sep 29"),
+            .current_streak = 128,
+            .current_streak_start = try self.allocator.dupe(u8, "May 25, 2025"),
+            .current_streak_end = try self.allocator.dupe(u8, "Sep 30"),
             .is_streak_active = true,
-            .longest_streak = 551,
-            .longest_streak_start = try self.allocator.dupe(u8, "Mar 28, 2025"),
-            .longest_streak_end = try self.allocator.dupe(u8, "Sep 29"),
+            .longest_streak = 184,
+            .longest_streak_start = try self.allocator.dupe(u8, "Aug 10, 2024"),
+            .longest_streak_end = try self.allocator.dupe(u8, "Feb 10"),
             .recent_14_days = [_]u32{ 4, 7, 2, 8, 12, 5, 9, 3, 6, 11, 8, 4, 7, 10 },
             .max_14_day_count = 12,
             .total_14_day_count = 96,
@@ -723,19 +723,19 @@ pub const Client = struct {
     }
 
     pub fn getDemoOverallStats(self: *Client) !*models.OverallStats {
-        const rating = models.calculateDeveloperRating(2030, 32, 28, 16, 48, 18);
+        const rating = models.calculateDeveloperRating(1450, 28, 24, 12, 65, 14);
         const stats_ptr = try self.allocator.create(models.OverallStats);
         stats_ptr.* = .{
-            .username = try self.allocator.dupe(u8, "adityapandeydev"),
-            .name = try self.allocator.dupe(u8, "Aditya Pandey"),
+            .username = try self.allocator.dupe(u8, "demo"),
+            .name = try self.allocator.dupe(u8, "Developer"),
             .timeframe = try self.allocator.dupe(u8, "all-time"),
-            .total_commits = 2030,
-            .total_prs = 32,
-            .merged_prs = 28,
-            .total_issues = 22,
-            .closed_issues = 16,
-            .total_stars = 48,
-            .contributed_repos = 18,
+            .total_commits = 1450,
+            .total_prs = 28,
+            .merged_prs = 24,
+            .total_issues = 18,
+            .closed_issues = 12,
+            .total_stars = 65,
+            .contributed_repos = 14,
             .rating = rating,
         };
         return stats_ptr;

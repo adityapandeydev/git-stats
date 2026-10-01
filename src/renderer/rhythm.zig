@@ -30,7 +30,7 @@ pub fn renderRhythmSVG(
     const day_pct: u32 = @intFromFloat((@as(f64, @floatFromInt(rhythm.day_commits)) / total_f) * 100.0);
     const night_pct: u32 = 100 - @min(100, day_pct);
 
-    const bar_total_w: f64 = 92.0;
+    const bar_total_w: f64 = 108.0;
     const day_bar_w = @max(4.0, @min(bar_total_w - 4.0, (bar_total_w * @as(f64, @floatFromInt(day_pct))) / 100.0));
     const night_bar_w = bar_total_w - day_bar_w;
 
@@ -78,7 +78,7 @@ pub fn renderRhythmSVG(
         \\    .rhythm-persona-txt {{ font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; font-weight: 800; font-size: 10px; letter-spacing: 0.6px; fill: {s}; }}
         \\    .rhythm-kpi-lbl {{ font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; font-weight: 700; font-size: 8px; letter-spacing: 0.8px; fill: #7aa2f7; }}
         \\    .rhythm-kpi-val {{ font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; font-weight: 800; font-size: 13px; fill: #c0caf5; }}
-        \\    .rhythm-stat-txt {{ font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; font-weight: 600; font-size: 8.5px; fill: #7982a9; }}
+        \\    .rhythm-stat-txt {{ font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; font-weight: 600; font-size: 7.8px; letter-spacing: 0.2px; fill: #7982a9; }}
         \\    .rhythm-count-txt {{ font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; font-weight: 500; font-size: 8px; fill: #565f89; }}
         \\  </style>
         \\
@@ -202,7 +202,7 @@ pub fn renderRhythmSVG(
     , .{ hour_lbl_y, hour_lbl_y, hour_lbl_y, hour_lbl_y, hour_lbl_y, hour_lbl_y, hour_lbl_y });
 
     // Vertical Divider Line
-    const div_x: f64 = 296.0;
+    const div_x: f64 = 290.0;
     try w.print(
         \\  <!-- Glass Divider -->
         \\  <line x1="{d:.1}" y1="22" x2="{d:.1}" y2="{d:.1}" stroke="url(#rhythm-divider-grad)" stroke-width="1"/>
@@ -212,31 +212,31 @@ pub fn renderRhythmSVG(
     // Right Column: Persona & Analytics
     try w.print(
         \\  <!-- Right Column: Analytics & Persona -->
-        \\  <g transform="translate(306, 0)">
+        \\  <g transform="translate(298, 0)">
         \\    <!-- Persona Badge Pill -->
-        \\    <g transform="translate(54, 38)">
+        \\    <g transform="translate(59, 38)">
         \\      <rect x="-48" y="-12" width="96" height="24" rx="12" fill="#1f2335" stroke="{s}" stroke-opacity="0.4" stroke-width="1"/>
         \\      <text x="0" y="4" text-anchor="middle" class="rhythm-persona-txt">{s} {s}</text>
         \\    </g>
         \\
         \\    <!-- Peak Window KPI -->
-        \\    <g transform="translate(8, 72)">
+        \\    <g transform="translate(5, 72)">
         \\      <text x="0" y="0" class="rhythm-kpi-lbl">PEAK WINDOW</text>
         \\      <text x="0" y="15" class="rhythm-kpi-val">{s}</text>
         \\    </g>
         \\
         \\    <!-- Circadian Split Bar -->
-        \\    <g transform="translate(8, 108)">
+        \\    <g transform="translate(5, 108)">
         \\      <text x="0" y="0" class="rhythm-kpi-lbl">CIRCADIAN SPLIT</text>
-        \\      <rect x="0" y="6" width="92" height="6" rx="3" fill="#24283b"/>
+        \\      <rect x="0" y="6" width="108" height="6" rx="3" fill="#24283b"/>
         \\      <rect x="0" y="6" width="{d:.1}" height="6" rx="3" fill="url(#rhythm-day-grad)"/>
         \\      <rect x="{d:.1}" y="6" width="{d:.1}" height="6" rx="3" fill="url(#rhythm-night-grad)"/>
-        \\      <text x="0" y="24" class="rhythm-stat-txt">☀️ {d}% Day</text>
-        \\      <text x="92" y="24" class="rhythm-stat-txt" text-anchor="end">🌙 {d}% Night</text>
+        \\      <text x="0" y="23" class="rhythm-stat-txt">☀️ {d}% Day</text>
+        \\      <text x="108" y="23" class="rhythm-stat-txt" text-anchor="end">🌙 {d}% Night</text>
         \\    </g>
         \\
         \\    <!-- Analyzed Commits Footnote -->
-        \\    <text x="54" y="156" text-anchor="middle" class="rhythm-count-txt">{d} Commits Mapped</text>
+        \\    <text x="59" y="156" text-anchor="middle" class="rhythm-count-txt">{d} Commits Mapped</text>
         \\  </g>
         \\
     , .{
