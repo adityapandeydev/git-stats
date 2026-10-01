@@ -7,11 +7,13 @@ const themes = git_stats.themes;
 const svg_renderer = git_stats.svg;
 const streak_renderer = git_stats.streak;
 const stats_renderer = git_stats.stats;
+const rhythm_renderer = git_stats.rhythm;
 
 const CliConfig = struct {
     generate: bool = false,
-    card: []const u8 = "languages", // "languages", "streak", or "stats"
+    card: []const u8 = "languages", // "languages", "streak", "stats", or "rhythm"
     timeframe: []const u8 = "all-time", // "all-time" or "this-year"
+    tz_offset_hours: f64 = 5.5,
     username: ?[]const u8 = null,
     output: []const u8 = "languages.svg",
     langs_count: usize = 8,
@@ -72,6 +74,15 @@ fn parseCliArgs(args: []const []const u8) CliConfig {
             cfg.card = "streak";
         } else if (std.mem.eql(u8, arg, "--stats")) {
             cfg.card = "stats";
+        } else if (std.mem.eql(u8, arg, "--rhythm")) {
+            cfg.card = "rhythm";
+        } else if (std.mem.startsWith(u8, arg, "--tz=")) {
+            cfg.tz_offset_hours = std.fmt.parseFloat(f64, arg["--tz=".len..]) catch 5.5;
+        } else if (std.mem.eql(u8, arg, "--tz") and i + 1 < args.len) {
+            i += 1;
+            cfg.tz_offset_hours = std.fmt.parseFloat(f64, args[i]) catch 5.5;
+        } else if (std.mem.startsWith(u8, arg, "--tz-offset=")) {
+            cfg.tz_offset_hours = std.fmt.parseFloat(f64, arg["--tz-offset=".len..]) catch 5.5;
         } else if (std.mem.startsWith(u8, arg, "--timeframe=")) {
             cfg.timeframe = arg["--timeframe=".len..];
         } else if (std.mem.eql(u8, arg, "--timeframe") and i + 1 < args.len) {
@@ -355,6 +366,58 @@ pub fn main(init: std.process.Init) !void {
             username,
             stats_opts.card_width,
             stats_opts.card_height,
+        });
+        return;
+    }
+
+    // Check if generating commit rhythm card
+    if (std.mem.eql(u8, cli.card, "rhythm")) {
+        std.debug.print("⚡ Fetching GitHub commit rhythm data for user '{s}' (UTC{s}{d:.1}h)...\n", .{
+            username,
+            if (cli.tz_offset_hours >= 0) "+" else "",
+            cli.tz_offset_hours,
+        });
+        const rhythm_stats = client.getCommitRhythm(username, auth_token, cli.tz_offset_hours) catch |err| {
+            std.debug.print("❌ Error fetching commit rhythm: {}\n", .{err});
+            return err;
+        };
+
+        std.debug.print("🌙 Persona: {s} {s}\n", .{ rhythm_stats.persona_icon, rhythm_stats.persona_title });
+        std.debug.print("⚡ Peak Window: {s} | Peak Commits: {d}\n", .{ rhythm_stats.peak_window_str, rhythm_stats.peak_count });
+        std.debug.print("📊 Commits: {d} total ({d} day / {d} night / {d} weekend)\n", .{
+            rhythm_stats.total_commits,
+            rhythm_stats.day_commits,
+            rhythm_stats.night_commits,
+            rhythm_stats.weekend_commits,
+        });
+
+        const rhythm_opts = rhythm_renderer.RhythmRenderOptions{
+            .theme = active_theme,
+            .card_width = if (cli.card_width != 400) cli.card_width else 424,
+            .card_height = if (cli.card_height != 364) cli.card_height else 180,
+            .border_radius = cli.border_radius,
+            .hide_border = cli.hide_border,
+            .hide_title = cli.hide_title,
+            .animate = cli.animate,
+        };
+
+        const svg_content = try rhythm_renderer.renderRhythmSVG(arena, rhythm_stats, rhythm_opts);
+
+        const out_file = if (std.mem.eql(u8, cli.output, "languages.svg")) "rhythm.svg" else cli.output;
+
+        if (std.fs.path.dirname(out_file)) |dir| {
+            if (dir.len > 0 and !std.mem.eql(u8, dir, ".")) {
+                cwd.createDirPath(io, dir) catch {};
+            }
+        }
+
+        try cwd.writeFile(io, .{ .sub_path = out_file, .data = svg_content });
+
+        std.debug.print("✅ Successfully generated commit rhythm card '{s}' for '{s}' ({d}x{d} px)\n", .{
+            out_file,
+            username,
+            rhythm_opts.card_width,
+            rhythm_opts.card_height,
         });
         return;
     }

@@ -7,6 +7,7 @@ pub const themes = @import("renderer/themes.zig");
 pub const svg = @import("renderer/svg.zig");
 pub const streak = @import("renderer/streak.zig");
 pub const stats = @import("renderer/stats.zig");
+pub const rhythm = @import("renderer/rhythm.zig");
 
 test "colors: official Linguist mapping and fallback" {
     try std.testing.expectEqualStrings("#ec915c", colors.getLanguageColor("Zig", null));
@@ -181,5 +182,50 @@ test "stats: renderStatsSVG produces valid reimagined card with radial rating ri
     try std.testing.expect(std.mem.indexOf(u8, rendered, "tier-badge-txt") != null);
     try std.testing.expect(std.mem.indexOf(u8, rendered, "</svg>") != null);
 }
+
+test "rhythm: renderRhythmSVG produces valid circadian punchcard matrix" {
+    const allocator = std.testing.allocator;
+
+    var matrix: [7][24]u32 = [_][24]u32{[_]u32{0} ** 24} ** 7;
+    matrix[0][22] = 14;
+    matrix[1][23] = 18;
+    matrix[2][0] = 12;
+
+    const rhythm_stats = models.CommitRhythm{
+        .username = "adityapandeydev",
+        .matrix = matrix,
+        .total_commits = 240,
+        .night_commits = 150,
+        .day_commits = 90,
+        .weekend_commits = 30,
+        .peak_hour = 23,
+        .peak_day = 1,
+        .peak_count = 18,
+        .persona_title = "Night Owl",
+        .persona_icon = "🌙",
+        .persona_color = "#bb9af7",
+        .peak_window_str = "21:00 – 01:00",
+    };
+
+    const t = themes.getTheme("tokyonight");
+    const rendered = try rhythm.renderRhythmSVG(allocator, &rhythm_stats, .{
+        .theme = t,
+        .card_width = 424,
+        .card_height = 180,
+        .border_radius = 4.5,
+    });
+    defer allocator.free(rendered);
+
+    try std.testing.expect(std.mem.indexOf(u8, rendered, "<svg xmlns=\"http://www.w3.org/2000/svg\"") != null);
+    try std.testing.expect(std.mem.indexOf(u8, rendered, "width=\"424\" height=\"180\"") != null);
+    try std.testing.expect(std.mem.indexOf(u8, rendered, "COMMIT RHYTHM") != null);
+    try std.testing.expect(std.mem.indexOf(u8, rendered, "24H × 7D MATRIX") != null);
+    try std.testing.expect(std.mem.indexOf(u8, rendered, "PEAK WINDOW") != null);
+    try std.testing.expect(std.mem.indexOf(u8, rendered, "21:00 – 01:00") != null);
+    try std.testing.expect(std.mem.indexOf(u8, rendered, "CIRCADIAN SPLIT") != null);
+    try std.testing.expect(std.mem.indexOf(u8, rendered, "Night Owl") != null);
+    try std.testing.expect(std.mem.indexOf(u8, rendered, "</svg>") != null);
+}
+
 
 

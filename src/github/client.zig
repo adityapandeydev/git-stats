@@ -972,6 +972,246 @@ pub const Client = struct {
 
         return stats_ptr;
     }
+
+    fn dayOfWeek(y_in: u16, m_in: u8, d: u8) u8 {
+        var y = y_in;
+        const t = [_]u8{ 0, 3, 2, 5, 0, 3, 5, 1, 4, 6, 2, 4 };
+        if (m_in < 3 and y > 0) y -= 1;
+        const dow = (y + y / 4 - y / 100 + y / 400 + t[m_in - 1] + d) % 7;
+        // dow: 0=Sun, 1=Mon, 2=Tue, 3=Wed, 4=Thu, 5=Fri, 6=Sat -> convert to 0=Mon..6=Sun
+        return if (dow == 0) 6 else @as(u8, @intCast(dow - 1));
+    }
+
+    pub fn getCommitRhythm(
+        self: *Client,
+        username: []const u8,
+        token: []const u8,
+        tz_offset_hours: f64,
+    ) !*models.CommitRhythm {
+        const clean_user = std.mem.trim(u8, username, " \t\r\n");
+        if (clean_user.len == 0 or std.ascii.eqlIgnoreCase(clean_user, "demo")) {
+            return self.getDemoCommitRhythm();
+        }
+
+        var auth_token = cleanToken(token);
+        if (auth_token.len == 0) {
+            auth_token = self.global_token;
+        }
+
+        return try self.fetchCommitRhythmGraphQL(clean_user, auth_token, tz_offset_hours);
+    }
+
+    pub fn getDemoCommitRhythm(self: *Client) !*models.CommitRhythm {
+        const r_ptr = try self.allocator.create(models.CommitRhythm);
+        r_ptr.* = .{
+            .username = try self.allocator.dupe(u8, "demo"),
+            .total_commits = 640,
+            .night_commits = 435,
+            .day_commits = 205,
+            .weekend_commits = 180,
+            .peak_hour = 22,
+            .peak_day = 2,
+            .peak_count = 24,
+            .persona_title = try self.allocator.dupe(u8, "Night Owl"),
+            .persona_icon = try self.allocator.dupe(u8, "🌙"),
+            .persona_color = try self.allocator.dupe(u8, "#bb9af7"),
+            .peak_window_str = try self.allocator.dupe(u8, "20:00 – 01:00"),
+        };
+        // Sample distribution
+        for (0..7) |d| {
+            for (18..24) |h| {
+                r_ptr.matrix[d][h] = @intCast(4 + ((d * 3 + h) % 18));
+            }
+            for (0..3) |h| {
+                r_ptr.matrix[d][h] = @intCast(2 + ((d + h) % 10));
+            }
+        }
+        return r_ptr;
+    }
+
+    pub fn fetchCommitRhythmGraphQL(
+        self: *Client,
+        username: []const u8,
+        token: []const u8,
+        tz_offset_hours: f64,
+    ) !*models.CommitRhythm {
+        const query_main =
+            \\query($login: String!) {
+            \\  user(login: $login) {
+            \\    repositories(first: 20, ownerAffiliations: OWNER, orderBy: {field: PUSHED_AT, direction: DESC}) {
+            \\      nodes {
+            \\        name
+            \\        defaultBranchRef {
+            \\          target {
+            \\            ... on Commit {
+            \\              history(first: 100) {
+            \\                nodes {
+            \\                  committedDate
+            \\                  author {
+            \\                    user {
+            \\                      login
+            \\                    }
+            \\                  }
+            \\                }
+            \\              }
+            \\            }
+            \\          }
+            \\        }
+            \\      }
+            \\    }
+            \\  }
+            \\}
+        ;
+
+        const Payload = struct {
+            query: []const u8,
+            variables: struct { login: []const u8 },
+        };
+        const payload_obj = Payload{
+            .query = query_main,
+            .variables = .{ .login = username },
+        };
+        const payload = try std.json.Stringify.valueAlloc(self.allocator, payload_obj, .{});
+        defer self.allocator.free(payload);
+
+        const body = try self.executeGraphQL(payload, token);
+        defer self.allocator.free(body);
+
+        const parsed = try std.json.parseFromSlice(std.json.Value, self.allocator, body, .{});
+        defer parsed.deinit();
+
+        const data_val = parsed.value.object.get("data") orelse return error.NoData;
+        const user_val = data_val.object.get("user") orelse return error.UserNotFound;
+        const repos_val = user_val.object.get("repositories") orelse return error.NoRepositories;
+        const nodes_val = repos_val.object.get("nodes") orelse return error.NoNodes;
+
+        var matrix: [7][24]u32 = [_][24]u32{[_]u32{0} ** 24} ** 7;
+        var total_commits: u64 = 0;
+        var night_commits: u64 = 0;
+        var day_commits: u64 = 0;
+        var weekend_commits: u64 = 0;
+        var peak_count: u32 = 0;
+        var peak_hour: u8 = 0;
+        var peak_day: u8 = 0;
+
+        const offset_mins: i32 = @intFromFloat(tz_offset_hours * 60.0);
+
+        for (nodes_val.array.items) |repo_node| {
+            const def_ref = repo_node.object.get("defaultBranchRef") orelse continue;
+            if (def_ref == .null) continue;
+            const target_val = def_ref.object.get("target") orelse continue;
+            if (target_val == .null) continue;
+            const history_val = target_val.object.get("history") orelse continue;
+            if (history_val == .null) continue;
+            const commit_nodes = history_val.object.get("nodes") orelse continue;
+
+            for (commit_nodes.array.items) |c_node| {
+                // If author user is known and not this username, skip
+                if (c_node.object.get("author")) |author_obj| {
+                    if (author_obj != .null) {
+                        if (author_obj.object.get("user")) |user_obj| {
+                            if (user_obj != .null) {
+                                if (user_obj.object.get("login")) |login_val| {
+                                    if (login_val == .string and !std.ascii.eqlIgnoreCase(login_val.string, username)) {
+                                        continue;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+
+                const date_val = c_node.object.get("committedDate") orelse continue;
+                if (date_val != .string or date_val.string.len < 19) continue;
+                const d_str = date_val.string;
+
+                const year = std.fmt.parseInt(u16, d_str[0..4], 10) catch continue;
+                const month = std.fmt.parseInt(u8, d_str[5..7], 10) catch continue;
+                const day = std.fmt.parseInt(u8, d_str[8..10], 10) catch continue;
+                const hour_raw = std.fmt.parseInt(u8, d_str[11..13], 10) catch continue;
+                const min_raw = std.fmt.parseInt(u8, d_str[14..16], 10) catch 0;
+
+                if (month < 1 or month > 12 or day < 1 or day > 31 or hour_raw > 23) continue;
+
+                var weekday = dayOfWeek(year, month, day);
+                const utc_mins: i32 = @as(i32, hour_raw) * 60 + @as(i32, min_raw);
+                var local_mins = utc_mins + offset_mins;
+
+                if (local_mins >= 24 * 60) {
+                    local_mins -= 24 * 60;
+                    weekday = (weekday + 1) % 7;
+                } else if (local_mins < 0) {
+                    local_mins += 24 * 60;
+                    weekday = if (weekday == 0) 6 else weekday - 1;
+                }
+
+                const local_hour: u8 = @intCast(@divFloor(local_mins, 60));
+                matrix[weekday][local_hour] += 1;
+                total_commits += 1;
+
+                if (local_hour >= 20 or local_hour <= 4) {
+                    night_commits += 1;
+                } else {
+                    day_commits += 1;
+                }
+
+                if (weekday == 5 or weekday == 6) {
+                    weekend_commits += 1;
+                }
+
+                if (matrix[weekday][local_hour] > peak_count) {
+                    peak_count = matrix[weekday][local_hour];
+                    peak_hour = local_hour;
+                    peak_day = weekday;
+                }
+            }
+        }
+
+        // If no commits found in parsed repos, provide fallback
+        if (total_commits == 0) {
+            return self.getDemoCommitRhythm();
+        }
+
+        // Calculate best 4-hour productivity window
+        var best_window_start: u8 = 0;
+        var max_window_sum: u32 = 0;
+        for (0..24) |h| {
+            var window_sum: u32 = 0;
+            for (0..4) |w_offset| {
+                const check_h = (h + w_offset) % 24;
+                for (0..7) |d| {
+                    window_sum += matrix[d][check_h];
+                }
+            }
+            if (window_sum > max_window_sum) {
+                max_window_sum = window_sum;
+                best_window_start = @intCast(h);
+            }
+        }
+        const best_window_end = (best_window_start + 4) % 24;
+        const window_str = try std.fmt.allocPrint(self.allocator, "{d:0>2}:00 – {d:0>2}:00", .{ best_window_start, best_window_end });
+
+        const persona = models.calculateRhythmPersona(total_commits, night_commits, weekend_commits, peak_hour);
+
+        const r_ptr = try self.allocator.create(models.CommitRhythm);
+        r_ptr.* = .{
+            .username = try self.allocator.dupe(u8, username),
+            .matrix = matrix,
+            .total_commits = total_commits,
+            .night_commits = night_commits,
+            .day_commits = day_commits,
+            .weekend_commits = weekend_commits,
+            .peak_hour = peak_hour,
+            .peak_day = peak_day,
+            .peak_count = peak_count,
+            .persona_title = try self.allocator.dupe(u8, persona.title),
+            .persona_icon = try self.allocator.dupe(u8, persona.icon),
+            .persona_color = try self.allocator.dupe(u8, persona.color),
+            .peak_window_str = window_str,
+        };
+
+        return r_ptr;
+    }
 };
 
 pub fn parseYmdToDays(ymd: []const u8) ?i64 {

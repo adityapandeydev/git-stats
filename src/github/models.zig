@@ -199,3 +199,64 @@ pub const OverallStats = struct {
     rating: DeveloperRating,
 };
 
+/// CommitRhythm represents a 7-day x 24-hour matrix of commit activity.
+pub const CommitRhythm = struct {
+    username: []const u8,
+    // 7 days (0=Mon .. 6=Sun) x 24 hours (0..23)
+    matrix: [7][24]u32 = [_][24]u32{[_]u32{0} ** 24} ** 7,
+    total_commits: u64 = 0,
+    night_commits: u64 = 0, // 20:00 to 05:00
+    day_commits: u64 = 0,   // 05:00 to 20:00
+    weekend_commits: u64 = 0, // Sat (5) + Sun (6)
+    peak_hour: u8 = 0,
+    peak_day: u8 = 0,
+    peak_count: u32 = 0,
+    persona_title: []const u8 = "Night Owl",
+    persona_icon: []const u8 = "🌙",
+    persona_color: []const u8 = "#bb9af7",
+    peak_window_str: []const u8 = "20:00 – 01:00",
+};
+
+pub const RhythmPersona = struct {
+    title: []const u8,
+    icon: []const u8,
+    color: []const u8,
+};
+
+pub fn calculateRhythmPersona(
+    total_commits: u64,
+    night_commits: u64,
+    weekend_commits: u64,
+    peak_hour: u8,
+) RhythmPersona {
+    const total_f: f64 = @floatFromInt(@max(1, total_commits));
+    const night_pct: f64 = (@as(f64, @floatFromInt(night_commits)) / total_f) * 100.0;
+    const weekend_pct: f64 = (@as(f64, @floatFromInt(weekend_commits)) / total_f) * 100.0;
+
+    if (night_pct >= 40.0 or (peak_hour >= 21 or peak_hour <= 4)) {
+        return .{
+            .title = "Night Owl",
+            .icon = "🌙",
+            .color = "#bb9af7",
+        };
+    } else if (peak_hour >= 5 and peak_hour <= 10) {
+        return .{
+            .title = "Early Bird",
+            .icon = "🌅",
+            .color = "#e0af68",
+        };
+    } else if (weekend_pct >= 40.0) {
+        return .{
+            .title = "Weekend Warrior",
+            .icon = "⚔️",
+            .color = "#f7768e",
+        };
+    } else {
+        return .{
+            .title = "Day Architect",
+            .icon = "⚡",
+            .color = "#70a5fd",
+        };
+    }
+}
+
