@@ -1212,6 +1212,43 @@ pub const Client = struct {
 
         return r_ptr;
     }
+
+    pub fn getDeveloperDNA(
+        self: *Client,
+        username: []const u8,
+        token: []const u8,
+        excluded_repos: []const []const u8,
+    ) !*models.DeveloperDNA {
+        const clean_user = std.mem.trim(u8, username, " \t\r\n");
+        if (clean_user.len == 0 or std.ascii.eqlIgnoreCase(clean_user, "demo")) {
+            return self.getDemoDeveloperDNA();
+        }
+
+        const user_stats = try self.getUserLanguages(username, token, excluded_repos);
+        const dna = models.calculateDeveloperDNA(user_stats.username, user_stats.languages);
+
+        const ptr = try self.allocator.create(models.DeveloperDNA);
+        ptr.* = dna;
+        return ptr;
+    }
+
+    pub fn getDemoDeveloperDNA(self: *Client) !*models.DeveloperDNA {
+        const ptr = try self.allocator.create(models.DeveloperDNA);
+        ptr.* = .{
+            .username = "demo",
+            .systems_pct = 28.0,
+            .backend_pct = 36.0,
+            .frontend_pct = 18.0,
+            .devops_pct = 12.0,
+            .data_pct = 6.0,
+            .archetype = "Polyglot Architect",
+            .archetype_icon = "🧬",
+            .archetype_color = "#70a5fd",
+            .total_languages = 14,
+            .top_domain_name = "Backend",
+        };
+        return ptr;
+    }
 };
 
 pub fn parseYmdToDays(ymd: []const u8) ?i64 {

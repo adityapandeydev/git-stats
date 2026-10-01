@@ -21,4 +21,6 @@ Thumbs.db
 zig-out/
 
 Todo.txt
-*.svg
+
+# Generated user cards (only generated on CI for deployment, never tracked locally)
+generated/*.svg

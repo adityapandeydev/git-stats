@@ -60,6 +60,16 @@ A 24-hour × 7-day commit punchcard heatmap (168 cells) featuring peak flow hour
 
 ---
 
+### 5. Developer DNA Radar Card
+A 5-axis polyglot radar chart mapping code bytes across engineering domains (Systems, Backend, Frontend, DevOps, Data & AI). Automatically calculates a developer archetype badge (Systems Architect, Backend Specialist, Frontend Craftsman, Platform Engineer, Data Engineer, or Polyglot Architect), with visual polygon fill, glowing nodes, and domain progress bars.
+
+<div align="center">
+  <img src="preview/radar/standard.svg" width="424" alt="Developer DNA Radar Card" />
+</div>
+
+---
+
+
 ## Quick Setup
 
 ### 1. Fork this Repository
@@ -148,6 +158,12 @@ zig build -Doptimize=ReleaseFast
   --theme="tokyonight" \
   --tz=5.5 \
   --output="generated/rhythm.svg"
+
+# 5. Generate Developer DNA Radar Card
+./zig-out/bin/git_stats --radar \
+  --username="YOUR_USERNAME" \
+  --theme="tokyonight" \
+  --output="generated/radar.svg"
 ```
 
 ### CLI Flags
@@ -158,6 +174,7 @@ zig build -Doptimize=ReleaseFast
 | `--streak` | `false` | Generate streak statistics card |
 | `--stats` | `false` | Generate developer craft & consistency rating card |
 | `--rhythm` | `false` | Generate 24h × 7d circadian commit punchcard card |
+| `--radar` | `false` | Generate 5-axis developer DNA polyglot radar card |
 | `--username` | `adityapandeydev` | Target GitHub username |
 | `--theme` | `tokyonight` | Theme preset (`tokyonight`, `github_dark`, `catppuccin`, `dracula`, `nord`, etc.) |
 | `--layout` | `standard` | Card layout: `standard`, `donut`, `compact` |

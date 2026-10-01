@@ -260,3 +260,164 @@ pub fn calculateRhythmPersona(
     }
 }
 
+pub const DomainKind = enum {
+    systems,
+    backend,
+    frontend,
+    devops,
+    data,
+};
+
+pub fn classifyLanguageDomain(lang_name: []const u8) DomainKind {
+    // Systems & Low-Level: Zig, Rust, C, C++, Assembly, D, Fortran, Ada, V
+    if (std.ascii.eqlIgnoreCase(lang_name, "Zig") or
+        std.ascii.eqlIgnoreCase(lang_name, "Rust") or
+        std.ascii.eqlIgnoreCase(lang_name, "C") or
+        std.ascii.eqlIgnoreCase(lang_name, "C++") or
+        std.ascii.eqlIgnoreCase(lang_name, "Assembly") or
+        std.ascii.eqlIgnoreCase(lang_name, "D") or
+        std.ascii.eqlIgnoreCase(lang_name, "Fortran") or
+        std.ascii.eqlIgnoreCase(lang_name, "Ada") or
+        std.ascii.eqlIgnoreCase(lang_name, "V"))
+    {
+        return .systems;
+    }
+
+    // Web & Frontend: TypeScript, JavaScript, HTML, CSS, SCSS, Vue, Svelte, JSX, TSX
+    if (std.ascii.eqlIgnoreCase(lang_name, "TypeScript") or
+        std.ascii.eqlIgnoreCase(lang_name, "JavaScript") or
+        std.ascii.eqlIgnoreCase(lang_name, "HTML") or
+        std.ascii.eqlIgnoreCase(lang_name, "CSS") or
+        std.ascii.eqlIgnoreCase(lang_name, "SCSS") or
+        std.ascii.eqlIgnoreCase(lang_name, "Vue") or
+        std.ascii.eqlIgnoreCase(lang_name, "Svelte") or
+        std.ascii.eqlIgnoreCase(lang_name, "QML"))
+    {
+        return .frontend;
+    }
+
+    // DevOps & Infra: Shell, Bash, Nix, Dockerfile, HCL, Makefile, Lua, PowerShell
+    if (std.ascii.eqlIgnoreCase(lang_name, "Shell") or
+        std.ascii.eqlIgnoreCase(lang_name, "Bash") or
+        std.ascii.eqlIgnoreCase(lang_name, "Nix") or
+        std.ascii.eqlIgnoreCase(lang_name, "Dockerfile") or
+        std.ascii.eqlIgnoreCase(lang_name, "HCL") or
+        std.ascii.eqlIgnoreCase(lang_name, "Makefile") or
+        std.ascii.eqlIgnoreCase(lang_name, "Lua") or
+        std.ascii.eqlIgnoreCase(lang_name, "PowerShell"))
+    {
+        return .devops;
+    }
+
+    // Data & Functional: Jupyter Notebook, SQL, R, Julia, MATLAB, Haskell, OCaml, Clojure
+    if (std.ascii.eqlIgnoreCase(lang_name, "Jupyter Notebook") or
+        std.ascii.eqlIgnoreCase(lang_name, "SQL") or
+        std.ascii.eqlIgnoreCase(lang_name, "R") or
+        std.ascii.eqlIgnoreCase(lang_name, "Julia") or
+        std.ascii.eqlIgnoreCase(lang_name, "MATLAB") or
+        std.ascii.eqlIgnoreCase(lang_name, "Haskell") or
+        std.ascii.eqlIgnoreCase(lang_name, "OCaml") or
+        std.ascii.eqlIgnoreCase(lang_name, "Clojure"))
+    {
+        return .data;
+    }
+
+    // Default to Backend & Cloud (Go, Java, Python, C#, Kotlin, Scala, Ruby, PHP, etc.)
+    return .backend;
+}
+
+pub const DeveloperDNA = struct {
+    username: []const u8,
+    systems_pct: f64 = 0.0,
+    backend_pct: f64 = 0.0,
+    frontend_pct: f64 = 0.0,
+    devops_pct: f64 = 0.0,
+    data_pct: f64 = 0.0,
+    archetype: []const u8 = "Fullstack Polyglot",
+    archetype_icon: []const u8 = "🧬",
+    archetype_color: []const u8 = "#70a5fd",
+    total_languages: usize = 0,
+    top_domain_name: []const u8 = "Systems",
+};
+
+pub fn calculateDeveloperDNA(username: []const u8, langs: []const LanguageStat) DeveloperDNA {
+    var systems_bytes: u64 = 0;
+    var backend_bytes: u64 = 0;
+    var frontend_bytes: u64 = 0;
+    var devops_bytes: u64 = 0;
+    var data_bytes: u64 = 0;
+    var total_bytes: u64 = 0;
+
+    for (langs) |l| {
+        total_bytes += l.size;
+        switch (classifyLanguageDomain(l.name)) {
+            .systems => systems_bytes += l.size,
+            .backend => backend_bytes += l.size,
+            .frontend => frontend_bytes += l.size,
+            .devops => devops_bytes += l.size,
+            .data => data_bytes += l.size,
+        }
+    }
+
+    const total_f: f64 = @floatFromInt(@max(1, total_bytes));
+    const s_pct = (@as(f64, @floatFromInt(systems_bytes)) / total_f) * 100.0;
+    const b_pct = (@as(f64, @floatFromInt(backend_bytes)) / total_f) * 100.0;
+    const f_pct = (@as(f64, @floatFromInt(frontend_bytes)) / total_f) * 100.0;
+    const d_pct = (@as(f64, @floatFromInt(devops_bytes)) / total_f) * 100.0;
+    const a_pct = (@as(f64, @floatFromInt(data_bytes)) / total_f) * 100.0;
+
+    var archetype: []const u8 = "Polyglot Architect";
+    var icon: []const u8 = "🧬";
+    var color: []const u8 = "#bb9af7";
+    var top_name: []const u8 = "Polyglot";
+
+    const max_pct = @max(s_pct, @max(b_pct, @max(f_pct, @max(d_pct, a_pct))));
+
+    if (s_pct == max_pct and s_pct >= 30.0) {
+        archetype = "Systems Architect";
+        icon = "⚙️";
+        color = "#ec915c";
+        top_name = "Systems";
+    } else if (b_pct == max_pct and b_pct >= 35.0) {
+        archetype = "Backend Specialist";
+        icon = "🛡️";
+        color = "#70a5fd";
+        top_name = "Backend";
+    } else if (f_pct == max_pct and f_pct >= 35.0) {
+        archetype = "Frontend Craftsman";
+        icon = "🎨";
+        color = "#7aa2f7";
+        top_name = "Frontend";
+    } else if (d_pct == max_pct and d_pct >= 30.0) {
+        archetype = "Platform Engineer";
+        icon = "🚀";
+        color = "#bb9af7";
+        top_name = "DevOps";
+    } else if (a_pct == max_pct and a_pct >= 30.0) {
+        archetype = "Data Engineer";
+        icon = "📊";
+        color = "#73daca";
+        top_name = "Data & AI";
+    } else {
+        archetype = "Polyglot Architect";
+        icon = "🧬";
+        color = "#70a5fd";
+        top_name = "Polyglot";
+    }
+
+    return .{
+        .username = username,
+        .systems_pct = s_pct,
+        .backend_pct = b_pct,
+        .frontend_pct = f_pct,
+        .devops_pct = d_pct,
+        .data_pct = a_pct,
+        .archetype = archetype,
+        .archetype_icon = icon,
+        .archetype_color = color,
+        .total_languages = langs.len,
+        .top_domain_name = top_name,
+    };
+}
+
+

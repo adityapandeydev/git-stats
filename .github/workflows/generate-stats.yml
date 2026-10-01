@@ -67,6 +67,25 @@ jobs:
             --border-radius=4.5 \
             --output="generated/stats.svg"
 
+          # 5. Generate Commit Rhythm Card (24h x 7d Matrix)
+          ./zig-out/bin/git_stats --rhythm \
+            --username="${{ github.repository_owner }}" \
+            --theme="tokyonight" \
+            --tz=5.5 \
+            --card-width=424 \
+            --card-height=180 \
+            --border-radius=4.5 \
+            --output="generated/rhythm.svg"
+
+          # 6. Generate Developer DNA Radar Card (5-Axis Polyglot Radar)
+          ./zig-out/bin/git_stats --radar \
+            --username="${{ github.repository_owner }}" \
+            --theme="tokyonight" \
+            --card-width=424 \
+            --card-height=180 \
+            --border-radius=4.5 \
+            --output="generated/radar.svg"
+
 
       - name: Commit and Push Updated Cards
         run: |

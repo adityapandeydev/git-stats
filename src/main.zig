@@ -8,10 +8,11 @@ const svg_renderer = git_stats.svg;
 const streak_renderer = git_stats.streak;
 const stats_renderer = git_stats.stats;
 const rhythm_renderer = git_stats.rhythm;
+const radar_renderer = git_stats.radar;
 
 const CliConfig = struct {
     generate: bool = false,
-    card: []const u8 = "languages", // "languages", "streak", "stats", or "rhythm"
+    card: []const u8 = "languages", // "languages", "streak", "stats", "rhythm", or "radar"
     timeframe: []const u8 = "all-time", // "all-time" or "this-year"
     tz_offset_hours: f64 = 5.5,
     username: ?[]const u8 = null,
@@ -76,6 +77,8 @@ fn parseCliArgs(args: []const []const u8) CliConfig {
             cfg.card = "stats";
         } else if (std.mem.eql(u8, arg, "--rhythm")) {
             cfg.card = "rhythm";
+        } else if (std.mem.eql(u8, arg, "--radar")) {
+            cfg.card = "radar";
         } else if (std.mem.startsWith(u8, arg, "--tz=")) {
             cfg.tz_offset_hours = std.fmt.parseFloat(f64, arg["--tz=".len..]) catch 5.5;
         } else if (std.mem.eql(u8, arg, "--tz") and i + 1 < args.len) {
@@ -418,6 +421,54 @@ pub fn main(init: std.process.Init) !void {
             username,
             rhythm_opts.card_width,
             rhythm_opts.card_height,
+        });
+        return;
+    }
+
+    // Check if generating developer DNA radar card
+    if (std.mem.eql(u8, cli.card, "radar")) {
+        std.debug.print("⚡ Fetching GitHub developer DNA for user '{s}'...\n", .{username});
+        const dna = client.getDeveloperDNA(username, auth_token, excluded_repos.items) catch |err| {
+            std.debug.print("❌ Error fetching developer DNA: {}\n", .{err});
+            return err;
+        };
+
+        std.debug.print("🧬 Archetype: {s} {s} ({s})\n", .{ dna.archetype_icon, dna.archetype, dna.top_domain_name });
+        std.debug.print("📊 Domains: Systems {d:.1}% | Backend {d:.1}% | Frontend {d:.1}% | DevOps {d:.1}% | Data {d:.1}%\n", .{
+            dna.systems_pct,
+            dna.backend_pct,
+            dna.frontend_pct,
+            dna.devops_pct,
+            dna.data_pct,
+        });
+
+        const radar_opts = radar_renderer.RadarRenderOptions{
+            .theme = active_theme,
+            .card_width = if (cli.card_width != 400) cli.card_width else 424,
+            .card_height = if (cli.card_height != 364) cli.card_height else 180,
+            .border_radius = cli.border_radius,
+            .hide_border = cli.hide_border,
+            .hide_title = cli.hide_title,
+            .animate = cli.animate,
+        };
+
+        const svg_content = try radar_renderer.renderRadarSVG(arena, dna, radar_opts);
+
+        const out_file = if (std.mem.eql(u8, cli.output, "languages.svg")) "radar.svg" else cli.output;
+
+        if (std.fs.path.dirname(out_file)) |dir| {
+            if (dir.len > 0 and !std.mem.eql(u8, dir, ".")) {
+                cwd.createDirPath(io, dir) catch {};
+            }
+        }
+
+        try cwd.writeFile(io, .{ .sub_path = out_file, .data = svg_content });
+
+        std.debug.print("✅ Successfully generated developer DNA radar card '{s}' for '{s}' ({d}x{d} px)\n", .{
+            out_file,
+            username,
+            radar_opts.card_width,
+            radar_opts.card_height,
         });
         return;
     }

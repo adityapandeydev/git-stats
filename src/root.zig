@@ -8,6 +8,7 @@ pub const svg = @import("renderer/svg.zig");
 pub const streak = @import("renderer/streak.zig");
 pub const stats = @import("renderer/stats.zig");
 pub const rhythm = @import("renderer/rhythm.zig");
+pub const radar = @import("renderer/radar.zig");
 
 test "colors: official Linguist mapping and fallback" {
     try std.testing.expectEqualStrings("#ec915c", colors.getLanguageColor("Zig", null));
@@ -224,6 +225,41 @@ test "rhythm: renderRhythmSVG produces valid circadian punchcard matrix" {
     try std.testing.expect(std.mem.indexOf(u8, rendered, "21:00 – 01:00") != null);
     try std.testing.expect(std.mem.indexOf(u8, rendered, "CIRCADIAN SPLIT") != null);
     try std.testing.expect(std.mem.indexOf(u8, rendered, "Night Owl") != null);
+    try std.testing.expect(std.mem.indexOf(u8, rendered, "</svg>") != null);
+}
+
+test "radar: renderRadarSVG produces valid polyglot radar chart" {
+    const allocator = std.testing.allocator;
+    const dna = models.DeveloperDNA{
+        .username = "testuser",
+        .systems_pct = 45.0,
+        .backend_pct = 30.0,
+        .frontend_pct = 15.0,
+        .devops_pct = 7.0,
+        .data_pct = 3.0,
+        .archetype = "Systems Architect",
+        .archetype_icon = "⚙️",
+        .archetype_color = "#ec915c",
+        .total_languages = 8,
+        .top_domain_name = "Systems",
+    };
+
+    const t = themes.getTheme("tokyonight");
+    const rendered = try radar.renderRadarSVG(allocator, &dna, .{
+        .theme = t,
+        .card_width = 424,
+        .card_height = 180,
+        .border_radius = 4.5,
+    });
+    defer allocator.free(rendered);
+
+    try std.testing.expect(std.mem.indexOf(u8, rendered, "<svg xmlns=\"http://www.w3.org/2000/svg\"") != null);
+    try std.testing.expect(std.mem.indexOf(u8, rendered, "width=\"424\" height=\"180\"") != null);
+    try std.testing.expect(std.mem.indexOf(u8, rendered, "DEVELOPER DNA") != null);
+    try std.testing.expect(std.mem.indexOf(u8, rendered, "5-AXIS POLYGLOT RADAR") != null);
+    try std.testing.expect(std.mem.indexOf(u8, rendered, "Systems Architect") != null);
+    try std.testing.expect(std.mem.indexOf(u8, rendered, "8 Languages Mapped") != null);
+    try std.testing.expect(std.mem.indexOf(u8, rendered, "Data &amp; AI") != null);
     try std.testing.expect(std.mem.indexOf(u8, rendered, "</svg>") != null);
 }
 
