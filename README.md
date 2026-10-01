@@ -69,6 +69,15 @@ A 5-axis polyglot radar chart mapping code bytes across engineering domains (Sys
 
 ---
 
+### 6. Pull Request Velocity & Impact Card
+A high-velocity delivery metrics card measuring PR merge turnaround time, merge success rate distribution, code volume shipped (additions vs. deletions), and peer review participation. Features a circular 220° sweep speedometer gauge, delivery archetype badges (Hypersonic Shipper, Rapid Shipper, High Momentum, Steady Cadence, Deep Reviewer), and a 2×2 glassmorphic impact matrix.
+
+<div align="center">
+  <img src="preview/velocity/standard.svg" width="424" alt="PR Velocity and Impact Card" />
+</div>
+
+---
+
 
 ## Quick Setup
 
@@ -164,6 +173,14 @@ zig build -Doptimize=ReleaseFast
   --username="YOUR_USERNAME" \
   --theme="tokyonight" \
   --output="generated/radar.svg"
+
+# 6. Generate PR Velocity & Shipping Impact Card
+./zig-out/bin/git_stats --velocity \
+  --username="YOUR_USERNAME" \
+  --theme="tokyonight" \
+  --card-width=424 \
+  --card-height=180 \
+  --output="generated/velocity.svg"
 ```
 
 ### CLI Flags
@@ -175,6 +192,7 @@ zig build -Doptimize=ReleaseFast
 | `--stats` | `false` | Generate developer craft & consistency rating card |
 | `--rhythm` | `false` | Generate 24h × 7d circadian commit punchcard card |
 | `--radar` | `false` | Generate 5-axis developer DNA polyglot radar card |
+| `--velocity` | `false` | Generate PR turnaround velocity & shipping impact card |
 | `--username` | `adityapandeydev` | Target GitHub username |
 | `--theme` | `tokyonight` | Theme preset (`tokyonight`, `github_dark`, `catppuccin`, `dracula`, `nord`, etc.) |
 | `--layout` | `standard` | Card layout: `standard`, `donut`, `compact` |

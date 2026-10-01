@@ -86,6 +86,15 @@ jobs:
             --border-radius=4.5 \
             --output="generated/radar.svg"
 
+          # 7. Generate PR Velocity & Shipping Impact Card
+          ./zig-out/bin/git_stats --velocity \
+            --username="${{ github.repository_owner }}" \
+            --theme="tokyonight" \
+            --card-width=424 \
+            --card-height=180 \
+            --border-radius=4.5 \
+            --output="generated/velocity.svg"
+
 
       - name: Commit and Push Updated Cards
         run: |

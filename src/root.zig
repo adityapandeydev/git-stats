@@ -9,6 +9,7 @@ pub const streak = @import("renderer/streak.zig");
 pub const stats = @import("renderer/stats.zig");
 pub const rhythm = @import("renderer/rhythm.zig");
 pub const radar = @import("renderer/radar.zig");
+pub const velocity = @import("renderer/velocity.zig");
 
 test "colors: official Linguist mapping and fallback" {
     try std.testing.expectEqualStrings("#ec915c", colors.getLanguageColor("Zig", null));
@@ -260,6 +261,50 @@ test "radar: renderRadarSVG produces valid polyglot radar chart" {
     try std.testing.expect(std.mem.indexOf(u8, rendered, "Systems Architect") != null);
     try std.testing.expect(std.mem.indexOf(u8, rendered, "8 Languages Mapped") != null);
     try std.testing.expect(std.mem.indexOf(u8, rendered, "Data &amp; AI") != null);
+    try std.testing.expect(std.mem.indexOf(u8, rendered, "</svg>") != null);
+}
+
+test "velocity: renderVelocitySVG produces valid PR velocity & cadence card" {
+    const allocator = std.testing.allocator;
+    const tier = models.calculateVelocityTier(94);
+    const vel_stats = models.VelocityStats{
+        .username = "testuser",
+        .total_prs = 32,
+        .merged_prs = 28,
+        .open_prs = 2,
+        .closed_prs = 2,
+        .merge_rate = 87.5,
+        .avg_turnaround_hours = 18.5,
+        .turnaround_str = "18.5h",
+        .total_additions = 42800,
+        .total_deletions = 14300,
+        .changed_files = 186,
+        .reviews_completed = 24,
+        .velocity_score = 94,
+        .tier = tier,
+    };
+
+    const t = themes.getTheme("tokyonight");
+    const rendered = try velocity.renderVelocitySVG(allocator, &vel_stats, .{
+        .theme = t,
+        .card_width = 424,
+        .card_height = 180,
+        .border_radius = 4.5,
+    });
+    defer allocator.free(rendered);
+
+    try std.testing.expect(std.mem.indexOf(u8, rendered, "<svg xmlns=\"http://www.w3.org/2000/svg\"") != null);
+    try std.testing.expect(std.mem.indexOf(u8, rendered, "width=\"424\" height=\"180\"") != null);
+    try std.testing.expect(std.mem.indexOf(u8, rendered, "PULL REQUEST VELOCITY") != null);
+    try std.testing.expect(std.mem.indexOf(u8, rendered, "CADENCE &amp; IMPACT") != null);
+    try std.testing.expect(std.mem.indexOf(u8, rendered, "Hypersonic Shipper") != null);
+    try std.testing.expect(std.mem.indexOf(u8, rendered, "18.5h") != null);
+    try std.testing.expect(std.mem.indexOf(u8, rendered, "MERGE RATE") != null);
+    try std.testing.expect(std.mem.indexOf(u8, rendered, "87.5%") != null);
+    try std.testing.expect(std.mem.indexOf(u8, rendered, "MERGED PRS") != null);
+    try std.testing.expect(std.mem.indexOf(u8, rendered, "CODE SHIPPED") != null);
+    try std.testing.expect(std.mem.indexOf(u8, rendered, "PEER REVIEWS") != null);
+    try std.testing.expect(std.mem.indexOf(u8, rendered, "VELOCITY INDEX") != null);
     try std.testing.expect(std.mem.indexOf(u8, rendered, "</svg>") != null);
 }
 

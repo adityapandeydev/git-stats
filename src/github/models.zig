@@ -420,4 +420,75 @@ pub fn calculateDeveloperDNA(username: []const u8, langs: []const LanguageStat) 
     };
 }
 
+pub const VelocityTier = struct {
+    name: []const u8,
+    icon: []const u8,
+    color: []const u8,
+    percentile: []const u8,
+};
+
+pub const VelocityStats = struct {
+    username: []const u8,
+    total_prs: u64 = 0,
+    merged_prs: u64 = 0,
+    open_prs: u64 = 0,
+    closed_prs: u64 = 0,
+    merge_rate: f64 = 0.0, // 0.0 - 100.0%
+
+    // Turnaround time in hours
+    avg_turnaround_hours: f64 = 0.0,
+    turnaround_str: []const u8 = "18h",
+
+    // Code churn
+    total_additions: u64 = 0,
+    total_deletions: u64 = 0,
+    changed_files: u64 = 0,
+
+    // Collaboration
+    reviews_completed: u64 = 0,
+
+    // Composite velocity score (0 - 100)
+    velocity_score: u32 = 0,
+    tier: VelocityTier,
+};
+
+pub fn calculateVelocityTier(score: u32) VelocityTier {
+    if (score >= 88) {
+        return .{
+            .name = "Hypersonic Shipper",
+            .icon = "⚡",
+            .color = "#bb9af7",
+            .percentile = "Top 2% Velocity",
+        };
+    } else if (score >= 75) {
+        return .{
+            .name = "Rapid Shipper",
+            .icon = "🚀",
+            .color = "#70a5fd",
+            .percentile = "Top 10% Velocity",
+        };
+    } else if (score >= 60) {
+        return .{
+            .name = "High Momentum",
+            .icon = "🔥",
+            .color = "#73daca",
+            .percentile = "Top 25% Velocity",
+        };
+    } else if (score >= 45) {
+        return .{
+            .name = "Steady Cadence",
+            .icon = "🎯",
+            .color = "#e0af68",
+            .percentile = "Top 50% Velocity",
+        };
+    } else {
+        return .{
+            .name = "Deep Reviewer",
+            .icon = "🔍",
+            .color = "#9aa5ce",
+            .percentile = "Standard Cadence",
+        };
+    }
+}
+
 

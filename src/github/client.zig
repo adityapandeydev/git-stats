@@ -1241,7 +1241,241 @@ pub const Client = struct {
         };
         return ptr;
     }
+
+    pub fn getVelocityStats(
+        self: *Client,
+        username: []const u8,
+        token: []const u8,
+    ) !*models.VelocityStats {
+        const clean_user = std.mem.trim(u8, username, " \t\r\n");
+        if (clean_user.len == 0 or std.ascii.eqlIgnoreCase(clean_user, "demo")) {
+            return self.getDemoVelocityStats();
+        }
+
+        var auth_token = cleanToken(token);
+        if (auth_token.len == 0) {
+            auth_token = self.global_token;
+        }
+
+        return self.fetchVelocityStatsGraphQL(clean_user, auth_token) catch |err| {
+            std.debug.print("⚠️ Failed to fetch live velocity stats: {}. Falling back to demo data.\n", .{err});
+            return self.getDemoVelocityStats();
+        };
+    }
+
+    pub fn getDemoVelocityStats(self: *Client) !*models.VelocityStats {
+        const stats_ptr = try self.allocator.create(models.VelocityStats);
+        const tier = models.calculateVelocityTier(92);
+        stats_ptr.* = .{
+            .username = try self.allocator.dupe(u8, "demo"),
+            .total_prs = 32,
+            .merged_prs = 28,
+            .open_prs = 2,
+            .closed_prs = 2,
+            .merge_rate = 87.5,
+            .avg_turnaround_hours = 18.5,
+            .turnaround_str = try self.allocator.dupe(u8, "18.5h"),
+            .total_additions = 42800,
+            .total_deletions = 14300,
+            .changed_files = 186,
+            .reviews_completed = 24,
+            .velocity_score = 92,
+            .tier = tier,
+        };
+        return stats_ptr;
+    }
+
+    pub fn fetchVelocityStatsGraphQL(
+        self: *Client,
+        username: []const u8,
+        token: []const u8,
+    ) !*models.VelocityStats {
+        const query_str =
+            \\query($login: String!) {
+            \\  user(login: $login) {
+            \\    pullRequests(first: 30, orderBy: {field: CREATED_AT, direction: DESC}) {
+            \\      totalCount
+            \\      nodes {
+            \\        createdAt
+            \\        mergedAt
+            \\        closedAt
+            \\        state
+            \\        additions
+            \\        deletions
+            \\        changedFiles
+            \\      }
+            \\    }
+            \\    mergedPRs: pullRequests(states: MERGED) {
+            \\      totalCount
+            \\    }
+            \\    openPRs: pullRequests(states: OPEN) {
+            \\      totalCount
+            \\    }
+            \\    closedPRs: pullRequests(states: CLOSED) {
+            \\      totalCount
+            \\    }
+            \\    contributionsCollection {
+            \\      totalPullRequestReviewContributions
+            \\    }
+            \\  }
+            \\}
+        ;
+
+        const Payload = struct {
+            query: []const u8,
+            variables: struct { login: []const u8 },
+        };
+        const payload_obj = Payload{
+            .query = query_str,
+            .variables = .{ .login = username },
+        };
+        const payload = try std.json.Stringify.valueAlloc(self.allocator, payload_obj, .{});
+        defer self.allocator.free(payload);
+
+        const body = try self.executeGraphQL(payload, token);
+        defer self.allocator.free(body);
+
+        const parsed = try std.json.parseFromSlice(std.json.Value, self.allocator, body, .{});
+        defer parsed.deinit();
+
+        const data_val = parsed.value.object.get("data") orelse return error.NoData;
+        const user_val = data_val.object.get("user") orelse return error.UserNotFound;
+
+        var total_prs: u64 = 0;
+        var merged_prs: u64 = 0;
+        var open_prs: u64 = 0;
+        var closed_prs: u64 = 0;
+        var total_additions: u64 = 0;
+        var total_deletions: u64 = 0;
+        var changed_files: u64 = 0;
+        var reviews_completed: u64 = 0;
+
+        if (user_val.object.get("mergedPRs")) |m| {
+            if (m.object.get("totalCount")) |tc| merged_prs = @as(u64, @intCast(@max(0, tc.integer)));
+        }
+        if (user_val.object.get("openPRs")) |o| {
+            if (o.object.get("totalCount")) |tc| open_prs = @as(u64, @intCast(@max(0, tc.integer)));
+        }
+        if (user_val.object.get("closedPRs")) |c| {
+            if (c.object.get("totalCount")) |tc| closed_prs = @as(u64, @intCast(@max(0, tc.integer)));
+        }
+        if (user_val.object.get("contributionsCollection")) |cc| {
+            if (cc.object.get("totalPullRequestReviewContributions")) |rc| {
+                reviews_completed = @as(u64, @intCast(@max(0, rc.integer)));
+            }
+        }
+
+        var turnaround_total_hours: f64 = 0.0;
+        var turnaround_count: usize = 0;
+
+        if (user_val.object.get("pullRequests")) |prs_val| {
+            if (prs_val.object.get("totalCount")) |tc| {
+                total_prs = @as(u64, @intCast(@max(0, tc.integer)));
+            }
+            if (prs_val.object.get("nodes")) |nodes| {
+                for (nodes.array.items) |node| {
+                    if (node.object.get("additions")) |add| {
+                        total_additions += @as(u64, @intCast(@max(0, add.integer)));
+                    }
+                    if (node.object.get("deletions")) |del| {
+                        total_deletions += @as(u64, @intCast(@max(0, del.integer)));
+                    }
+                    if (node.object.get("changedFiles")) |cf| {
+                        changed_files += @as(u64, @intCast(@max(0, cf.integer)));
+                    }
+
+                    const created_at_val = node.object.get("createdAt");
+                    const merged_at_val = node.object.get("mergedAt");
+                    if (created_at_val != null and merged_at_val != null and
+                        created_at_val.? == .string and merged_at_val.? == .string)
+                    {
+                        if (parseIsoToEpochSeconds(created_at_val.?.string)) |c_epoch| {
+                            if (parseIsoToEpochSeconds(merged_at_val.?.string)) |m_epoch| {
+                                if (m_epoch >= c_epoch) {
+                                    const diff_sec = m_epoch - c_epoch;
+                                    const diff_h = @as(f64, @floatFromInt(diff_sec)) / 3600.0;
+                                    turnaround_total_hours += diff_h;
+                                    turnaround_count += 1;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        if (total_prs == 0) {
+            total_prs = merged_prs + open_prs + closed_prs;
+        }
+
+        const avg_hours = if (turnaround_count > 0)
+            turnaround_total_hours / @as(f64, @floatFromInt(turnaround_count))
+        else
+            24.0;
+
+        const turnaround_str = if (avg_hours < 1.0)
+            try self.allocator.dupe(u8, "< 1h")
+        else if (avg_hours < 24.0)
+            try std.fmt.allocPrint(self.allocator, "{d:.1}h", .{avg_hours})
+        else
+            try std.fmt.allocPrint(self.allocator, "{d:.1}d", .{avg_hours / 24.0});
+
+        const merge_rate: f64 = if (total_prs > 0)
+            (@as(f64, @floatFromInt(merged_prs)) / @as(f64, @floatFromInt(total_prs))) * 100.0
+        else if (merged_prs > 0)
+            @as(f64, 100.0)
+        else
+            @as(f64, 0.0);
+
+        // Velocity score calculation:
+        const s_merge = (merge_rate / 100.0) * 40.0;
+        var s_speed: f64 = 10.0;
+        if (avg_hours <= 12.0) {
+            s_speed = 30.0;
+        } else if (avg_hours <= 24.0) {
+            s_speed = 28.0;
+        } else if (avg_hours <= 48.0) {
+            s_speed = 24.0;
+        } else if (avg_hours <= 96.0) {
+            s_speed = 18.0;
+        } else if (avg_hours <= 168.0) {
+            s_speed = 14.0;
+        }
+        const s_volume = @min(15.0, (@as(f64, @floatFromInt(merged_prs)) / 25.0) * 15.0);
+        const s_review = @min(15.0, (@as(f64, @floatFromInt(reviews_completed)) / 15.0) * 15.0);
+
+        const total_score = @as(u32, @intFromFloat(@min(100.0, @max(10.0, s_merge + s_speed + s_volume + s_review))));
+        const tier = models.calculateVelocityTier(total_score);
+
+        const stats_ptr = try self.allocator.create(models.VelocityStats);
+        stats_ptr.* = .{
+            .username = try self.allocator.dupe(u8, username),
+            .total_prs = total_prs,
+            .merged_prs = merged_prs,
+            .open_prs = open_prs,
+            .closed_prs = closed_prs,
+            .merge_rate = merge_rate,
+            .avg_turnaround_hours = avg_hours,
+            .turnaround_str = turnaround_str,
+            .total_additions = total_additions,
+            .total_deletions = total_deletions,
+            .changed_files = changed_files,
+            .reviews_completed = reviews_completed,
+            .velocity_score = total_score,
+            .tier = tier,
+        };
+        return stats_ptr;
+    }
 };
+
+pub fn parseIsoToEpochSeconds(ts: []const u8) ?i64 {
+    if (ts.len < 19) return null;
+    const days = parseYmdToDays(ts[0..10]) orelse return null;
+    const hour = std.fmt.parseInt(i64, ts[11..13], 10) catch return null;
+    const min = std.fmt.parseInt(i64, ts[14..16], 10) catch return null;
+    const sec = std.fmt.parseInt(i64, ts[17..19], 10) catch return null;
+    return days * 86400 + hour * 3600 + min * 60 + sec;
+}
 
 pub fn parseYmdToDays(ymd: []const u8) ?i64 {
     if (ymd.len < 10) return null;

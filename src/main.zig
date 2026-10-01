@@ -9,10 +9,11 @@ const streak_renderer = git_stats.streak;
 const stats_renderer = git_stats.stats;
 const rhythm_renderer = git_stats.rhythm;
 const radar_renderer = git_stats.radar;
+const velocity_renderer = git_stats.velocity;
 
 const CliConfig = struct {
     generate: bool = false,
-    card: []const u8 = "languages", // "languages", "streak", "stats", "rhythm", or "radar"
+    card: []const u8 = "languages", // "languages", "streak", "stats", "rhythm", "radar", or "velocity"
     timeframe: []const u8 = "all-time", // "all-time" or "this-year"
     tz_offset_hours: f64 = 5.5,
     username: ?[]const u8 = null,
@@ -79,6 +80,8 @@ fn parseCliArgs(args: []const []const u8) CliConfig {
             cfg.card = "rhythm";
         } else if (std.mem.eql(u8, arg, "--radar")) {
             cfg.card = "radar";
+        } else if (std.mem.eql(u8, arg, "--velocity")) {
+            cfg.card = "velocity";
         } else if (std.mem.startsWith(u8, arg, "--tz=")) {
             cfg.tz_offset_hours = std.fmt.parseFloat(f64, arg["--tz=".len..]) catch 5.5;
         } else if (std.mem.eql(u8, arg, "--tz") and i + 1 < args.len) {
@@ -471,6 +474,53 @@ pub fn main(init: std.process.Init) !void {
             username,
             radar_opts.card_width,
             radar_opts.card_height,
+        });
+        return;
+    }
+
+    // Check if generating PR velocity & impact card
+    if (std.mem.eql(u8, cli.card, "velocity")) {
+        std.debug.print("Fetching GitHub PR velocity & impact stats for user '{s}'...\n", .{username});
+        const vel_stats = client.getVelocityStats(username, auth_token) catch |err| {
+            std.debug.print("❌ Error fetching velocity stats: {}\n", .{err});
+            return err;
+        };
+
+        std.debug.print("Velocity: {s} ({d}/100) - {s} [Turnaround: {s}, Merge Rate: {d:.1}%]\n", .{
+            vel_stats.tier.name,
+            vel_stats.velocity_score,
+            vel_stats.tier.percentile,
+            vel_stats.turnaround_str,
+            vel_stats.merge_rate,
+        });
+
+        const vel_opts = velocity_renderer.VelocityRenderOptions{
+            .theme = active_theme,
+            .card_width = if (cli.card_width != 400) cli.card_width else 424,
+            .card_height = if (cli.card_height > 0) cli.card_height else 180,
+            .border_radius = cli.border_radius,
+            .hide_border = cli.hide_border,
+            .hide_title = cli.hide_title,
+            .animate = cli.animate,
+        };
+
+        const svg_content = try velocity_renderer.renderVelocitySVG(arena, vel_stats, vel_opts);
+
+        const out_file = if (std.mem.eql(u8, cli.output, "languages.svg")) "velocity.svg" else cli.output;
+
+        if (std.fs.path.dirname(out_file)) |dir| {
+            if (dir.len > 0 and !std.mem.eql(u8, dir, ".")) {
+                cwd.createDirPath(io, dir) catch {};
+            }
+        }
+
+        try cwd.writeFile(io, .{ .sub_path = out_file, .data = svg_content });
+
+        std.debug.print("✅ Successfully generated PR velocity & impact card '{s}' for '{s}' ({d}x{d} px)\n", .{
+            out_file,
+            username,
+            vel_opts.card_width,
+            vel_opts.card_height,
         });
         return;
     }
