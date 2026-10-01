@@ -77,8 +77,8 @@ pub fn renderRadarSVG(
         \\    </filter>
         \\  </defs>
         \\  <style>
-        \\    .radar-title {{ font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; font-weight: 700; font-size: 12px; letter-spacing: 0.8px; fill: {s}; }}
-        \\    .radar-sub {{ font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; font-weight: 500; font-size: 8px; letter-spacing: 0.4px; fill: #787c99; }}
+        \\    .radar-title {{ font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; font-weight: 700; font-size: 11px; letter-spacing: 0.5px; fill: {s}; }}
+        \\    .radar-sub {{ font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; font-weight: 500; font-size: 7.5px; letter-spacing: 0.35px; fill: #787c99; }}
         \\    .radar-axis-lbl {{ font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; font-weight: 700; font-size: 8px; }}
         \\    .radar-archetype-txt {{ font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; font-weight: 800; font-size: 10px; letter-spacing: 0.5px; fill: #c0caf5; }}
         \\    .radar-domain-lbl {{ font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; font-weight: 600; font-size: 8px; fill: #7982a9; }}
@@ -108,9 +108,9 @@ pub fn renderRadarSVG(
     if (!opts.hide_title) {
         try w.print(
             \\  <!-- Header -->
-            \\  <text x="16" y="24.0" class="radar-title">DEVELOPER DNA</text>
-            \\  <circle cx="120" cy="20.5" r="2.0" fill="{s}"/>
-            \\  <text x="128" y="23.5" class="radar-sub">5-AXIS POLYGLOT RADAR</text>
+            \\  <text x="14" y="24.0" class="radar-title">DEVELOPER DNA</text>
+            \\  <circle cx="125" cy="20.5" r="1.8" fill="{s}"/>
+            \\  <text x="135" y="23.5" class="radar-sub">5-AXIS POLYGLOT RADAR</text>
             \\
         , .{opts.theme.title_color});
     }

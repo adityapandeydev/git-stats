@@ -241,12 +241,12 @@ pub fn main(init: std.process.Init) !void {
         }
     }
 
-    std.debug.print("⚡ Fetching GitHub stats for user '{s}'...\n", .{username});
+    std.debug.print("Fetching GitHub stats for user '{s}'...\n", .{username});
     if (auth_token.len > 0) {
         const masked = try github_client.maskToken(arena, auth_token);
-        std.debug.print("🔑 Authenticated using token: {s}\n", .{masked});
+        std.debug.print("Authenticated using token: {s}\n", .{masked});
     } else {
-        std.debug.print("ℹ️  Running in unauthenticated mode (public repos only)\n", .{});
+        std.debug.print("Running in unauthenticated mode (public repos only)\n", .{});
     }
 
     var client = github_client.Client.init(arena, io, auth_token);
@@ -265,23 +265,23 @@ pub fn main(init: std.process.Init) !void {
 
     // Check if generating streak card
     if (std.mem.eql(u8, cli.card, "streak")) {
-        std.debug.print("⚡ Fetching GitHub streak data for user '{s}'...\n", .{username});
+        std.debug.print("Fetching GitHub streak data for user '{s}'...\n", .{username});
         const streak_stats = client.getStreakStats(username, auth_token) catch |err| {
             std.debug.print("❌ Error fetching streak stats: {}\n", .{err});
             return err;
         };
 
-        std.debug.print("🔥 Current Streak: {d} days ({s} - {s})\n", .{
+        std.debug.print("Current Streak: {d} days ({s} - {s})\n", .{
             streak_stats.current_streak,
             streak_stats.current_streak_start,
             streak_stats.current_streak_end,
         });
-        std.debug.print("🏆 Longest Streak: {d} days ({s} - {s})\n", .{
+        std.debug.print("Longest Streak: {d} days ({s} - {s})\n", .{
             streak_stats.longest_streak,
             streak_stats.longest_streak_start,
             streak_stats.longest_streak_end,
         });
-        std.debug.print("📊 Total Contributions: {d} ({s} - {s})\n", .{
+        std.debug.print("Total Contributions: {d} ({s} - {s})\n", .{
             streak_stats.total_contributions,
             streak_stats.first_contribution_date,
             streak_stats.latest_contribution_date,
@@ -321,20 +321,20 @@ pub fn main(init: std.process.Init) !void {
 
     // Check if generating developer stats card
     if (std.mem.eql(u8, cli.card, "stats")) {
-        std.debug.print("⚡ Fetching GitHub developer stats ({s}) for user '{s}'...\n", .{ cli.timeframe, username });
+        std.debug.print("Fetching GitHub developer stats ({s}) for user '{s}'...\n", .{ cli.timeframe, username });
         const overall_stats = client.getOverallStats(username, auth_token, cli.timeframe) catch |err| {
             std.debug.print("❌ Error fetching developer stats: {}\n", .{err});
             return err;
         };
 
         const rating = overall_stats.rating;
-        std.debug.print("🏆 Developer Rating: {s} ({d}/1000) - {s} [{s}]\n", .{
+        std.debug.print("Developer Rating: {s} ({d}/1000) - {s} [{s}]\n", .{
             rating.tier,
             rating.score,
             rating.title,
             rating.percentile,
         });
-        std.debug.print("📦 Commits: {d} | Merged PRs: {d}/{d} | Stars: {d} | Repos: {d}\n", .{
+        std.debug.print("Commits: {d} | Merged PRs: {d}/{d} | Stars: {d} | Repos: {d}\n", .{
             overall_stats.total_commits,
             overall_stats.merged_prs,
             overall_stats.total_prs,
@@ -375,7 +375,7 @@ pub fn main(init: std.process.Init) !void {
 
     // Check if generating commit rhythm card
     if (std.mem.eql(u8, cli.card, "rhythm")) {
-        std.debug.print("⚡ Fetching GitHub commit rhythm data for user '{s}' (UTC{s}{d:.1}h)...\n", .{
+        std.debug.print("Fetching GitHub commit rhythm data for user '{s}' (UTC{s}{d:.1}h)...\n", .{
             username,
             if (cli.tz_offset_hours >= 0) "+" else "",
             cli.tz_offset_hours,
@@ -385,9 +385,9 @@ pub fn main(init: std.process.Init) !void {
             return err;
         };
 
-        std.debug.print("🌙 Persona: {s} {s}\n", .{ rhythm_stats.persona_icon, rhythm_stats.persona_title });
-        std.debug.print("⚡ Peak Window: {s} | Peak Commits: {d}\n", .{ rhythm_stats.peak_window_str, rhythm_stats.peak_count });
-        std.debug.print("📊 Commits: {d} total ({d} day / {d} night / {d} weekend)\n", .{
+        std.debug.print("Persona: {s}\n", .{rhythm_stats.persona_title});
+        std.debug.print("Peak Window: {s} | Peak Commits: {d}\n", .{ rhythm_stats.peak_window_str, rhythm_stats.peak_count });
+        std.debug.print("Commits: {d} total ({d} day / {d} night / {d} weekend)\n", .{
             rhythm_stats.total_commits,
             rhythm_stats.day_commits,
             rhythm_stats.night_commits,
@@ -427,14 +427,14 @@ pub fn main(init: std.process.Init) !void {
 
     // Check if generating developer DNA radar card
     if (std.mem.eql(u8, cli.card, "radar")) {
-        std.debug.print("⚡ Fetching GitHub developer DNA for user '{s}'...\n", .{username});
+        std.debug.print("Fetching GitHub developer DNA for user '{s}'...\n", .{username});
         const dna = client.getDeveloperDNA(username, auth_token, excluded_repos.items) catch |err| {
             std.debug.print("❌ Error fetching developer DNA: {}\n", .{err});
             return err;
         };
 
-        std.debug.print("🧬 Archetype: {s} {s} ({s})\n", .{ dna.archetype_icon, dna.archetype, dna.top_domain_name });
-        std.debug.print("📊 Domains: Systems {d:.1}% | Backend {d:.1}% | Frontend {d:.1}% | DevOps {d:.1}% | Data {d:.1}%\n", .{
+        std.debug.print("Archetype: {s} ({s})\n", .{ dna.archetype, dna.top_domain_name });
+        std.debug.print("Domains: Systems {d:.1}% | Backend {d:.1}% | Frontend {d:.1}% | DevOps {d:.1}% | Data {d:.1}%\n", .{
             dna.systems_pct,
             dna.backend_pct,
             dna.frontend_pct,

@@ -18,8 +18,8 @@
     </filter>
   </defs>
   <style>
-    .radar-title { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; font-weight: 700; font-size: 12px; letter-spacing: 0.8px; fill: #70a5fd; }
-    .radar-sub { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; font-weight: 500; font-size: 8px; letter-spacing: 0.4px; fill: #787c99; }
+    .radar-title { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; font-weight: 700; font-size: 11px; letter-spacing: 0.5px; fill: #70a5fd; }
+    .radar-sub { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; font-weight: 500; font-size: 7.5px; letter-spacing: 0.35px; fill: #787c99; }
     .radar-axis-lbl { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; font-weight: 700; font-size: 8px; }
     .radar-archetype-txt { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; font-weight: 800; font-size: 10px; letter-spacing: 0.5px; fill: #c0caf5; }
     .radar-domain-lbl { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; font-weight: 600; font-size: 8px; fill: #7982a9; }
@@ -28,9 +28,9 @@
   </style>
   <rect width="424" height="180" rx="4.5" fill="#1a1b27" stroke="#24283b" stroke-width="1"/>
   <!-- Header -->
-  <text x="16" y="24.0" class="radar-title">DEVELOPER DNA</text>
-  <circle cx="120" cy="20.5" r="2.0" fill="#70a5fd"/>
-  <text x="128" y="23.5" class="radar-sub">5-AXIS POLYGLOT RADAR</text>
+  <text x="14" y="24.0" class="radar-title">DEVELOPER DNA</text>
+  <circle cx="125" cy="20.5" r="1.8" fill="#70a5fd"/>
+  <text x="135" y="23.5" class="radar-sub">5-AXIS POLYGLOT RADAR</text>
   <polygon points="120.0,91.0 132.4,100.0 127.6,114.5 112.4,114.5 107.6,100.0" fill="none" stroke="#24283b" stroke-width="0.8"/>
   <polygon points="120.0,78.0 144.7,96.0 135.3,125.0 104.7,125.0 95.3,96.0" fill="rgba(31, 35, 53, 0.15)" stroke="#24283b" stroke-width="0.8"/>
   <polygon points="120.0,65.0 157.1,91.9 142.9,135.6 97.1,135.6 82.9,91.9" fill="none" stroke="#24283b" stroke-width="0.8"/>
