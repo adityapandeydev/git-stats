@@ -1,27 +1,29 @@
-# GitStats - Modern GitHub Profile Stats & Cards Engine
+# ⚡ GitStats
 
-A blazing-fast, lightweight, and **100% serverless** GitHub profile statistics card suite built in native **Zig 0.16.0** and automated via GitHub Actions.
+> Fast, lightweight, and **100% serverless** GitHub profile card suite built in native **Zig 0.16.0** and automated via GitHub Actions.
 
-Designed to overcome the limitations, rate limits, and downtime of third-party card services with complete layout customization: **display 8, 10, 12, 16+ languages**, track active & longest contribution streaks with a 14-day momentum sparkline, compute your developer craft & consistency rating, map your circadian commit rhythm, and perfectly match your profile layout dimensions with zero awkward whitespace.
+[![Build Status](https://github.com/adityapandeydev/git-stats/actions/workflows/generate-stats.yml/badge.svg)](https://github.com/adityapandeydev/git-stats/actions)
+[![Zig Version](https://img.shields.io/badge/Zig-0.16.0-orange.svg)](https://ziglang.org/)
+[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
+
+GitStats delivers fully customizable, automated vector SVG cards for your GitHub profile with zero third-party service dependencies, zero rate limits, and zero downtime. Display **8 to 16+ languages** with auto-recalculated percentages, track active contribution streaks with a 14-day momentum sparkline, compute your developer craft rating, and map your 24/7 circadian commit habits.
 
 ---
 
-## 🎨 Card Showcase Gallery (`preview/`)
+## 🖼️ Cards & Layouts
 
-All cards below are rendered with generic demo data from the [`preview/`](preview/) showcase directory so you can preview every layout and variant without exposing personal stats.
+### 1. Most Used Languages
+Display top languages in multi-column grids or circular charts with language exclusion and automatic percentage recalculation.
 
-### 1. Most Used Languages Card
-Break the 6-language limit with auto-adjusting multi-column layouts, custom language filtering, and automatic percentage recalculation.
-
-| Standard (`preview/languages/standard.svg`) | Donut Chart (`preview/languages/donut.svg`) |
+| Standard Multi-Column (`standard`) | Donut Chart (`donut`) |
 | :---: | :---: |
-| <img src="preview/languages/standard.svg" width="400" alt="Languages Standard" /> | <img src="preview/languages/donut.svg" width="400" alt="Languages Donut" /> |
+| <img src="preview/languages/standard.svg" width="400" alt="Standard Languages" /> | <img src="preview/languages/donut.svg" width="400" alt="Donut Languages" /> |
 
 <details>
-<summary><b>View Compact Badge Bar Layout (Click to expand)</b></summary>
+<summary><b>Compact Badge Bar Layout (Click to view)</b></summary>
 <br/>
 
-<img src="preview/languages/compact.svg" width="400" alt="Languages Compact" />
+<img src="preview/languages/compact.svg" width="400" alt="Compact Languages" />
 
 ```bash
 # Generate compact badge bar layout
@@ -32,16 +34,16 @@ Break the 6-language limit with auto-adjusting multi-column layouts, custom lang
 ---
 
 ### 2. Streak Card
-Track your current streak, longest streak, and total contributions with a dynamic flame glow and a 14-day activity momentum sparkline.
+Track continuous contribution days, longest streaks, and lifetime totals with dynamic glow tiers and an activity momentum sparkline.
 
-| Standard with 14-Day Sparkline (`preview/streak/standard.svg`) | Minimal Centered (`preview/streak/minimal.svg`) |
+| Standard (With 14-Day Sparkline) | Minimal (Without Sparkline) |
 | :---: | :---: |
-| <img src="preview/streak/standard.svg" width="424" alt="Streak Card with Sparkline" /> | <img src="preview/streak/minimal.svg" width="424" alt="Streak Card Minimal" /> |
+| <img src="preview/streak/standard.svg" width="424" alt="Streak Card Standard" /> | <img src="preview/streak/minimal.svg" width="424" alt="Streak Card Minimal" /> |
 
 ---
 
-### 3. Developer Stats Card (`preview/stats/standard.svg`)
-Holistic craft and consistency rating featuring a radial rating ring, percentile badge, tier grade (`S+` to `C`), and a 2×2 glass matrix for Commits, Merged PRs, Stars, and Contributed Repositories.
+### 3. Developer Stats Card
+A comprehensive engineering metrics card featuring a radial rating ring, percentile badge, tier grade (`S+` to `C`), and a 2×2 glass matrix for Commits, Merged PRs, Stars, and Contributed Repositories.
 
 <div align="center">
   <img src="preview/stats/standard.svg" width="424" alt="Developer Stats Card" />
@@ -49,8 +51,8 @@ Holistic craft and consistency rating featuring a radial rating ring, percentile
 
 ---
 
-### 4. Circadian Commit Rhythm Matrix (`preview/rhythm/standard.svg`)
-A 24-hour × 7-day commit punchcard heatmap ($168$ cells) featuring peak flow hour Gaussian glow, developer persona badge (`⚡ Day Architect`, `🌙 Night Owl`, `🌅 Early Bird`, `⚔️ Weekend Warrior`), 4-hour peak flow window, and daytime vs. nighttime split bar.
+### 4. Circadian Commit Rhythm Matrix
+A 24-hour × 7-day commit punchcard heatmap ($168$ cells) featuring peak flow hour glow, developer persona badges (`⚡ Day Architect`, `🌙 Night Owl`, `🌅 Early Bird`, `⚔️ Weekend Warrior`), a 4-hour peak flow window, and daytime vs. nighttime split tracking.
 
 <div align="center">
   <img src="preview/rhythm/standard.svg" width="424" alt="Circadian Rhythm Card" />
@@ -58,91 +60,58 @@ A 24-hour × 7-day commit punchcard heatmap ($168$ cells) featuring peak flow ho
 
 ---
 
-## 📁 Repository Structure
+## 🚀 Quick Setup
 
-```
-git-stats/
-├── generated/              # Active personal cards generated by CI workflow
-│   ├── languages.svg       # Your personal profile languages card
-│   ├── streak.svg          # Your personal profile streak card
-│   └── stats.svg           # Your personal profile stats card
-├── preview/                # Showcase gallery containing generic demo cards
-│   ├── languages/          # standard.svg, donut.svg, compact.svg
-│   ├── streak/             # standard.svg (sparkline), minimal.svg (no-sparkline)
-│   ├── stats/              # standard.svg
-│   └── rhythm/             # standard.svg
-├── src/                    # High-performance native Zig 0.16.0 engine
-│   ├── github/             # GraphQL client, Linguist colors, models
-│   └── renderer/           # SVG layout renderers (svg, streak, stats, rhythm)
-└── .github/workflows/      # Automated generation workflow (runs every 4 hours & on push)
-    └── generate-stats.yml
-```
+### 1. Fork this Repository
+Click **Fork** at the top right to create your own copy.
 
-> [!NOTE]
-> **`generated/` vs `preview/`**:
-> - **`generated/`** contains your personal cards output automatically by GitHub Actions. Embed these links into your personal profile `README.md`.
-> - **`preview/`** contains generic showcase demo cards demonstrating all available layouts and styles without exposing personal metrics.
+### 2. Add Your GitHub Token (For Private Repositories)
+To allow the workflow to scan private repositories and grant high API rate limits:
+1. Create a Personal Access Token (Classic) with `repo` scope at [github.com/settings/tokens](https://github.com/settings/tokens).
+2. In your forked repository, go to **Settings** > **Secrets and variables** > **Actions**.
+3. Create a repository secret named `GH_TOKEN` and paste your token.
 
----
+*(If you only track public repositories, you can skip this step—the workflow will use GitHub's default token).*
 
-## ⚡ Quick Setup for Your GitHub Profile (3 Minutes)
-
-### Step 1: Fork this Repository
-Click the **Fork** button at the top right of this repository to create your own copy (e.g. `yourname/git-stats`).
-
-### Step 2: Add Your GitHub Secret Token (For Private Repos)
-To allow the Action to scan your private repositories and grant a 5,000 req/hr rate limit:
-1. Generate a Personal Access Token on GitHub at: [github.com/settings/tokens](https://github.com/settings/tokens) *(Classic token with `repo` scope)*.
-2. In your forked repository, go to: **Settings** -> **Secrets and variables** -> **Actions**.
-3. Click **New repository secret**:
-   - Name: `GH_TOKEN`
-   - Value: Paste your GitHub Personal Access Token.
-
-*(Note: If you only want to track public repositories, you can skip this step—the workflow will automatically use GitHub's built-in token!)*
-
-### Step 3: Run the Workflow
+### 3. Trigger the Workflow
 1. Go to the **Actions** tab in your repository.
-2. Select **Generate GitHub Profile Stats** in the left sidebar.
-3. Click **Run workflow** -> **Run workflow**.
+2. Select **Generate GitHub Profile Stats** and click **Run workflow**.
 
-The workflow will run, generate your personal cards, and commit them directly to `generated/` in your repository.
+The workflow runs on a schedule (every 4 hours) and on every push, generating your cards directly into the `generated/` directory.
 
-### Step 4: Embed into Your Profile `README.md`
-In your personal GitHub profile repository (`username/username/README.md`), embed the cards from your `generated/` directory:
+### 4. Embed into Your Profile README
+Add the cards to your personal profile repository (`username/username/README.md`):
 
-```markdown
-<!-- Personal Profile Cards from generated/ -->
-[![My Streak](https://raw.githubusercontent.com/YOUR_USERNAME/git-stats/main/generated/streak.svg)](https://github.com/YOUR_USERNAME/git-stats)
-[![My Stats](https://raw.githubusercontent.com/YOUR_USERNAME/git-stats/main/generated/stats.svg)](https://github.com/YOUR_USERNAME/git-stats)
-[![My Languages](https://raw.githubusercontent.com/YOUR_USERNAME/git-stats/main/generated/languages.svg)](https://github.com/YOUR_USERNAME/git-stats)
+```html
+<div align="left">
+  <!-- Right: Top Languages -->
+  <img align="right" src="https://raw.githubusercontent.com/YOUR_USERNAME/git-stats/main/generated/languages.svg" width="400" alt="Top Languages" />
+  
+  <!-- Left: Streak Card -->
+  <img src="https://raw.githubusercontent.com/YOUR_USERNAME/git-stats/main/generated/streak.svg" width="424" alt="GitHub Streak" />
+  <br/>
+  <!-- Left: Developer Stats Card -->
+  <img src="https://raw.githubusercontent.com/YOUR_USERNAME/git-stats/main/generated/stats.svg" width="424" alt="Developer Stats" />
+</div>
 ```
-
 *(Replace `YOUR_USERNAME` with your GitHub username).*
 
 ---
 
-## 📐 Perfect Symmetrical Grid Layout
+## 📂 Repository Structure
 
-Stack the **Streak Card** ($180\text{px}$) and **Developer Stats Card** ($180\text{px}$) on the left, and place the **Languages Card** ($364\text{px}$) on the right for balanced pixel alignment ($180 + 180 + 4\text{px}\text{ gap} = 364\text{px}$):
-
-```html
-<div align="left">
-  <!-- Right: 12-Language Card filling full combined height -->
-  <img align="right" src="https://raw.githubusercontent.com/YOUR_USERNAME/git-stats/main/generated/languages.svg" width="400" alt="Languages" />
-  
-  <!-- Left: Streak Card -->
-  <img src="https://raw.githubusercontent.com/YOUR_USERNAME/git-stats/main/generated/streak.svg" width="424" alt="Streak Card" />
-  <br/>
-  <!-- Left: Developer Stats Card -->
-  <img src="https://raw.githubusercontent.com/YOUR_USERNAME/git-stats/main/generated/stats.svg" width="424" alt="Developer Stats Card" />
-</div>
-```
+| Directory | Description |
+| :--- | :--- |
+| **`generated/`** | Destination directory where the automated GitHub Actions workflow outputs your live profile SVG cards. |
+| **`preview/`** | Visual showcase gallery demonstrating all card types, dimensions, and layout variations. |
+| **`src/`** | Native Zig 0.16.0 engine (GraphQL API client, Linguist color mapping, SVG renderers). |
+| **`.github/workflows/`** | Automated GitHub Actions workflow (`generate-stats.yml`) running on a cron schedule and repository push. |
 
 ---
 
 ## 🛠️ CLI Reference & Local Usage
 
-The engine is built in native **Zig 0.16.0** with zero third-party C dependencies.
+The engine is built in native **Zig 0.16.0** with zero external C dependencies.
 
 ```bash
 # Build release executable
@@ -189,7 +158,7 @@ zig build -Doptimize=ReleaseFast
 | `--streak` | `false` | Generate streak statistics card |
 | `--stats` | `false` | Generate developer craft & consistency rating card |
 | `--rhythm` | `false` | Generate 24h × 7d circadian commit punchcard card |
-| `--username` | `adityapandeydev` | Target GitHub username (or `"demo"` for generic preview) |
+| `--username` | `adityapandeydev` | Target GitHub username |
 | `--theme` | `tokyonight` | Theme preset (`tokyonight`, `github_dark`, `catppuccin`, `dracula`, `nord`, etc.) |
 | `--layout` | `standard` | Card layout: `standard`, `donut`, `compact` |
 | `--show-sparkline` | `true` | Toggle 14-day activity sparkline on Streak Card (`--hide-sparkline` / `--show-sparkline=false`) |
