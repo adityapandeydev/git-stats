@@ -23,7 +23,7 @@ const CliConfig = struct {
     layout: []const u8 = "standard",
     columns: usize = 2,
     card_width: u32 = 400,
-    card_height: u32 = 364,
+    card_height: u32 = 0,
     border_radius: f64 = 4.5,
     token: ?[]const u8 = null,
     exclude_repo: ?[]const u8 = null,
@@ -102,10 +102,12 @@ fn parseCliArgs(args: []const []const u8) CliConfig {
             i += 1;
             cfg.output = args[i];
         } else if (std.mem.startsWith(u8, arg, "--langs-count=")) {
-            cfg.langs_count = std.fmt.parseInt(usize, arg["--langs-count=".len..], 10) catch 8;
+            const val = std.fmt.parseInt(usize, arg["--langs-count=".len..], 10) catch 8;
+            cfg.langs_count = @max(6, @min(16, val));
         } else if (std.mem.eql(u8, arg, "--langs-count") and i + 1 < args.len) {
             i += 1;
-            cfg.langs_count = std.fmt.parseInt(usize, args[i], 10) catch 8;
+            const val = std.fmt.parseInt(usize, args[i], 10) catch 8;
+            cfg.langs_count = @max(6, @min(16, val));
         } else if (std.mem.startsWith(u8, arg, "--hide=")) {
             cfg.hide = arg["--hide=".len..];
         } else if (std.mem.eql(u8, arg, "--hide") and i + 1 < args.len) {
@@ -132,10 +134,10 @@ fn parseCliArgs(args: []const []const u8) CliConfig {
             i += 1;
             cfg.card_width = std.fmt.parseInt(u32, args[i], 10) catch 400;
         } else if (std.mem.startsWith(u8, arg, "--card-height=")) {
-            cfg.card_height = std.fmt.parseInt(u32, arg["--card-height=".len..], 10) catch 364;
+            cfg.card_height = std.fmt.parseInt(u32, arg["--card-height=".len..], 10) catch 0;
         } else if (std.mem.eql(u8, arg, "--card-height") and i + 1 < args.len) {
             i += 1;
-            cfg.card_height = std.fmt.parseInt(u32, args[i], 10) catch 364;
+            cfg.card_height = std.fmt.parseInt(u32, args[i], 10) catch 0;
         } else if (std.mem.startsWith(u8, arg, "--border-radius=")) {
             cfg.border_radius = std.fmt.parseFloat(f64, arg["--border-radius=".len..]) catch 4.5;
         } else if (std.mem.eql(u8, arg, "--border-radius") and i + 1 < args.len) {
@@ -290,7 +292,7 @@ pub fn main(init: std.process.Init) !void {
         const streak_opts = streak_renderer.StreakRenderOptions{
             .theme = active_theme,
             .card_width = if (cli.card_width != 400) cli.card_width else 424,
-            .card_height = if (cli.card_height != 364) cli.card_height else 180,
+            .card_height = if (cli.card_height > 0) cli.card_height else 180,
             .border_radius = cli.border_radius,
             .hide_border = cli.hide_border,
             .animate = cli.animate,
@@ -345,7 +347,7 @@ pub fn main(init: std.process.Init) !void {
         const stats_opts = stats_renderer.StatsRenderOptions{
             .theme = active_theme,
             .card_width = if (cli.card_width != 400) cli.card_width else 424,
-            .card_height = if (cli.card_height != 364) cli.card_height else 180,
+            .card_height = if (cli.card_height > 0) cli.card_height else 180,
             .border_radius = cli.border_radius,
             .hide_border = cli.hide_border,
             .hide_title = cli.hide_title,
@@ -397,7 +399,7 @@ pub fn main(init: std.process.Init) !void {
         const rhythm_opts = rhythm_renderer.RhythmRenderOptions{
             .theme = active_theme,
             .card_width = if (cli.card_width != 400) cli.card_width else 424,
-            .card_height = if (cli.card_height != 364) cli.card_height else 180,
+            .card_height = if (cli.card_height > 0) cli.card_height else 180,
             .border_radius = cli.border_radius,
             .hide_border = cli.hide_border,
             .hide_title = cli.hide_title,
@@ -445,7 +447,7 @@ pub fn main(init: std.process.Init) !void {
         const radar_opts = radar_renderer.RadarRenderOptions{
             .theme = active_theme,
             .card_width = if (cli.card_width != 400) cli.card_width else 424,
-            .card_height = if (cli.card_height != 364) cli.card_height else 180,
+            .card_height = if (cli.card_height > 0) cli.card_height else 180,
             .border_radius = cli.border_radius,
             .hide_border = cli.hide_border,
             .hide_title = cli.hide_title,
@@ -549,11 +551,10 @@ pub fn main(init: std.process.Init) !void {
 
     try cwd.writeFile(io, .{ .sub_path = cli.output, .data = svg_content });
 
-    std.debug.print("✅ Successfully generated '{s}' for '{s}' ({d} languages, {d}x{d} px)\n", .{
+    const display_count = @min(visible_langs.items.len, cli.langs_count);
+    std.debug.print("✅ Successfully generated '{s}' for '{s}' ({d} languages)\n", .{
         cli.output,
         username,
-        visible_langs.items.len,
-        cli.card_width,
-        cli.card_height,
+        display_count,
     });
 }

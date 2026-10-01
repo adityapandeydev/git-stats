@@ -6,7 +6,7 @@
 [![Zig Version](https://img.shields.io/badge/Zig-0.16.0-orange.svg)](https://ziglang.org/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 
-GitStats delivers fully customizable, automated vector SVG cards for your GitHub profile with zero third-party service dependencies, zero rate limits, and zero downtime. Display **8 to 16+ languages** with auto-recalculated percentages, track active contribution streaks with a 14-day momentum sparkline, compute your developer craft rating, and map your 24/7 circadian commit habits.
+GitStats delivers fully customizable, automated vector SVG cards for your GitHub profile with zero third-party service dependencies, zero rate limits, and zero downtime. Display **6 to 16 languages** with auto-recalculated percentages, track active contribution streaks with a 14-day momentum sparkline, compute your developer craft rating, and map your 24/7 circadian commit habits.
 
 ---
 
@@ -130,7 +130,7 @@ zig build -Doptimize=ReleaseFast
 # 1. Generate Languages Card
 ./zig-out/bin/git_stats --generate \
   --username="YOUR_USERNAME" \
-  --langs-count=12 \
+  --langs-count=8 \
   --theme="tokyonight" \
   --layout="standard" \
   --card-width=400 \
@@ -178,6 +178,7 @@ zig build -Doptimize=ReleaseFast
 | `--username` | `adityapandeydev` | Target GitHub username |
 | `--theme` | `tokyonight` | Theme preset (`tokyonight`, `github_dark`, `catppuccin`, `dracula`, `nord`, etc.) |
 | `--layout` | `standard` | Card layout: `standard`, `donut`, `compact` |
+| `--langs-count` | `8` | Number of languages to display in languages card (6 to 16) |
 | `--show-sparkline` | `true` | Toggle 14-day activity sparkline on Streak Card (`--hide-sparkline` / `--show-sparkline=false`) |
 | `--timeframe` | `all-time` | Stats timeframe (`all-time` or `this-year`) |
 | `--tz` | `5.5` | Timezone offset in hours (e.g. `5.5` for IST, `-5.0` for EST, `0.0` for UTC) |

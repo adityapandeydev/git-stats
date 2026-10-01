@@ -37,8 +37,9 @@ fn escapeXml(allocator: std.mem.Allocator, input: []const u8) ![]u8 {
 
 pub fn renderSVG(allocator: std.mem.Allocator, stats: *const models.UserStats, opts: RenderOptions) ![]u8 {
     var options = opts;
-    if (options.card_width == 0) options.card_width = 450;
-    if (options.langs_count == 0) options.langs_count = 8;
+    if (options.card_width == 0) options.card_width = 400;
+    if (options.langs_count < 6) options.langs_count = 6;
+    if (options.langs_count > 16) options.langs_count = 16;
     if (options.border_radius <= 0) {
         options.border_radius = options.theme.border_radius;
         if (options.border_radius <= 0) options.border_radius = 4.5;
@@ -119,43 +120,36 @@ fn renderStandardLayout(allocator: std.mem.Allocator, langs: []const models.Lang
     const bar_y: i32 = if (opts.hide_title) 28 else 52;
     const bar_height: i32 = 10;
     const bar_width: i32 = @as(i32, @intCast(width)) - (padding_x * 2);
+    const bar_bottom: i32 = bar_y + bar_height;
 
-    var row_height: i32 = 26;
-    var list_start_y: i32 = bar_y + bar_height + 22;
-    const min_required_height: i32 = list_start_y + (@as(i32, @intCast(rows)) * row_height) + 16;
-    var height: i32 = min_required_height;
+    const standard_row_step: i32 = 34;
+    const standard_bar_to_row: i32 = 34;
+    const natural_first_row_y: i32 = bar_bottom + standard_bar_to_row;
+    const natural_last_row_y: i32 = natural_first_row_y + (@as(i32, @intCast(rows - 1)) * standard_row_step);
+    const natural_height: i32 = natural_last_row_y + padding_y;
+
+    var height: i32 = natural_height;
+    var row_height: i32 = standard_row_step;
+    var list_start_y: i32 = natural_first_row_y;
 
     if (opts.card_height > 0) {
         height = @intCast(opts.card_height);
-        if (height < min_required_height) height = min_required_height;
+        if (height < natural_height) height = natural_height;
         if (height > 1500) height = 1500;
 
-        const target_bottom_margin: i32 = padding_y + 7;
-        const last_row_y = height - target_bottom_margin;
+        const target_last_row_y = height - padding_y;
+        const avail_middle = target_last_row_y - bar_bottom;
 
-        var intervals: i32 = @as(i32, @intCast(rows)) - 1;
-        if (intervals < 1) intervals = 1;
-
-        const bar_bottom = bar_y + bar_height;
-        const avail_middle = last_row_y - bar_bottom;
-
-        const total_slots = intervals + 1;
-        var unit_spacing = @divTrunc(avail_middle, total_slots);
-        if (unit_spacing > 80) {
-            unit_spacing = 80;
-        } else if (unit_spacing < 26) {
-            unit_spacing = 26;
+        const intervals: i32 = @as(i32, @intCast(rows)) - 1;
+        if (intervals == 0) {
+            list_start_y = bar_bottom + @divTrunc(avail_middle, 2);
+            row_height = standard_row_step;
+        } else {
+            const unit_spacing = @divTrunc(avail_middle, intervals + 1);
+            const remainder = avail_middle - (unit_spacing * (intervals + 1));
+            row_height = unit_spacing;
+            list_start_y = bar_bottom + unit_spacing + remainder;
         }
-
-        row_height = unit_spacing;
-        var bar_to_list = avail_middle - (intervals * row_height);
-        if (bar_to_list < 35) {
-            bar_to_list = 35;
-            if (intervals > 0) {
-                row_height = @divTrunc(avail_middle - bar_to_list, intervals);
-            }
-        }
-        list_start_y = bar_bottom + bar_to_list;
     }
 
     var stream = std.Io.Writer.Allocating.init(allocator);
@@ -313,13 +307,39 @@ fn renderDonutLayout(allocator: std.mem.Allocator, langs: []const models.Languag
         }
     }
     if (cols < 1) cols = 1;
-    if (cols > 4) cols = 4;
-
-    const row_height: i32 = 24;
-    const grid_start_y: i32 = @as(i32, @intFromFloat(chart_center_y + chart_radius)) + 26;
     var rows = (langs.len + cols - 1) / cols;
     if (rows < 1) rows = 1;
-    const height = grid_start_y + (@as(i32, @intCast(rows)) * row_height) + 16;
+
+    const chart_bottom = @as(i32, @intFromFloat(chart_center_y + chart_radius));
+    const standard_row_step: i32 = 25;
+    const circle_to_grid: i32 = 34;
+    const natural_first_row_y: i32 = chart_bottom + circle_to_grid;
+    const natural_last_row_y: i32 = natural_first_row_y + (@as(i32, @intCast(rows - 1)) * standard_row_step);
+    const natural_height: i32 = natural_last_row_y + padding_y;
+
+    var height: i32 = natural_height;
+    var row_height: i32 = standard_row_step;
+    var grid_start_y: i32 = natural_first_row_y;
+
+    if (opts.card_height > 0) {
+        height = @intCast(opts.card_height);
+        if (height < natural_height) height = natural_height;
+        if (height > 1500) height = 1500;
+
+        const target_last_row_y = height - padding_y;
+        const avail_middle = target_last_row_y - chart_bottom;
+
+        const intervals: i32 = @as(i32, @intCast(rows)) - 1;
+        if (intervals == 0) {
+            grid_start_y = chart_bottom + @divTrunc(avail_middle, 2);
+            row_height = standard_row_step;
+        } else {
+            const unit_spacing = @divTrunc(avail_middle, intervals + 1);
+            const remainder = avail_middle - (unit_spacing * (intervals + 1));
+            row_height = unit_spacing;
+            grid_start_y = chart_bottom + unit_spacing + remainder;
+        }
+    }
 
     var stream = std.Io.Writer.Allocating.init(allocator);
     defer stream.deinit();
