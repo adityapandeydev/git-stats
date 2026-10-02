@@ -67,26 +67,6 @@ jobs:
             --border-radius=4.5 \
             --output="generated/stats.svg"
 
-          # 5. Generate Universal Bento Grid (Desktop Profile Layout)
-          ./zig-out/bin/git_stats --bento \
-            --bento-layout="pillar-right-stack" \
-            --cards="streak,stats,languages" \
-            --username="${{ github.repository_owner }}" \
-            --theme="tokyonight" \
-            --border-radius=4.5 \
-            --hide="jupyter notebook,qml,javascript,html,css,tex" \
-            --output="generated/bento.svg"
-
-          # 6. Generate Mobile Stack Bento Grid (<picture> media query ready)
-          ./zig-out/bin/git_stats --bento \
-            --bento-layout="mobile-stack" \
-            --cards="streak,stats,languages" \
-            --username="${{ github.repository_owner }}" \
-            --theme="tokyonight" \
-            --border-radius=4.5 \
-            --hide="jupyter notebook,qml,javascript,html,css,tex" \
-            --output="generated/bento-mobile.svg"
-
 
       - name: Commit and Push Updated Cards
         run: |
