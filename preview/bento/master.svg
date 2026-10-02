@@ -1,4 +1,4 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 864.0 710.0" width="864.0" height="710.0">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 864.0 792.0" width="864.0" height="792.0">
   <defs>
     <linearGradient id="bento-bg-grad" x1="0%" y1="0%" x2="100%" y2="100%">
       <stop offset="0%" stop-color="#1a1b27" stop-opacity="1.0"/>
@@ -10,9 +10,9 @@
     .bento-slot { overflow: hidden; }
   </style>
   <!-- Master Bento Canvas Frame -->
-  <rect width="864.0" height="710.0" rx="4.5" fill="url(#bento-bg-grad)" stroke="#24283b" stroke-width="1"/>
+  <rect width="864.0" height="792.0" rx="4.5" fill="url(#bento-bg-grad)" stroke="#24283b" stroke-width="1"/>
   <!-- Slot 1: milestones (wide_hero) -->
-  <svg x="12.0" y="12.0" width="840.0" height="110.0" viewBox="0 0 840.0 110.0" class="bento-slot bento-slot-1">
+  <svg x="12.0" y="12.0" width="840.0" height="180.0" viewBox="0 0 840.0 180.0" class="bento-slot bento-slot-1">
     <defs>
     <linearGradient id="b0_mil-glass-grad" x1="0%" y1="0%" x2="100%" y2="100%">
       <stop offset="0%" stop-color="#24283b" stop-opacity="0.6"/>
@@ -34,7 +34,7 @@
     .mil-anim { animation: milFadeIn 0.5s ease-out forwards; }
   </style>
 
-  <rect width="840" height="110" rx="4.5" fill="#1a1b27" stroke="none"/>
+  <rect width="840" height="180" rx="4.5" fill="#1a1b27" stroke="none"/>
   <!-- Header -->
   <text x="18" y="24.0" class="mil-title">CAREER MILESTONES</text>
   <circle cx="145" cy="20.5" r="1.8" fill="#70a5fd"/>
@@ -127,7 +127,7 @@
   </g>
   </svg>
   <!-- Slot 2: streak (standard) -->
-  <svg x="12.0" y="134.0" width="426.1" height="180.0" viewBox="0 0 426.1 180.0" class="bento-slot bento-slot-2">
+  <svg x="12.0" y="204.0" width="414.0" height="180.0" viewBox="0 0 414.0 180.0" class="bento-slot bento-slot-2">
     <defs>
     <filter id="b1_core-glow" x="-50%" y="-50%" width="200%" height="200%">
       <feGaussianBlur in="SourceGraphic" stdDeviation="4" result="blur1"/>
@@ -192,17 +192,17 @@
     .stat-sub { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; font-weight: 400; }
     .spark-lbl { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; font-weight: 700; }
   </style>
-  <rect width="426" height="180" rx="4.5" fill="#1a1b27" stroke="none"/>
-  <line x1="151.2" y1="22.0" x2="151.2" y2="130.0" stroke="url(#b1_divider-grad)" stroke-width="1"/>
-  <line x1="274.8" y1="22.0" x2="274.8" y2="130.0" stroke="url(#b1_divider-grad)" stroke-width="1"/>
+  <rect width="414" height="180" rx="4.5" fill="#1a1b27" stroke="none"/>
+  <line x1="147.0" y1="22.0" x2="147.0" y2="130.0" stroke="url(#b1_divider-grad)" stroke-width="1"/>
+  <line x1="267.0" y1="22.0" x2="267.0" y2="130.0" stroke="url(#b1_divider-grad)" stroke-width="1"/>
   <!-- Left Column: Total Contributions -->
-  <g transform="translate(93.7, 0.0)">
+  <g transform="translate(91.1, 0.0)">
     <text x="0" y="60" text-anchor="middle" class="stat-val" font-size="24" fill="#70a5fd">2051</text>
     <text x="0" y="82" text-anchor="middle" class="stat-lbl" font-size="12" fill="#a9b1d6">Total Contributions</text>
     <text x="0" y="103" text-anchor="middle" class="stat-sub" font-size="10.5" fill="#565f89">Oct 7, 2022 - Present</text>
   </g>
   <!-- Center Column: Glowing Energy Core -->
-  <g transform="translate(213.0, 33.0)">
+  <g transform="translate(207.0, 33.0)">
     <!-- Radial Aura -->
     <circle cx="0" cy="0" r="30" fill="url(#b1_energy-aura)" style="animation: auraPulse 3.5s ease-in-out infinite; transform-origin: 0px 0px;"/>
     <!-- Orbit Ring -->
@@ -217,46 +217,46 @@
   </g>
 
   <!-- Current Streak Count -->
-  <text x="213.0" y="76.0" text-anchor="middle" class="stat-val" font-size="28" fill="url(#b1_flame-grad)" filter="url(#b1_subtle-glow)">664</text>
+  <text x="207.0" y="76.0" text-anchor="middle" class="stat-val" font-size="28" fill="url(#b1_flame-grad)" filter="url(#b1_subtle-glow)">664</text>
 
   <!-- Streak Pill Badge -->
-  <g transform="translate(213.0, 86.0)">
+  <g transform="translate(207.0, 86.0)">
     <rect x="-60" y="0" width="120" height="17" rx="8.5" fill="#bb9af7" fill-opacity="0.16" stroke="url(#b1_flame-grad)" stroke-width="1"/>
     <text x="0" y="11.5" text-anchor="middle" class="stat-lbl" font-size="8.8" letter-spacing="0.8" fill="#ffffff">⚡ MYTHIC STREAK</text>
   </g>
 
   <!-- Range Subtitle -->
-  <text x="213.0" y="118.0" text-anchor="middle" class="stat-sub" font-size="10.5" fill="#787c99">Dec 8, 2024 - Oct 2</text>
+  <text x="207.0" y="118.0" text-anchor="middle" class="stat-sub" font-size="10.5" fill="#787c99">Dec 8, 2024 - Oct 2</text>
   <!-- Right Column: Longest Streak -->
-  <g transform="translate(332.3, 0.0)">
+  <g transform="translate(322.9, 0.0)">
     <text x="0" y="60" text-anchor="middle" class="stat-val" font-size="24" fill="#70a5fd">664</text>
     <text x="0" y="82" text-anchor="middle" class="stat-lbl" font-size="12" fill="#a9b1d6">Longest Streak</text>
     <text x="0" y="103" text-anchor="middle" class="stat-sub" font-size="10.5" fill="#565f89">Dec 8, 2024 - Oct 2</text>
   </g>
   <!-- 14-Day Activity Sparkline -->
   <text x="28.0" y="136.0" class="spark-lbl" font-size="8.5" letter-spacing="0.8" fill="#565f89">14-DAY ACTIVITY MOMENTUM</text>
-  <text x="398.0" y="136.0" text-anchor="end" class="spark-lbl" font-size="8.5" letter-spacing="0.5" fill="#bb9af7">113 COMMITS</text>
-  <path d="M 28.00 147.33 C 39.38 147.33, 45.08 162.44, 56.46 162.44 C 67.85 162.44, 73.54 158.89, 84.92 158.89 C 96.31 158.89, 102.00 142.00, 113.38 142.00 C 124.77 142.00, 130.46 165.11, 141.85 165.11 C 153.23 165.11, 158.92 165.11, 170.31 165.11 C 181.69 165.11, 187.38 165.11, 198.77 165.11 C 210.15 165.11, 215.85 162.44, 227.23 162.44 C 238.62 162.44, 244.31 165.11, 255.69 165.11 C 267.08 165.11, 272.77 163.33, 284.15 163.33 C 295.54 163.33, 301.23 148.22, 312.62 148.22 C 324.00 148.22, 329.69 161.56, 341.08 161.56 C 352.46 161.56, 358.15 153.56, 369.54 153.56 C 380.92 153.56, 386.62 163.33, 398.00 163.33 L 398.00 170.00 L 28.00 170.00 Z" fill="url(#b1_sparkline-fill)"/>
-  <path d="M 28.00 147.33 C 39.38 147.33, 45.08 162.44, 56.46 162.44 C 67.85 162.44, 73.54 158.89, 84.92 158.89 C 96.31 158.89, 102.00 142.00, 113.38 142.00 C 124.77 142.00, 130.46 165.11, 141.85 165.11 C 153.23 165.11, 158.92 165.11, 170.31 165.11 C 181.69 165.11, 187.38 165.11, 198.77 165.11 C 210.15 165.11, 215.85 162.44, 227.23 162.44 C 238.62 162.44, 244.31 165.11, 255.69 165.11 C 267.08 165.11, 272.77 163.33, 284.15 163.33 C 295.54 163.33, 301.23 148.22, 312.62 148.22 C 324.00 148.22, 329.69 161.56, 341.08 161.56 C 352.46 161.56, 358.15 153.56, 369.54 153.56 C 380.92 153.56, 386.62 163.33, 398.00 163.33" fill="none" stroke="url(#b1_sparkline-grad)" stroke-width="2" stroke-linecap="round"/>
+  <text x="386.0" y="136.0" text-anchor="end" class="spark-lbl" font-size="8.5" letter-spacing="0.5" fill="#bb9af7">113 COMMITS</text>
+  <path d="M 28.00 147.33 C 39.02 147.33, 44.52 162.44, 55.54 162.44 C 66.55 162.44, 72.06 158.89, 83.08 158.89 C 94.09 158.89, 99.60 142.00, 110.62 142.00 C 121.63 142.00, 127.14 165.11, 138.15 165.11 C 149.17 165.11, 154.68 165.11, 165.69 165.11 C 176.71 165.11, 182.22 165.11, 193.23 165.11 C 204.25 165.11, 209.75 162.44, 220.77 162.44 C 231.78 162.44, 237.29 165.11, 248.31 165.11 C 259.32 165.11, 264.83 163.33, 275.85 163.33 C 286.86 163.33, 292.37 148.22, 303.38 148.22 C 314.40 148.22, 319.91 161.56, 330.92 161.56 C 341.94 161.56, 347.45 153.56, 358.46 153.56 C 369.48 153.56, 374.98 163.33, 386.00 163.33 L 386.00 170.00 L 28.00 170.00 Z" fill="url(#b1_sparkline-fill)"/>
+  <path d="M 28.00 147.33 C 39.02 147.33, 44.52 162.44, 55.54 162.44 C 66.55 162.44, 72.06 158.89, 83.08 158.89 C 94.09 158.89, 99.60 142.00, 110.62 142.00 C 121.63 142.00, 127.14 165.11, 138.15 165.11 C 149.17 165.11, 154.68 165.11, 165.69 165.11 C 176.71 165.11, 182.22 165.11, 193.23 165.11 C 204.25 165.11, 209.75 162.44, 220.77 162.44 C 231.78 162.44, 237.29 165.11, 248.31 165.11 C 259.32 165.11, 264.83 163.33, 275.85 163.33 C 286.86 163.33, 292.37 148.22, 303.38 148.22 C 314.40 148.22, 319.91 161.56, 330.92 161.56 C 341.94 161.56, 347.45 153.56, 358.46 153.56 C 369.48 153.56, 374.98 163.33, 386.00 163.33" fill="none" stroke="url(#b1_sparkline-grad)" stroke-width="2" stroke-linecap="round"/>
   <circle cx="28.00" cy="147.33" r="1.8" fill="#70a5fd" opacity="0.6"/>
-  <circle cx="56.46" cy="162.44" r="1.8" fill="#70a5fd" opacity="0.6"/>
-  <circle cx="84.92" cy="158.89" r="1.8" fill="#70a5fd" opacity="0.6"/>
-  <circle cx="113.38" cy="142.00" r="1.8" fill="#70a5fd" opacity="0.6"/>
-  <circle cx="141.85" cy="165.11" r="1.8" fill="#70a5fd" opacity="0.6"/>
-  <circle cx="170.31" cy="165.11" r="1.8" fill="#70a5fd" opacity="0.6"/>
-  <circle cx="198.77" cy="165.11" r="1.8" fill="#70a5fd" opacity="0.6"/>
-  <circle cx="227.23" cy="162.44" r="1.8" fill="#70a5fd" opacity="0.6"/>
-  <circle cx="255.69" cy="165.11" r="1.8" fill="#70a5fd" opacity="0.6"/>
-  <circle cx="284.15" cy="163.33" r="1.8" fill="#70a5fd" opacity="0.6"/>
-  <circle cx="312.62" cy="148.22" r="1.8" fill="#70a5fd" opacity="0.6"/>
-  <circle cx="341.08" cy="161.56" r="1.8" fill="#70a5fd" opacity="0.6"/>
-  <circle cx="369.54" cy="153.56" r="1.8" fill="#70a5fd" opacity="0.6"/>
+  <circle cx="55.54" cy="162.44" r="1.8" fill="#70a5fd" opacity="0.6"/>
+  <circle cx="83.08" cy="158.89" r="1.8" fill="#70a5fd" opacity="0.6"/>
+  <circle cx="110.62" cy="142.00" r="1.8" fill="#70a5fd" opacity="0.6"/>
+  <circle cx="138.15" cy="165.11" r="1.8" fill="#70a5fd" opacity="0.6"/>
+  <circle cx="165.69" cy="165.11" r="1.8" fill="#70a5fd" opacity="0.6"/>
+  <circle cx="193.23" cy="165.11" r="1.8" fill="#70a5fd" opacity="0.6"/>
+  <circle cx="220.77" cy="162.44" r="1.8" fill="#70a5fd" opacity="0.6"/>
+  <circle cx="248.31" cy="165.11" r="1.8" fill="#70a5fd" opacity="0.6"/>
+  <circle cx="275.85" cy="163.33" r="1.8" fill="#70a5fd" opacity="0.6"/>
+  <circle cx="303.38" cy="148.22" r="1.8" fill="#70a5fd" opacity="0.6"/>
+  <circle cx="330.92" cy="161.56" r="1.8" fill="#70a5fd" opacity="0.6"/>
+  <circle cx="358.46" cy="153.56" r="1.8" fill="#70a5fd" opacity="0.6"/>
   <!-- Today Active Dot -->
-  <circle cx="398.00" cy="163.33" r="3.2" fill="#bb9af7" filter="url(#b1_subtle-glow)"/>
-  <circle cx="398.00" cy="163.33" r="1.5" fill="#ffffff"/>
+  <circle cx="386.00" cy="163.33" r="3.2" fill="#bb9af7" filter="url(#b1_subtle-glow)"/>
+  <circle cx="386.00" cy="163.33" r="1.5" fill="#ffffff"/>
   </svg>
   <!-- Slot 3: stats (standard) -->
-  <svg x="12.0" y="326.0" width="426.1" height="180.0" viewBox="0 0 426.1 180.0" class="bento-slot bento-slot-3">
+  <svg x="438.0" y="204.0" width="414.0" height="180.0" viewBox="0 0 414.0 180.0" class="bento-slot bento-slot-3">
     <defs>
     <filter id="b2_ring-glow" x="-50%" y="-50%" width="200%" height="200%">
       <feGaussianBlur in="SourceGraphic" stdDeviation="4" result="blur1"/>
@@ -298,7 +298,7 @@
     .tier-badge-txt { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; font-weight: 900; }
     .tier-sub-txt { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; font-weight: 700; }
   </style>
-  <rect width="426" height="180" rx="4.5" fill="#1a1b27" stroke="none"/>
+  <rect width="414" height="180" rx="4.5" fill="#1a1b27" stroke="none"/>
   <!-- Header -->
   <text x="22" y="25.0" class="stat-heading" font-size="12.5" letter-spacing="1.2" fill="#70a5fd">DEVELOPER STATS</text>
   <circle cx="178" cy="21.5" r="2.5" fill="#bb9af7"/>
@@ -348,7 +348,7 @@
   <!-- Glass Divider -->
   <line x1="254.0" y1="22" x2="254.0" y2="158.0" stroke="url(#b2_stats-divider-grad)" stroke-width="1"/>
   <!-- Radial Rating Gauge -->
-  <g transform="translate(336.5, 75.0)">
+  <g transform="translate(327.1, 75.0)">
     <!-- Aura Glow -->
     <circle cx="0" cy="0" r="54" fill="url(#b2_ring-aura)" style="animation: auraBreathe 4s ease-in-out infinite; transform-origin: 0px 0px;"/>
     <!-- Inactive Track -->
@@ -362,14 +362,14 @@
     <text x="0" y="22" text-anchor="middle" class="tier-sub-txt" font-size="10.5" fill="#a9b1d6">793 / 1000</text>
   </g>
   <!-- Rank Pill Badge -->
-  <g transform="translate(279.5, 138.0)">
+  <g transform="translate(270.1, 138.0)">
     <rect width="114.0" height="19.0" rx="9.5" fill="#bb9af7" fill-opacity="0.16" stroke="url(#b2_tier-grad)" stroke-width="1"/>
     <text x="57.0" y="12.5" text-anchor="middle" class="stat-heading" font-size="8.8" letter-spacing="0.8" fill="#ffffff">Top 2%</text>
   </g>
-  <text x="336.5" y="169" text-anchor="middle" class="matrix-sub" font-size="9.5" letter-spacing="0.5" fill="#787c99">Master Craftsman</text>
+  <text x="327.1" y="169" text-anchor="middle" class="matrix-sub" font-size="9.5" letter-spacing="0.5" fill="#787c99">Master Craftsman</text>
   </svg>
-  <!-- Slot 4: languages (tall_pillar) -->
-  <svg x="450.1" y="134.0" width="401.9" height="372.0" viewBox="0 0 401.9 372.0" class="bento-slot bento-slot-4">
+  <!-- Slot 4: languages (standard) -->
+  <svg x="12.0" y="396.0" width="414.0" height="180.0" viewBox="0 0 414.0 180.0" class="bento-slot bento-slot-4">
     <style>
         .card-title { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; font-size: 16px; font-weight: 600; fill: #70a5fd; }
         .lang-name { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; font-size: 12.5px; font-weight: 500; fill: #c0caf5; }
@@ -387,41 +387,41 @@
         }
         .animate-item { animation: fadeIn 0.4s ease-out forwards; }
         .bar-container { transform-origin: left; animation: scaleBar 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
-        </style><rect width="401" height="372" rx="4.5" fill="#1a1b27" stroke="none"/><text x="25" y="28" class="card-title">Most Used Languages</text>
+        </style><rect width="414" height="226" rx="4.5" fill="#1a1b27" stroke="none"/><text x="25" y="28" class="card-title">Most Used Languages</text>
     <defs>
         <clipPath id="b3_bar-clip">
-            <rect x="25" y="52" width="351" height="10" rx="5" ry="5"/>
+            <rect x="25" y="52" width="364" height="10" rx="5" ry="5"/>
         </clipPath>
     </defs>
-    <rect class="bar-bg" x="25" y="52" width="351" height="10" rx="5"/>
-<g clip-path="url(#b3_bar-clip)" class="bar-container"><rect x="25.00" y="52" width="97.47" height="10" fill="#DA5B0B" class="bar-segment"><title>Jupyter Notebook: 27.77%</title></rect><rect x="122.47" y="52" width="82.11" height="10" fill="#3178c6" class="bar-segment"><title>TypeScript: 23.39%</title></rect><rect x="204.58" y="52" width="41.40" height="10" fill="#dea584" class="bar-segment"><title>Rust: 11.79%</title></rect><rect x="245.97" y="52" width="34.45" height="10" fill="#00ADD8" class="bar-segment"><title>Go: 9.81%</title></rect><rect x="280.42" y="52" width="31.46" height="10" fill="#44a51c" class="bar-segment"><title>QML: 8.96%</title></rect><rect x="311.88" y="52" width="29.06" height="10" fill="#b07219" class="bar-segment"><title>Java: 8.28%</title></rect><rect x="340.94" y="52" width="19.39" height="10" fill="#3D6117" class="bar-segment"><title>TeX: 5.52%</title></rect><rect x="360.32" y="52" width="15.68" height="10" fill="#ec915c" class="bar-segment"><title>Zig: 4.47%</title></rect></g><g class="animate-item" style="animation-delay: 100ms;">
-<circle cx="30.0" cy="129.5" r="4.5" fill="#DA5B0B"/>
-<text x="41.0" y="134.0" class="lang-name">Jupyter Notebook</text><text x="185.5" y="134.0" text-anchor="end" class="lang-pct">27.77%</text>
+    <rect class="bar-bg" x="25" y="52" width="364" height="10" rx="5"/>
+<g clip-path="url(#b3_bar-clip)" class="bar-container"><rect x="25.00" y="52" width="101.08" height="10" fill="#DA5B0B" class="bar-segment"><title>Jupyter Notebook: 27.77%</title></rect><rect x="126.08" y="52" width="85.15" height="10" fill="#3178c6" class="bar-segment"><title>TypeScript: 23.39%</title></rect><rect x="211.23" y="52" width="42.93" height="10" fill="#dea584" class="bar-segment"><title>Rust: 11.79%</title></rect><rect x="254.16" y="52" width="35.73" height="10" fill="#00ADD8" class="bar-segment"><title>Go: 9.81%</title></rect><rect x="289.88" y="52" width="32.62" height="10" fill="#44a51c" class="bar-segment"><title>QML: 8.96%</title></rect><rect x="322.51" y="52" width="30.13" height="10" fill="#b07219" class="bar-segment"><title>Java: 8.28%</title></rect><rect x="352.64" y="52" width="20.10" height="10" fill="#3D6117" class="bar-segment"><title>TeX: 5.52%</title></rect><rect x="372.74" y="52" width="16.26" height="10" fill="#ec915c" class="bar-segment"><title>Zig: 4.47%</title></rect></g><g class="animate-item" style="animation-delay: 100ms;">
+<circle cx="30.0" cy="91.5" r="4.5" fill="#DA5B0B"/>
+<text x="41.0" y="96.0" class="lang-name">Jupyter Notebook</text><text x="192.0" y="96.0" text-anchor="end" class="lang-pct">27.77%</text>
 </g><g class="animate-item" style="animation-delay: 140ms;">
-<circle cx="30.0" cy="199.5" r="4.5" fill="#3178c6"/>
-<text x="41.0" y="204.0" class="lang-name">TypeScript</text><text x="185.5" y="204.0" text-anchor="end" class="lang-pct">23.39%</text>
+<circle cx="30.0" cy="125.5" r="4.5" fill="#3178c6"/>
+<text x="41.0" y="130.0" class="lang-name">TypeScript</text><text x="192.0" y="130.0" text-anchor="end" class="lang-pct">23.39%</text>
 </g><g class="animate-item" style="animation-delay: 180ms;">
-<circle cx="30.0" cy="269.5" r="4.5" fill="#dea584"/>
-<text x="41.0" y="274.0" class="lang-name">Rust</text><text x="185.5" y="274.0" text-anchor="end" class="lang-pct">11.79%</text>
+<circle cx="30.0" cy="159.5" r="4.5" fill="#dea584"/>
+<text x="41.0" y="164.0" class="lang-name">Rust</text><text x="192.0" y="164.0" text-anchor="end" class="lang-pct">11.79%</text>
 </g><g class="animate-item" style="animation-delay: 220ms;">
-<circle cx="30.0" cy="339.5" r="4.5" fill="#00ADD8"/>
-<text x="41.0" y="344.0" class="lang-name">Go</text><text x="185.5" y="344.0" text-anchor="end" class="lang-pct">9.81%</text>
+<circle cx="30.0" cy="193.5" r="4.5" fill="#00ADD8"/>
+<text x="41.0" y="198.0" class="lang-name">Go</text><text x="192.0" y="198.0" text-anchor="end" class="lang-pct">9.81%</text>
 </g><g class="animate-item" style="animation-delay: 260ms;">
-<circle cx="205.5" cy="129.5" r="4.5" fill="#44a51c"/>
-<text x="216.5" y="134.0" class="lang-name">QML</text><text x="361.0" y="134.0" text-anchor="end" class="lang-pct">8.96%</text>
+<circle cx="212.0" cy="91.5" r="4.5" fill="#44a51c"/>
+<text x="223.0" y="96.0" class="lang-name">QML</text><text x="374.0" y="96.0" text-anchor="end" class="lang-pct">8.96%</text>
 </g><g class="animate-item" style="animation-delay: 300ms;">
-<circle cx="205.5" cy="199.5" r="4.5" fill="#b07219"/>
-<text x="216.5" y="204.0" class="lang-name">Java</text><text x="361.0" y="204.0" text-anchor="end" class="lang-pct">8.28%</text>
+<circle cx="212.0" cy="125.5" r="4.5" fill="#b07219"/>
+<text x="223.0" y="130.0" class="lang-name">Java</text><text x="374.0" y="130.0" text-anchor="end" class="lang-pct">8.28%</text>
 </g><g class="animate-item" style="animation-delay: 340ms;">
-<circle cx="205.5" cy="269.5" r="4.5" fill="#3D6117"/>
-<text x="216.5" y="274.0" class="lang-name">TeX</text><text x="361.0" y="274.0" text-anchor="end" class="lang-pct">5.52%</text>
+<circle cx="212.0" cy="159.5" r="4.5" fill="#3D6117"/>
+<text x="223.0" y="164.0" class="lang-name">TeX</text><text x="374.0" y="164.0" text-anchor="end" class="lang-pct">5.52%</text>
 </g><g class="animate-item" style="animation-delay: 380ms;">
-<circle cx="205.5" cy="339.5" r="4.5" fill="#ec915c"/>
-<text x="216.5" y="344.0" class="lang-name">Zig</text><text x="361.0" y="344.0" text-anchor="end" class="lang-pct">4.47%</text>
+<circle cx="212.0" cy="193.5" r="4.5" fill="#ec915c"/>
+<text x="223.0" y="198.0" class="lang-name">Zig</text><text x="374.0" y="198.0" text-anchor="end" class="lang-pct">4.47%</text>
 </g>
   </svg>
-  <!-- Slot 5: rhythm (compact_col) -->
-  <svg x="12.0" y="518.0" width="272.0" height="180.0" viewBox="0 0 272.0 180.0" class="bento-slot bento-slot-5">
+  <!-- Slot 5: rhythm (standard) -->
+  <svg x="438.0" y="396.0" width="414.0" height="180.0" viewBox="0 0 414.0 180.0" class="bento-slot bento-slot-5">
     <defs>
     <linearGradient id="b4_rhythm-divider-grad" x1="0%" y1="0%" x2="0%" y2="100%">
       <stop offset="0%" stop-color="#1a1b27" stop-opacity="0.0"/>
@@ -454,197 +454,228 @@
     .rhythm-stat-txt { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; font-weight: 600; font-size: 7.8px; letter-spacing: 0.2px; fill: #7982a9; }
     .rhythm-count-txt { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; font-weight: 500; font-size: 8px; fill: #565f89; }
   </style>
-  <rect width="272" height="180" rx="4.5" fill="#1a1b27" stroke="none"/>
+  <rect width="414" height="180" rx="4.5" fill="#1a1b27" stroke="none"/>
   <!-- Header -->
-  <text x="136.0" y="25.0" text-anchor="middle" class="rhythm-title">COMMIT RHYTHM</text>
-  <text x="26.0" y="58.0" class="rhythm-lbl" text-anchor="end">Mon</text>
-  <text x="26.0" y="70.0" class="rhythm-lbl" text-anchor="end">Tue</text>
-  <text x="26.0" y="82.0" class="rhythm-lbl" text-anchor="end">Wed</text>
-  <text x="26.0" y="94.0" class="rhythm-lbl" text-anchor="end">Thu</text>
-  <text x="26.0" y="106.0" class="rhythm-lbl" text-anchor="end">Fri</text>
-  <text x="26.0" y="118.0" class="rhythm-lbl" text-anchor="end">Sat</text>
-  <text x="26.0" y="130.0" class="rhythm-lbl" text-anchor="end">Sun</text>
+  <text x="22" y="25.0" class="rhythm-title">COMMIT RHYTHM</text>
+  <circle cx="152" cy="21.5" r="2.5" fill="#70a5fd"/>
+  <text x="160" y="24.5" class="rhythm-sub">24H × 7D MATRIX</text>
+  <text x="34" y="58.0" class="rhythm-lbl" text-anchor="end">Mon</text>
+  <text x="34" y="70.0" class="rhythm-lbl" text-anchor="end">Tue</text>
+  <text x="34" y="82.0" class="rhythm-lbl" text-anchor="end">Wed</text>
+  <text x="34" y="94.0" class="rhythm-lbl" text-anchor="end">Thu</text>
+  <text x="34" y="106.0" class="rhythm-lbl" text-anchor="end">Fri</text>
+  <text x="34" y="118.0" class="rhythm-lbl" text-anchor="end">Sat</text>
+  <text x="34" y="130.0" class="rhythm-lbl" text-anchor="end">Sun</text>
   <!-- Matrix Cells -->
-  <g transform="translate(32.0, 50.0)">
-    <rect x="0.0" y="0.0" width="7.0" height="8.5" rx="2" fill="#3d59a1"/>
-    <rect x="8.8" y="0.0" width="7.0" height="8.5" rx="2" fill="#2e3c64"/>
-    <rect x="17.6" y="0.0" width="7.0" height="8.5" rx="2" fill="#1f2335" fill-opacity="0.35"/>
-    <rect x="26.4" y="0.0" width="7.0" height="8.5" rx="2" fill="#3d59a1"/>
-    <rect x="35.2" y="0.0" width="7.0" height="8.5" rx="2" fill="#1f2335" fill-opacity="0.35"/>
-    <rect x="44.0" y="0.0" width="7.0" height="8.5" rx="2" fill="#2e3c64"/>
-    <rect x="52.8" y="0.0" width="7.0" height="8.5" rx="2" fill="#1f2335" fill-opacity="0.35"/>
-    <rect x="61.6" y="0.0" width="7.0" height="8.5" rx="2" fill="#1f2335" fill-opacity="0.35"/>
-    <rect x="70.4" y="0.0" width="7.0" height="8.5" rx="2" fill="#1f2335" fill-opacity="0.35"/>
-    <rect x="79.2" y="0.0" width="7.0" height="8.5" rx="2" fill="#2e3c64"/>
-    <rect x="88.0" y="0.0" width="7.0" height="8.5" rx="2" fill="#2e3c64"/>
-    <rect x="96.8" y="0.0" width="7.0" height="8.5" rx="2" fill="#3d59a1"/>
-    <rect x="105.6" y="0.0" width="7.0" height="8.5" rx="2" fill="#3d59a1"/>
-    <rect x="114.4" y="0.0" width="7.0" height="8.5" rx="2" fill="#3d59a1"/>
-    <rect x="123.2" y="0.0" width="7.0" height="8.5" rx="2" fill="#2e3c64"/>
-    <rect x="132.0" y="0.0" width="7.0" height="8.5" rx="2" fill="#2e3c64"/>
-    <rect x="140.8" y="0.0" width="7.0" height="8.5" rx="2" fill="#1f2335" fill-opacity="0.35"/>
-    <rect x="149.6" y="0.0" width="7.0" height="8.5" rx="2" fill="#3d59a1"/>
-    <rect x="158.4" y="0.0" width="7.0" height="8.5" rx="2" fill="#bb9af7" filter="url(#b4_peak-glow)"/>
-    <rect x="167.2" y="0.0" width="7.0" height="8.5" rx="2" fill="#1f2335" fill-opacity="0.35"/>
-    <rect x="176.0" y="0.0" width="7.0" height="8.5" rx="2" fill="#2e3c64"/>
-    <rect x="184.8" y="0.0" width="7.0" height="8.5" rx="2" fill="#3d59a1"/>
-    <rect x="193.6" y="0.0" width="7.0" height="8.5" rx="2" fill="#2e3c64"/>
-    <rect x="202.4" y="0.0" width="7.0" height="8.5" rx="2" fill="#7aa2f7"/>
-    <rect x="0.0" y="12.0" width="7.0" height="8.5" rx="2" fill="#7aa2f7"/>
-    <rect x="8.8" y="12.0" width="7.0" height="8.5" rx="2" fill="#3d59a1"/>
-    <rect x="17.6" y="12.0" width="7.0" height="8.5" rx="2" fill="#2e3c64"/>
-    <rect x="26.4" y="12.0" width="7.0" height="8.5" rx="2" fill="#2e3c64"/>
-    <rect x="35.2" y="12.0" width="7.0" height="8.5" rx="2" fill="#2e3c64"/>
-    <rect x="44.0" y="12.0" width="7.0" height="8.5" rx="2" fill="#1f2335" fill-opacity="0.35"/>
-    <rect x="52.8" y="12.0" width="7.0" height="8.5" rx="2" fill="#1f2335" fill-opacity="0.35"/>
-    <rect x="61.6" y="12.0" width="7.0" height="8.5" rx="2" fill="#1f2335" fill-opacity="0.35"/>
-    <rect x="70.4" y="12.0" width="7.0" height="8.5" rx="2" fill="#2e3c64"/>
-    <rect x="79.2" y="12.0" width="7.0" height="8.5" rx="2" fill="#7aa2f7"/>
-    <rect x="88.0" y="12.0" width="7.0" height="8.5" rx="2" fill="#3d59a1"/>
-    <rect x="96.8" y="12.0" width="7.0" height="8.5" rx="2" fill="#7aa2f7"/>
-    <rect x="105.6" y="12.0" width="7.0" height="8.5" rx="2" fill="#7aa2f7"/>
-    <rect x="114.4" y="12.0" width="7.0" height="8.5" rx="2" fill="#3d59a1"/>
-    <rect x="123.2" y="12.0" width="7.0" height="8.5" rx="2" fill="#7aa2f7"/>
-    <rect x="132.0" y="12.0" width="7.0" height="8.5" rx="2" fill="#2e3c64"/>
-    <rect x="140.8" y="12.0" width="7.0" height="8.5" rx="2" fill="#3d59a1"/>
-    <rect x="149.6" y="12.0" width="7.0" height="8.5" rx="2" fill="#2e3c64"/>
-    <rect x="158.4" y="12.0" width="7.0" height="8.5" rx="2" fill="#2e3c64"/>
-    <rect x="167.2" y="12.0" width="7.0" height="8.5" rx="2" fill="#1f2335" fill-opacity="0.35"/>
-    <rect x="176.0" y="12.0" width="7.0" height="8.5" rx="2" fill="#2e3c64"/>
-    <rect x="184.8" y="12.0" width="7.0" height="8.5" rx="2" fill="#3d59a1"/>
-    <rect x="193.6" y="12.0" width="7.0" height="8.5" rx="2" fill="#2e3c64"/>
-    <rect x="202.4" y="12.0" width="7.0" height="8.5" rx="2" fill="#2e3c64"/>
-    <rect x="0.0" y="24.0" width="7.0" height="8.5" rx="2" fill="#1f2335" fill-opacity="0.35"/>
-    <rect x="8.8" y="24.0" width="7.0" height="8.5" rx="2" fill="#1f2335" fill-opacity="0.35"/>
-    <rect x="17.6" y="24.0" width="7.0" height="8.5" rx="2" fill="#1f2335" fill-opacity="0.35"/>
-    <rect x="26.4" y="24.0" width="7.0" height="8.5" rx="2" fill="#1f2335" fill-opacity="0.35"/>
-    <rect x="35.2" y="24.0" width="7.0" height="8.5" rx="2" fill="#1f2335" fill-opacity="0.35"/>
-    <rect x="44.0" y="24.0" width="7.0" height="8.5" rx="2" fill="#2e3c64"/>
-    <rect x="52.8" y="24.0" width="7.0" height="8.5" rx="2" fill="#1f2335" fill-opacity="0.35"/>
-    <rect x="61.6" y="24.0" width="7.0" height="8.5" rx="2" fill="#2e3c64"/>
-    <rect x="70.4" y="24.0" width="7.0" height="8.5" rx="2" fill="#2e3c64"/>
-    <rect x="79.2" y="24.0" width="7.0" height="8.5" rx="2" fill="#2e3c64"/>
-    <rect x="88.0" y="24.0" width="7.0" height="8.5" rx="2" fill="#2e3c64"/>
-    <rect x="96.8" y="24.0" width="7.0" height="8.5" rx="2" fill="#bb9af7"/>
-    <rect x="105.6" y="24.0" width="7.0" height="8.5" rx="2" fill="#7aa2f7"/>
-    <rect x="114.4" y="24.0" width="7.0" height="8.5" rx="2" fill="#3d59a1"/>
-    <rect x="123.2" y="24.0" width="7.0" height="8.5" rx="2" fill="#2e3c64"/>
-    <rect x="132.0" y="24.0" width="7.0" height="8.5" rx="2" fill="#1f2335" fill-opacity="0.35"/>
-    <rect x="140.8" y="24.0" width="7.0" height="8.5" rx="2" fill="#3d59a1"/>
-    <rect x="149.6" y="24.0" width="7.0" height="8.5" rx="2" fill="#3d59a1"/>
-    <rect x="158.4" y="24.0" width="7.0" height="8.5" rx="2" fill="#3d59a1"/>
-    <rect x="167.2" y="24.0" width="7.0" height="8.5" rx="2" fill="#3d59a1"/>
-    <rect x="176.0" y="24.0" width="7.0" height="8.5" rx="2" fill="#2e3c64"/>
-    <rect x="184.8" y="24.0" width="7.0" height="8.5" rx="2" fill="#1f2335" fill-opacity="0.35"/>
-    <rect x="193.6" y="24.0" width="7.0" height="8.5" rx="2" fill="#2e3c64"/>
-    <rect x="202.4" y="24.0" width="7.0" height="8.5" rx="2" fill="#2e3c64"/>
-    <rect x="0.0" y="36.0" width="7.0" height="8.5" rx="2" fill="#1f2335" fill-opacity="0.35"/>
-    <rect x="8.8" y="36.0" width="7.0" height="8.5" rx="2" fill="#1f2335" fill-opacity="0.35"/>
-    <rect x="17.6" y="36.0" width="7.0" height="8.5" rx="2" fill="#1f2335" fill-opacity="0.35"/>
-    <rect x="26.4" y="36.0" width="7.0" height="8.5" rx="2" fill="#1f2335" fill-opacity="0.35"/>
-    <rect x="35.2" y="36.0" width="7.0" height="8.5" rx="2" fill="#1f2335" fill-opacity="0.35"/>
-    <rect x="44.0" y="36.0" width="7.0" height="8.5" rx="2" fill="#1f2335" fill-opacity="0.35"/>
-    <rect x="52.8" y="36.0" width="7.0" height="8.5" rx="2" fill="#1f2335" fill-opacity="0.35"/>
-    <rect x="61.6" y="36.0" width="7.0" height="8.5" rx="2" fill="#1f2335" fill-opacity="0.35"/>
-    <rect x="70.4" y="36.0" width="7.0" height="8.5" rx="2" fill="#1f2335" fill-opacity="0.35"/>
-    <rect x="79.2" y="36.0" width="7.0" height="8.5" rx="2" fill="#2e3c64"/>
-    <rect x="88.0" y="36.0" width="7.0" height="8.5" rx="2" fill="#7aa2f7"/>
-    <rect x="96.8" y="36.0" width="7.0" height="8.5" rx="2" fill="#3d59a1"/>
-    <rect x="105.6" y="36.0" width="7.0" height="8.5" rx="2" fill="#7aa2f7"/>
-    <rect x="114.4" y="36.0" width="7.0" height="8.5" rx="2" fill="#3d59a1"/>
-    <rect x="123.2" y="36.0" width="7.0" height="8.5" rx="2" fill="#1f2335" fill-opacity="0.35"/>
-    <rect x="132.0" y="36.0" width="7.0" height="8.5" rx="2" fill="#3d59a1"/>
-    <rect x="140.8" y="36.0" width="7.0" height="8.5" rx="2" fill="#3d59a1"/>
-    <rect x="149.6" y="36.0" width="7.0" height="8.5" rx="2" fill="#3d59a1"/>
-    <rect x="158.4" y="36.0" width="7.0" height="8.5" rx="2" fill="#3d59a1"/>
-    <rect x="167.2" y="36.0" width="7.0" height="8.5" rx="2" fill="#3d59a1"/>
-    <rect x="176.0" y="36.0" width="7.0" height="8.5" rx="2" fill="#1f2335" fill-opacity="0.35"/>
-    <rect x="184.8" y="36.0" width="7.0" height="8.5" rx="2" fill="#7aa2f7"/>
-    <rect x="193.6" y="36.0" width="7.0" height="8.5" rx="2" fill="#2e3c64"/>
-    <rect x="202.4" y="36.0" width="7.0" height="8.5" rx="2" fill="#1f2335" fill-opacity="0.35"/>
-    <rect x="0.0" y="48.0" width="7.0" height="8.5" rx="2" fill="#2e3c64"/>
-    <rect x="8.8" y="48.0" width="7.0" height="8.5" rx="2" fill="#2e3c64"/>
-    <rect x="17.6" y="48.0" width="7.0" height="8.5" rx="2" fill="#1f2335" fill-opacity="0.35"/>
-    <rect x="26.4" y="48.0" width="7.0" height="8.5" rx="2" fill="#3d59a1"/>
-    <rect x="35.2" y="48.0" width="7.0" height="8.5" rx="2" fill="#2e3c64"/>
-    <rect x="44.0" y="48.0" width="7.0" height="8.5" rx="2" fill="#2e3c64"/>
-    <rect x="52.8" y="48.0" width="7.0" height="8.5" rx="2" fill="#1f2335" fill-opacity="0.35"/>
-    <rect x="61.6" y="48.0" width="7.0" height="8.5" rx="2" fill="#1f2335" fill-opacity="0.35"/>
-    <rect x="70.4" y="48.0" width="7.0" height="8.5" rx="2" fill="#2e3c64"/>
-    <rect x="79.2" y="48.0" width="7.0" height="8.5" rx="2" fill="#2e3c64"/>
-    <rect x="88.0" y="48.0" width="7.0" height="8.5" rx="2" fill="#2e3c64"/>
-    <rect x="96.8" y="48.0" width="7.0" height="8.5" rx="2" fill="#2e3c64"/>
-    <rect x="105.6" y="48.0" width="7.0" height="8.5" rx="2" fill="#bb9af7"/>
-    <rect x="114.4" y="48.0" width="7.0" height="8.5" rx="2" fill="#7aa2f7"/>
-    <rect x="123.2" y="48.0" width="7.0" height="8.5" rx="2" fill="#3d59a1"/>
-    <rect x="132.0" y="48.0" width="7.0" height="8.5" rx="2" fill="#3d59a1"/>
-    <rect x="140.8" y="48.0" width="7.0" height="8.5" rx="2" fill="#2e3c64"/>
-    <rect x="149.6" y="48.0" width="7.0" height="8.5" rx="2" fill="#1f2335" fill-opacity="0.35"/>
-    <rect x="158.4" y="48.0" width="7.0" height="8.5" rx="2" fill="#3d59a1"/>
-    <rect x="167.2" y="48.0" width="7.0" height="8.5" rx="2" fill="#3d59a1"/>
-    <rect x="176.0" y="48.0" width="7.0" height="8.5" rx="2" fill="#3d59a1"/>
-    <rect x="184.8" y="48.0" width="7.0" height="8.5" rx="2" fill="#2e3c64"/>
-    <rect x="193.6" y="48.0" width="7.0" height="8.5" rx="2" fill="#3d59a1"/>
-    <rect x="202.4" y="48.0" width="7.0" height="8.5" rx="2" fill="#2e3c64"/>
-    <rect x="0.0" y="60.0" width="7.0" height="8.5" rx="2" fill="#3d59a1"/>
-    <rect x="8.8" y="60.0" width="7.0" height="8.5" rx="2" fill="#3d59a1"/>
-    <rect x="17.6" y="60.0" width="7.0" height="8.5" rx="2" fill="#2e3c64"/>
-    <rect x="26.4" y="60.0" width="7.0" height="8.5" rx="2" fill="#2e3c64"/>
-    <rect x="35.2" y="60.0" width="7.0" height="8.5" rx="2" fill="#1f2335" fill-opacity="0.35"/>
-    <rect x="44.0" y="60.0" width="7.0" height="8.5" rx="2" fill="#3d59a1"/>
-    <rect x="52.8" y="60.0" width="7.0" height="8.5" rx="2" fill="#1f2335" fill-opacity="0.35"/>
-    <rect x="61.6" y="60.0" width="7.0" height="8.5" rx="2" fill="#2e3c64"/>
-    <rect x="70.4" y="60.0" width="7.0" height="8.5" rx="2" fill="#2e3c64"/>
-    <rect x="79.2" y="60.0" width="7.0" height="8.5" rx="2" fill="#3d59a1"/>
-    <rect x="88.0" y="60.0" width="7.0" height="8.5" rx="2" fill="#3d59a1"/>
-    <rect x="96.8" y="60.0" width="7.0" height="8.5" rx="2" fill="#3d59a1"/>
-    <rect x="105.6" y="60.0" width="7.0" height="8.5" rx="2" fill="#7aa2f7"/>
-    <rect x="114.4" y="60.0" width="7.0" height="8.5" rx="2" fill="#bb9af7"/>
-    <rect x="123.2" y="60.0" width="7.0" height="8.5" rx="2" fill="#3d59a1"/>
-    <rect x="132.0" y="60.0" width="7.0" height="8.5" rx="2" fill="#3d59a1"/>
-    <rect x="140.8" y="60.0" width="7.0" height="8.5" rx="2" fill="#2e3c64"/>
-    <rect x="149.6" y="60.0" width="7.0" height="8.5" rx="2" fill="#2e3c64"/>
-    <rect x="158.4" y="60.0" width="7.0" height="8.5" rx="2" fill="#3d59a1"/>
-    <rect x="167.2" y="60.0" width="7.0" height="8.5" rx="2" fill="#2e3c64"/>
-    <rect x="176.0" y="60.0" width="7.0" height="8.5" rx="2" fill="#2e3c64"/>
-    <rect x="184.8" y="60.0" width="7.0" height="8.5" rx="2" fill="#2e3c64"/>
-    <rect x="193.6" y="60.0" width="7.0" height="8.5" rx="2" fill="#3d59a1"/>
-    <rect x="202.4" y="60.0" width="7.0" height="8.5" rx="2" fill="#3d59a1"/>
-    <rect x="0.0" y="72.0" width="7.0" height="8.5" rx="2" fill="#3d59a1"/>
-    <rect x="8.8" y="72.0" width="7.0" height="8.5" rx="2" fill="#1f2335" fill-opacity="0.35"/>
-    <rect x="17.6" y="72.0" width="7.0" height="8.5" rx="2" fill="#1f2335" fill-opacity="0.35"/>
-    <rect x="26.4" y="72.0" width="7.0" height="8.5" rx="2" fill="#2e3c64"/>
-    <rect x="35.2" y="72.0" width="7.0" height="8.5" rx="2" fill="#1f2335" fill-opacity="0.35"/>
-    <rect x="44.0" y="72.0" width="7.0" height="8.5" rx="2" fill="#1f2335" fill-opacity="0.35"/>
-    <rect x="52.8" y="72.0" width="7.0" height="8.5" rx="2" fill="#2e3c64"/>
-    <rect x="61.6" y="72.0" width="7.0" height="8.5" rx="2" fill="#3d59a1"/>
-    <rect x="70.4" y="72.0" width="7.0" height="8.5" rx="2" fill="#7aa2f7"/>
-    <rect x="79.2" y="72.0" width="7.0" height="8.5" rx="2" fill="#3d59a1"/>
-    <rect x="88.0" y="72.0" width="7.0" height="8.5" rx="2" fill="#3d59a1"/>
-    <rect x="96.8" y="72.0" width="7.0" height="8.5" rx="2" fill="#2e3c64"/>
-    <rect x="105.6" y="72.0" width="7.0" height="8.5" rx="2" fill="#3d59a1"/>
-    <rect x="114.4" y="72.0" width="7.0" height="8.5" rx="2" fill="#2e3c64"/>
-    <rect x="123.2" y="72.0" width="7.0" height="8.5" rx="2" fill="#2e3c64"/>
-    <rect x="132.0" y="72.0" width="7.0" height="8.5" rx="2" fill="#3d59a1"/>
-    <rect x="140.8" y="72.0" width="7.0" height="8.5" rx="2" fill="#2e3c64"/>
-    <rect x="149.6" y="72.0" width="7.0" height="8.5" rx="2" fill="#2e3c64"/>
-    <rect x="158.4" y="72.0" width="7.0" height="8.5" rx="2" fill="#1f2335" fill-opacity="0.35"/>
-    <rect x="167.2" y="72.0" width="7.0" height="8.5" rx="2" fill="#2e3c64"/>
-    <rect x="176.0" y="72.0" width="7.0" height="8.5" rx="2" fill="#2e3c64"/>
-    <rect x="184.8" y="72.0" width="7.0" height="8.5" rx="2" fill="#2e3c64"/>
-    <rect x="193.6" y="72.0" width="7.0" height="8.5" rx="2" fill="#3d59a1"/>
-    <rect x="202.4" y="72.0" width="7.0" height="8.5" rx="2" fill="#2e3c64"/>
-    <text x="3.5" y="94.0" class="rhythm-lbl" text-anchor="middle">12a</text>
-    <text x="38.7" y="94.0" class="rhythm-lbl" text-anchor="middle">4a</text>
-    <text x="73.9" y="94.0" class="rhythm-lbl" text-anchor="middle">8a</text>
-    <text x="109.1" y="94.0" class="rhythm-lbl" text-anchor="middle">12p</text>
-    <text x="144.3" y="94.0" class="rhythm-lbl" text-anchor="middle">4p</text>
-    <text x="179.5" y="94.0" class="rhythm-lbl" text-anchor="middle">8p</text>
-    <text x="205.9" y="94.0" class="rhythm-lbl" text-anchor="middle">11p</text>
+  <g transform="translate(42.0, 50.0)">
+    <rect x="0.0" y="0.0" width="8.0" height="8.5" rx="2" fill="#3d59a1"/>
+    <rect x="10.0" y="0.0" width="8.0" height="8.5" rx="2" fill="#2e3c64"/>
+    <rect x="20.0" y="0.0" width="8.0" height="8.5" rx="2" fill="#1f2335" fill-opacity="0.35"/>
+    <rect x="30.0" y="0.0" width="8.0" height="8.5" rx="2" fill="#3d59a1"/>
+    <rect x="40.0" y="0.0" width="8.0" height="8.5" rx="2" fill="#1f2335" fill-opacity="0.35"/>
+    <rect x="50.0" y="0.0" width="8.0" height="8.5" rx="2" fill="#2e3c64"/>
+    <rect x="60.0" y="0.0" width="8.0" height="8.5" rx="2" fill="#1f2335" fill-opacity="0.35"/>
+    <rect x="70.0" y="0.0" width="8.0" height="8.5" rx="2" fill="#1f2335" fill-opacity="0.35"/>
+    <rect x="80.0" y="0.0" width="8.0" height="8.5" rx="2" fill="#1f2335" fill-opacity="0.35"/>
+    <rect x="90.0" y="0.0" width="8.0" height="8.5" rx="2" fill="#2e3c64"/>
+    <rect x="100.0" y="0.0" width="8.0" height="8.5" rx="2" fill="#2e3c64"/>
+    <rect x="110.0" y="0.0" width="8.0" height="8.5" rx="2" fill="#3d59a1"/>
+    <rect x="120.0" y="0.0" width="8.0" height="8.5" rx="2" fill="#3d59a1"/>
+    <rect x="130.0" y="0.0" width="8.0" height="8.5" rx="2" fill="#3d59a1"/>
+    <rect x="140.0" y="0.0" width="8.0" height="8.5" rx="2" fill="#2e3c64"/>
+    <rect x="150.0" y="0.0" width="8.0" height="8.5" rx="2" fill="#2e3c64"/>
+    <rect x="160.0" y="0.0" width="8.0" height="8.5" rx="2" fill="#1f2335" fill-opacity="0.35"/>
+    <rect x="170.0" y="0.0" width="8.0" height="8.5" rx="2" fill="#3d59a1"/>
+    <rect x="180.0" y="0.0" width="8.0" height="8.5" rx="2" fill="#bb9af7" filter="url(#b4_peak-glow)"/>
+    <rect x="190.0" y="0.0" width="8.0" height="8.5" rx="2" fill="#1f2335" fill-opacity="0.35"/>
+    <rect x="200.0" y="0.0" width="8.0" height="8.5" rx="2" fill="#2e3c64"/>
+    <rect x="210.0" y="0.0" width="8.0" height="8.5" rx="2" fill="#3d59a1"/>
+    <rect x="220.0" y="0.0" width="8.0" height="8.5" rx="2" fill="#2e3c64"/>
+    <rect x="230.0" y="0.0" width="8.0" height="8.5" rx="2" fill="#7aa2f7"/>
+    <rect x="0.0" y="12.0" width="8.0" height="8.5" rx="2" fill="#7aa2f7"/>
+    <rect x="10.0" y="12.0" width="8.0" height="8.5" rx="2" fill="#3d59a1"/>
+    <rect x="20.0" y="12.0" width="8.0" height="8.5" rx="2" fill="#2e3c64"/>
+    <rect x="30.0" y="12.0" width="8.0" height="8.5" rx="2" fill="#2e3c64"/>
+    <rect x="40.0" y="12.0" width="8.0" height="8.5" rx="2" fill="#2e3c64"/>
+    <rect x="50.0" y="12.0" width="8.0" height="8.5" rx="2" fill="#1f2335" fill-opacity="0.35"/>
+    <rect x="60.0" y="12.0" width="8.0" height="8.5" rx="2" fill="#1f2335" fill-opacity="0.35"/>
+    <rect x="70.0" y="12.0" width="8.0" height="8.5" rx="2" fill="#1f2335" fill-opacity="0.35"/>
+    <rect x="80.0" y="12.0" width="8.0" height="8.5" rx="2" fill="#2e3c64"/>
+    <rect x="90.0" y="12.0" width="8.0" height="8.5" rx="2" fill="#7aa2f7"/>
+    <rect x="100.0" y="12.0" width="8.0" height="8.5" rx="2" fill="#3d59a1"/>
+    <rect x="110.0" y="12.0" width="8.0" height="8.5" rx="2" fill="#7aa2f7"/>
+    <rect x="120.0" y="12.0" width="8.0" height="8.5" rx="2" fill="#7aa2f7"/>
+    <rect x="130.0" y="12.0" width="8.0" height="8.5" rx="2" fill="#3d59a1"/>
+    <rect x="140.0" y="12.0" width="8.0" height="8.5" rx="2" fill="#7aa2f7"/>
+    <rect x="150.0" y="12.0" width="8.0" height="8.5" rx="2" fill="#2e3c64"/>
+    <rect x="160.0" y="12.0" width="8.0" height="8.5" rx="2" fill="#3d59a1"/>
+    <rect x="170.0" y="12.0" width="8.0" height="8.5" rx="2" fill="#2e3c64"/>
+    <rect x="180.0" y="12.0" width="8.0" height="8.5" rx="2" fill="#2e3c64"/>
+    <rect x="190.0" y="12.0" width="8.0" height="8.5" rx="2" fill="#1f2335" fill-opacity="0.35"/>
+    <rect x="200.0" y="12.0" width="8.0" height="8.5" rx="2" fill="#2e3c64"/>
+    <rect x="210.0" y="12.0" width="8.0" height="8.5" rx="2" fill="#3d59a1"/>
+    <rect x="220.0" y="12.0" width="8.0" height="8.5" rx="2" fill="#2e3c64"/>
+    <rect x="230.0" y="12.0" width="8.0" height="8.5" rx="2" fill="#2e3c64"/>
+    <rect x="0.0" y="24.0" width="8.0" height="8.5" rx="2" fill="#1f2335" fill-opacity="0.35"/>
+    <rect x="10.0" y="24.0" width="8.0" height="8.5" rx="2" fill="#1f2335" fill-opacity="0.35"/>
+    <rect x="20.0" y="24.0" width="8.0" height="8.5" rx="2" fill="#1f2335" fill-opacity="0.35"/>
+    <rect x="30.0" y="24.0" width="8.0" height="8.5" rx="2" fill="#1f2335" fill-opacity="0.35"/>
+    <rect x="40.0" y="24.0" width="8.0" height="8.5" rx="2" fill="#1f2335" fill-opacity="0.35"/>
+    <rect x="50.0" y="24.0" width="8.0" height="8.5" rx="2" fill="#2e3c64"/>
+    <rect x="60.0" y="24.0" width="8.0" height="8.5" rx="2" fill="#1f2335" fill-opacity="0.35"/>
+    <rect x="70.0" y="24.0" width="8.0" height="8.5" rx="2" fill="#2e3c64"/>
+    <rect x="80.0" y="24.0" width="8.0" height="8.5" rx="2" fill="#2e3c64"/>
+    <rect x="90.0" y="24.0" width="8.0" height="8.5" rx="2" fill="#2e3c64"/>
+    <rect x="100.0" y="24.0" width="8.0" height="8.5" rx="2" fill="#2e3c64"/>
+    <rect x="110.0" y="24.0" width="8.0" height="8.5" rx="2" fill="#bb9af7"/>
+    <rect x="120.0" y="24.0" width="8.0" height="8.5" rx="2" fill="#7aa2f7"/>
+    <rect x="130.0" y="24.0" width="8.0" height="8.5" rx="2" fill="#3d59a1"/>
+    <rect x="140.0" y="24.0" width="8.0" height="8.5" rx="2" fill="#2e3c64"/>
+    <rect x="150.0" y="24.0" width="8.0" height="8.5" rx="2" fill="#1f2335" fill-opacity="0.35"/>
+    <rect x="160.0" y="24.0" width="8.0" height="8.5" rx="2" fill="#3d59a1"/>
+    <rect x="170.0" y="24.0" width="8.0" height="8.5" rx="2" fill="#3d59a1"/>
+    <rect x="180.0" y="24.0" width="8.0" height="8.5" rx="2" fill="#3d59a1"/>
+    <rect x="190.0" y="24.0" width="8.0" height="8.5" rx="2" fill="#3d59a1"/>
+    <rect x="200.0" y="24.0" width="8.0" height="8.5" rx="2" fill="#2e3c64"/>
+    <rect x="210.0" y="24.0" width="8.0" height="8.5" rx="2" fill="#1f2335" fill-opacity="0.35"/>
+    <rect x="220.0" y="24.0" width="8.0" height="8.5" rx="2" fill="#2e3c64"/>
+    <rect x="230.0" y="24.0" width="8.0" height="8.5" rx="2" fill="#2e3c64"/>
+    <rect x="0.0" y="36.0" width="8.0" height="8.5" rx="2" fill="#1f2335" fill-opacity="0.35"/>
+    <rect x="10.0" y="36.0" width="8.0" height="8.5" rx="2" fill="#1f2335" fill-opacity="0.35"/>
+    <rect x="20.0" y="36.0" width="8.0" height="8.5" rx="2" fill="#1f2335" fill-opacity="0.35"/>
+    <rect x="30.0" y="36.0" width="8.0" height="8.5" rx="2" fill="#1f2335" fill-opacity="0.35"/>
+    <rect x="40.0" y="36.0" width="8.0" height="8.5" rx="2" fill="#1f2335" fill-opacity="0.35"/>
+    <rect x="50.0" y="36.0" width="8.0" height="8.5" rx="2" fill="#1f2335" fill-opacity="0.35"/>
+    <rect x="60.0" y="36.0" width="8.0" height="8.5" rx="2" fill="#1f2335" fill-opacity="0.35"/>
+    <rect x="70.0" y="36.0" width="8.0" height="8.5" rx="2" fill="#1f2335" fill-opacity="0.35"/>
+    <rect x="80.0" y="36.0" width="8.0" height="8.5" rx="2" fill="#1f2335" fill-opacity="0.35"/>
+    <rect x="90.0" y="36.0" width="8.0" height="8.5" rx="2" fill="#2e3c64"/>
+    <rect x="100.0" y="36.0" width="8.0" height="8.5" rx="2" fill="#7aa2f7"/>
+    <rect x="110.0" y="36.0" width="8.0" height="8.5" rx="2" fill="#3d59a1"/>
+    <rect x="120.0" y="36.0" width="8.0" height="8.5" rx="2" fill="#7aa2f7"/>
+    <rect x="130.0" y="36.0" width="8.0" height="8.5" rx="2" fill="#3d59a1"/>
+    <rect x="140.0" y="36.0" width="8.0" height="8.5" rx="2" fill="#1f2335" fill-opacity="0.35"/>
+    <rect x="150.0" y="36.0" width="8.0" height="8.5" rx="2" fill="#3d59a1"/>
+    <rect x="160.0" y="36.0" width="8.0" height="8.5" rx="2" fill="#3d59a1"/>
+    <rect x="170.0" y="36.0" width="8.0" height="8.5" rx="2" fill="#3d59a1"/>
+    <rect x="180.0" y="36.0" width="8.0" height="8.5" rx="2" fill="#3d59a1"/>
+    <rect x="190.0" y="36.0" width="8.0" height="8.5" rx="2" fill="#3d59a1"/>
+    <rect x="200.0" y="36.0" width="8.0" height="8.5" rx="2" fill="#1f2335" fill-opacity="0.35"/>
+    <rect x="210.0" y="36.0" width="8.0" height="8.5" rx="2" fill="#7aa2f7"/>
+    <rect x="220.0" y="36.0" width="8.0" height="8.5" rx="2" fill="#2e3c64"/>
+    <rect x="230.0" y="36.0" width="8.0" height="8.5" rx="2" fill="#1f2335" fill-opacity="0.35"/>
+    <rect x="0.0" y="48.0" width="8.0" height="8.5" rx="2" fill="#2e3c64"/>
+    <rect x="10.0" y="48.0" width="8.0" height="8.5" rx="2" fill="#2e3c64"/>
+    <rect x="20.0" y="48.0" width="8.0" height="8.5" rx="2" fill="#1f2335" fill-opacity="0.35"/>
+    <rect x="30.0" y="48.0" width="8.0" height="8.5" rx="2" fill="#3d59a1"/>
+    <rect x="40.0" y="48.0" width="8.0" height="8.5" rx="2" fill="#2e3c64"/>
+    <rect x="50.0" y="48.0" width="8.0" height="8.5" rx="2" fill="#2e3c64"/>
+    <rect x="60.0" y="48.0" width="8.0" height="8.5" rx="2" fill="#1f2335" fill-opacity="0.35"/>
+    <rect x="70.0" y="48.0" width="8.0" height="8.5" rx="2" fill="#1f2335" fill-opacity="0.35"/>
+    <rect x="80.0" y="48.0" width="8.0" height="8.5" rx="2" fill="#2e3c64"/>
+    <rect x="90.0" y="48.0" width="8.0" height="8.5" rx="2" fill="#2e3c64"/>
+    <rect x="100.0" y="48.0" width="8.0" height="8.5" rx="2" fill="#2e3c64"/>
+    <rect x="110.0" y="48.0" width="8.0" height="8.5" rx="2" fill="#2e3c64"/>
+    <rect x="120.0" y="48.0" width="8.0" height="8.5" rx="2" fill="#bb9af7"/>
+    <rect x="130.0" y="48.0" width="8.0" height="8.5" rx="2" fill="#7aa2f7"/>
+    <rect x="140.0" y="48.0" width="8.0" height="8.5" rx="2" fill="#3d59a1"/>
+    <rect x="150.0" y="48.0" width="8.0" height="8.5" rx="2" fill="#3d59a1"/>
+    <rect x="160.0" y="48.0" width="8.0" height="8.5" rx="2" fill="#2e3c64"/>
+    <rect x="170.0" y="48.0" width="8.0" height="8.5" rx="2" fill="#1f2335" fill-opacity="0.35"/>
+    <rect x="180.0" y="48.0" width="8.0" height="8.5" rx="2" fill="#3d59a1"/>
+    <rect x="190.0" y="48.0" width="8.0" height="8.5" rx="2" fill="#3d59a1"/>
+    <rect x="200.0" y="48.0" width="8.0" height="8.5" rx="2" fill="#3d59a1"/>
+    <rect x="210.0" y="48.0" width="8.0" height="8.5" rx="2" fill="#2e3c64"/>
+    <rect x="220.0" y="48.0" width="8.0" height="8.5" rx="2" fill="#3d59a1"/>
+    <rect x="230.0" y="48.0" width="8.0" height="8.5" rx="2" fill="#2e3c64"/>
+    <rect x="0.0" y="60.0" width="8.0" height="8.5" rx="2" fill="#3d59a1"/>
+    <rect x="10.0" y="60.0" width="8.0" height="8.5" rx="2" fill="#3d59a1"/>
+    <rect x="20.0" y="60.0" width="8.0" height="8.5" rx="2" fill="#2e3c64"/>
+    <rect x="30.0" y="60.0" width="8.0" height="8.5" rx="2" fill="#2e3c64"/>
+    <rect x="40.0" y="60.0" width="8.0" height="8.5" rx="2" fill="#1f2335" fill-opacity="0.35"/>
+    <rect x="50.0" y="60.0" width="8.0" height="8.5" rx="2" fill="#3d59a1"/>
+    <rect x="60.0" y="60.0" width="8.0" height="8.5" rx="2" fill="#1f2335" fill-opacity="0.35"/>
+    <rect x="70.0" y="60.0" width="8.0" height="8.5" rx="2" fill="#2e3c64"/>
+    <rect x="80.0" y="60.0" width="8.0" height="8.5" rx="2" fill="#2e3c64"/>
+    <rect x="90.0" y="60.0" width="8.0" height="8.5" rx="2" fill="#3d59a1"/>
+    <rect x="100.0" y="60.0" width="8.0" height="8.5" rx="2" fill="#3d59a1"/>
+    <rect x="110.0" y="60.0" width="8.0" height="8.5" rx="2" fill="#3d59a1"/>
+    <rect x="120.0" y="60.0" width="8.0" height="8.5" rx="2" fill="#7aa2f7"/>
+    <rect x="130.0" y="60.0" width="8.0" height="8.5" rx="2" fill="#bb9af7"/>
+    <rect x="140.0" y="60.0" width="8.0" height="8.5" rx="2" fill="#3d59a1"/>
+    <rect x="150.0" y="60.0" width="8.0" height="8.5" rx="2" fill="#3d59a1"/>
+    <rect x="160.0" y="60.0" width="8.0" height="8.5" rx="2" fill="#2e3c64"/>
+    <rect x="170.0" y="60.0" width="8.0" height="8.5" rx="2" fill="#2e3c64"/>
+    <rect x="180.0" y="60.0" width="8.0" height="8.5" rx="2" fill="#3d59a1"/>
+    <rect x="190.0" y="60.0" width="8.0" height="8.5" rx="2" fill="#2e3c64"/>
+    <rect x="200.0" y="60.0" width="8.0" height="8.5" rx="2" fill="#2e3c64"/>
+    <rect x="210.0" y="60.0" width="8.0" height="8.5" rx="2" fill="#2e3c64"/>
+    <rect x="220.0" y="60.0" width="8.0" height="8.5" rx="2" fill="#3d59a1"/>
+    <rect x="230.0" y="60.0" width="8.0" height="8.5" rx="2" fill="#3d59a1"/>
+    <rect x="0.0" y="72.0" width="8.0" height="8.5" rx="2" fill="#3d59a1"/>
+    <rect x="10.0" y="72.0" width="8.0" height="8.5" rx="2" fill="#1f2335" fill-opacity="0.35"/>
+    <rect x="20.0" y="72.0" width="8.0" height="8.5" rx="2" fill="#1f2335" fill-opacity="0.35"/>
+    <rect x="30.0" y="72.0" width="8.0" height="8.5" rx="2" fill="#2e3c64"/>
+    <rect x="40.0" y="72.0" width="8.0" height="8.5" rx="2" fill="#1f2335" fill-opacity="0.35"/>
+    <rect x="50.0" y="72.0" width="8.0" height="8.5" rx="2" fill="#1f2335" fill-opacity="0.35"/>
+    <rect x="60.0" y="72.0" width="8.0" height="8.5" rx="2" fill="#2e3c64"/>
+    <rect x="70.0" y="72.0" width="8.0" height="8.5" rx="2" fill="#3d59a1"/>
+    <rect x="80.0" y="72.0" width="8.0" height="8.5" rx="2" fill="#7aa2f7"/>
+    <rect x="90.0" y="72.0" width="8.0" height="8.5" rx="2" fill="#3d59a1"/>
+    <rect x="100.0" y="72.0" width="8.0" height="8.5" rx="2" fill="#3d59a1"/>
+    <rect x="110.0" y="72.0" width="8.0" height="8.5" rx="2" fill="#2e3c64"/>
+    <rect x="120.0" y="72.0" width="8.0" height="8.5" rx="2" fill="#3d59a1"/>
+    <rect x="130.0" y="72.0" width="8.0" height="8.5" rx="2" fill="#2e3c64"/>
+    <rect x="140.0" y="72.0" width="8.0" height="8.5" rx="2" fill="#2e3c64"/>
+    <rect x="150.0" y="72.0" width="8.0" height="8.5" rx="2" fill="#3d59a1"/>
+    <rect x="160.0" y="72.0" width="8.0" height="8.5" rx="2" fill="#2e3c64"/>
+    <rect x="170.0" y="72.0" width="8.0" height="8.5" rx="2" fill="#2e3c64"/>
+    <rect x="180.0" y="72.0" width="8.0" height="8.5" rx="2" fill="#1f2335" fill-opacity="0.35"/>
+    <rect x="190.0" y="72.0" width="8.0" height="8.5" rx="2" fill="#2e3c64"/>
+    <rect x="200.0" y="72.0" width="8.0" height="8.5" rx="2" fill="#2e3c64"/>
+    <rect x="210.0" y="72.0" width="8.0" height="8.5" rx="2" fill="#2e3c64"/>
+    <rect x="220.0" y="72.0" width="8.0" height="8.5" rx="2" fill="#3d59a1"/>
+    <rect x="230.0" y="72.0" width="8.0" height="8.5" rx="2" fill="#2e3c64"/>
+    <text x="0" y="94.0" class="rhythm-lbl" text-anchor="middle">12a</text>
+    <text x="40" y="94.0" class="rhythm-lbl" text-anchor="middle">4a</text>
+    <text x="80" y="94.0" class="rhythm-lbl" text-anchor="middle">8a</text>
+    <text x="120" y="94.0" class="rhythm-lbl" text-anchor="middle">12p</text>
+    <text x="160" y="94.0" class="rhythm-lbl" text-anchor="middle">4p</text>
+    <text x="200" y="94.0" class="rhythm-lbl" text-anchor="middle">8p</text>
+    <text x="230" y="94.0" class="rhythm-lbl" text-anchor="middle">11p</text>
+  </g>
+  <!-- Glass Divider -->
+  <line x1="290.0" y1="22" x2="290.0" y2="158.0" stroke="url(#b4_rhythm-divider-grad)" stroke-width="1"/>
+  <!-- Right Column: Analytics & Persona -->
+  <g transform="translate(298, 0)">
+    <!-- Persona Badge Pill -->
+    <g transform="translate(59, 38)">
+      <rect x="-48" y="-12" width="96" height="24" rx="12" fill="#1f2335" stroke="#70a5fd" stroke-opacity="0.4" stroke-width="1"/>
+      <text x="0" y="4" text-anchor="middle" class="rhythm-persona-txt">⚡ Day Architect</text>
+    </g>
+
+    <!-- Peak Window KPI -->
+    <g transform="translate(5, 72)">
+      <text x="0" y="0" class="rhythm-kpi-lbl">PEAK WINDOW</text>
+      <text x="0" y="15" class="rhythm-kpi-val">10:00 – 14:00</text>
+    </g>
+
+    <!-- Circadian Split Bar -->
+    <g transform="translate(5, 108)">
+      <text x="0" y="0" class="rhythm-kpi-lbl">CIRCADIAN SPLIT</text>
+      <rect x="0" y="6" width="108" height="6" rx="3" fill="#24283b"/>
+      <rect x="0" y="6" width="77.8" height="6" rx="3" fill="url(#b4_rhythm-day-grad)"/>
+      <rect x="77.8" y="6" width="30.2" height="6" rx="3" fill="url(#b4_rhythm-night-grad)"/>
+      <text x="0" y="23" class="rhythm-stat-txt">☀️ 72% Day</text>
+      <text x="108" y="23" class="rhythm-stat-txt" text-anchor="end">🌙 28% Night</text>
+    </g>
+
+    <!-- Analyzed Commits Footnote -->
+    <text x="59" y="156" text-anchor="middle" class="rhythm-count-txt">657 Commits Mapped</text>
   </g>
   </svg>
-  <!-- Slot 6: radar (compact_col) -->
-  <svg x="296.0" y="518.0" width="272.0" height="180.0" viewBox="0 0 272.0 180.0" class="bento-slot bento-slot-6">
+  <!-- Slot 6: radar (standard) -->
+  <svg x="12.0" y="588.0" width="414.0" height="180.0" viewBox="0 0 414.0 180.0" class="bento-slot bento-slot-6">
     <defs>
     <linearGradient id="b5_radar-divider-grad" x1="0%" y1="0%" x2="0%" y2="100%">
       <stop offset="0%" stop-color="#1a1b27" stop-opacity="0.0"/>
@@ -672,34 +703,68 @@
     .radar-domain-val { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; font-weight: 700; font-size: 8px; fill: #c0caf5; }
     .radar-footnote { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; font-weight: 500; font-size: 8px; fill: #565f89; }
   </style>
-  <rect width="272" height="180" rx="4.5" fill="#1a1b27" stroke="#24283b" stroke-width="0"/>
+  <rect width="414" height="180" rx="4.5" fill="#1a1b27" stroke="#24283b" stroke-width="0"/>
   <!-- Header -->
-  <text x="136.0" y="24.0" text-anchor="middle" class="radar-title">DEVELOPER DNA</text>
-  <polygon points="136.0,92.5 146.9,100.4 142.8,113.3 129.2,113.3 125.1,100.4" fill="none" stroke="#24283b" stroke-width="0.8"/>
-  <polygon points="136.0,81.0 157.9,96.9 149.5,122.6 122.5,122.6 114.1,96.9" fill="rgba(31, 35, 53, 0.15)" stroke="#24283b" stroke-width="0.8"/>
-  <polygon points="136.0,69.5 168.8,93.3 156.3,131.9 115.7,131.9 103.2,93.3" fill="none" stroke="#24283b" stroke-width="0.8"/>
-  <polygon points="136.0,58.0 179.7,89.8 163.0,141.2 109.0,141.2 92.3,89.8" fill="rgba(31, 35, 53, 0.25)" stroke="#2e3c64" stroke-width="0.8"/>
-  <line x1="136.0" y1="104.0" x2="136.0" y2="58.0" stroke="#2e3c64" stroke-width="0.8" stroke-dasharray="2,2"/>
-  <line x1="136.0" y1="104.0" x2="179.7" y2="89.8" stroke="#2e3c64" stroke-width="0.8" stroke-dasharray="2,2"/>
-  <line x1="136.0" y1="104.0" x2="163.0" y2="141.2" stroke="#2e3c64" stroke-width="0.8" stroke-dasharray="2,2"/>
-  <line x1="136.0" y1="104.0" x2="109.0" y2="141.2" stroke="#2e3c64" stroke-width="0.8" stroke-dasharray="2,2"/>
-  <line x1="136.0" y1="104.0" x2="92.3" y2="89.8" stroke="#2e3c64" stroke-width="0.8" stroke-dasharray="2,2"/>
+  <text x="14" y="24.0" class="radar-title">DEVELOPER DNA</text>
+  <circle cx="125" cy="20.5" r="1.8" fill="#70a5fd"/>
+  <text x="135" y="23.5" class="radar-sub">5-AXIS POLYGLOT RADAR</text>
+  <polygon points="120.0,91.0 132.4,100.0 127.6,114.5 112.4,114.5 107.6,100.0" fill="none" stroke="#24283b" stroke-width="0.8"/>
+  <polygon points="120.0,78.0 144.7,96.0 135.3,125.0 104.7,125.0 95.3,96.0" fill="rgba(31, 35, 53, 0.15)" stroke="#24283b" stroke-width="0.8"/>
+  <polygon points="120.0,65.0 157.1,91.9 142.9,135.6 97.1,135.6 82.9,91.9" fill="none" stroke="#24283b" stroke-width="0.8"/>
+  <polygon points="120.0,52.0 169.5,87.9 150.6,146.1 89.4,146.1 70.5,87.9" fill="rgba(31, 35, 53, 0.25)" stroke="#2e3c64" stroke-width="0.8"/>
+  <line x1="120.0" y1="104.0" x2="120.0" y2="52.0" stroke="#2e3c64" stroke-width="0.8" stroke-dasharray="2,2"/>
+  <line x1="120.0" y1="104.0" x2="169.5" y2="87.9" stroke="#2e3c64" stroke-width="0.8" stroke-dasharray="2,2"/>
+  <line x1="120.0" y1="104.0" x2="150.6" y2="146.1" stroke="#2e3c64" stroke-width="0.8" stroke-dasharray="2,2"/>
+  <line x1="120.0" y1="104.0" x2="89.4" y2="146.1" stroke="#2e3c64" stroke-width="0.8" stroke-dasharray="2,2"/>
+  <line x1="120.0" y1="104.0" x2="70.5" y2="87.9" stroke="#2e3c64" stroke-width="0.8" stroke-dasharray="2,2"/>
   <!-- Data Polygon -->
-  <polygon points="136.0,92.1 150.4,99.3 147.1,119.3 132.3,109.1 120.9,99.1" fill="url(#b5_radar-poly-grad)" stroke="#70a5fd" stroke-width="1.8" filter="url(#b5_radar-glow)"/>
-  <circle cx="136.0" cy="92.1" r="2.8" fill="#70a5fd" stroke="#1a1b27" stroke-width="1"/>
-  <circle cx="150.4" cy="99.3" r="2.8" fill="#70a5fd" stroke="#1a1b27" stroke-width="1"/>
-  <circle cx="147.1" cy="119.3" r="2.8" fill="#70a5fd" stroke="#1a1b27" stroke-width="1"/>
-  <circle cx="132.3" cy="109.1" r="2.8" fill="#70a5fd" stroke="#1a1b27" stroke-width="1"/>
-  <circle cx="120.9" cy="99.1" r="2.8" fill="#70a5fd" stroke="#1a1b27" stroke-width="1"/>
+  <polygon points="120.0,90.6 136.3,98.7 132.6,121.3 115.8,109.8 103.0,98.5" fill="url(#b5_radar-poly-grad)" stroke="#70a5fd" stroke-width="1.8" filter="url(#b5_radar-glow)"/>
+  <circle cx="120.0" cy="90.6" r="2.8" fill="#70a5fd" stroke="#1a1b27" stroke-width="1"/>
+  <circle cx="136.3" cy="98.7" r="2.8" fill="#70a5fd" stroke="#1a1b27" stroke-width="1"/>
+  <circle cx="132.6" cy="121.3" r="2.8" fill="#70a5fd" stroke="#1a1b27" stroke-width="1"/>
+  <circle cx="115.8" cy="109.8" r="2.8" fill="#70a5fd" stroke="#1a1b27" stroke-width="1"/>
+  <circle cx="103.0" cy="98.5" r="2.8" fill="#70a5fd" stroke="#1a1b27" stroke-width="1"/>
   <!-- Spoke Labels -->
-  <text x="136.0" y="49.0" class="radar-axis-lbl" text-anchor="middle" fill="#ec915c">Systems</text>
-  <text x="185.7" y="91.8" class="radar-axis-lbl" text-anchor="start" fill="#70a5fd">Backend</text>
-  <text x="167.0" y="153.2" class="radar-axis-lbl" text-anchor="start" fill="#7aa2f7">Frontend</text>
-  <text x="105.0" y="153.2" class="radar-axis-lbl" text-anchor="end" fill="#bb9af7">DevOps</text>
-  <text x="86.3" y="91.8" class="radar-axis-lbl" text-anchor="end" fill="#73daca">Data &amp; AI</text>
+  <text x="120.0" y="43.0" class="radar-axis-lbl" text-anchor="middle" fill="#ec915c">Systems</text>
+  <text x="175.5" y="89.9" class="radar-axis-lbl" text-anchor="start" fill="#70a5fd">Backend</text>
+  <text x="154.6" y="158.1" class="radar-axis-lbl" text-anchor="start" fill="#7aa2f7">Frontend</text>
+  <text x="85.4" y="158.1" class="radar-axis-lbl" text-anchor="end" fill="#bb9af7">DevOps</text>
+  <text x="64.5" y="89.9" class="radar-axis-lbl" text-anchor="end" fill="#73daca">Data &amp; AI</text>
+  <!-- Glass Divider -->
+  <line x1="246.0" y1="22" x2="246.0" y2="158.0" stroke="url(#b5_radar-divider-grad)" stroke-width="1"/>
+  <!-- Right Column: DNA Breakdown -->
+  <g transform="translate(254, 0)">
+    <!-- Archetype Badge Pill -->
+    <g transform="translate(75, 34)">
+      <rect x="-70" y="-12" width="140" height="24" rx="12" fill="#1f2335" stroke="#70a5fd" stroke-opacity="0.45" stroke-width="1"/>
+      <text x="0" y="4" text-anchor="middle" class="radar-archetype-txt">🧬 Polyglot Architect</text>
+    </g>
+    <text x="4" y="56.0" class="radar-domain-lbl">Systems</text>
+    <text x="146" y="56.0" class="radar-domain-val" text-anchor="end">16%</text>
+    <rect x="4" y="60.0" width="142.0" height="3.5" rx="1.75" fill="#24283b"/>
+    <rect x="4" y="60.0" width="22.3" height="3.5" rx="1.75" fill="#ec915c"/>
+    <text x="4" y="74.0" class="radar-domain-lbl">Backend</text>
+    <text x="146" y="74.0" class="radar-domain-val" text-anchor="end">24%</text>
+    <rect x="4" y="78.0" width="142.0" height="3.5" rx="1.75" fill="#24283b"/>
+    <rect x="4" y="78.0" width="33.8" height="3.5" rx="1.75" fill="#70a5fd"/>
+    <text x="4" y="92.0" class="radar-domain-lbl">Frontend</text>
+    <text x="146" y="92.0" class="radar-domain-val" text-anchor="end">33%</text>
+    <rect x="4" y="96.0" width="142.0" height="3.5" rx="1.75" fill="#24283b"/>
+    <rect x="4" y="96.0" width="46.9" height="3.5" rx="1.75" fill="#7aa2f7"/>
+    <text x="4" y="110.0" class="radar-domain-lbl">DevOps</text>
+    <text x="146" y="110.0" class="radar-domain-val" text-anchor="end">2%</text>
+    <rect x="4" y="114.0" width="142.0" height="3.5" rx="1.75" fill="#24283b"/>
+    <rect x="4" y="114.0" width="3.5" height="3.5" rx="1.75" fill="#bb9af7"/>
+    <text x="4" y="128.0" class="radar-domain-lbl">Data &amp; AI</text>
+    <text x="146" y="128.0" class="radar-domain-val" text-anchor="end">26%</text>
+    <rect x="4" y="132.0" width="142.0" height="3.5" rx="1.75" fill="#24283b"/>
+    <rect x="4" y="132.0" width="36.2" height="3.5" rx="1.75" fill="#73daca"/>
+    <!-- Analyzed Languages Footnote -->
+    <text x="75" y="156" text-anchor="middle" class="radar-footnote">29 Languages Mapped</text>
+  </g>
   </svg>
-  <!-- Slot 7: velocity (compact_col) -->
-  <svg x="580.0" y="518.0" width="272.0" height="180.0" viewBox="0 0 272.0 180.0" class="bento-slot bento-slot-7">
+  <!-- Slot 7: velocity (standard) -->
+  <svg x="438.0" y="588.0" width="414.0" height="180.0" viewBox="0 0 414.0 180.0" class="bento-slot bento-slot-7">
     <defs>
     <linearGradient id="b6_vel-divider-grad" x1="0%" y1="0%" x2="0%" y2="100%">
       <stop offset="0%" stop-color="#3b4261" stop-opacity="0.0"/>
@@ -740,24 +805,58 @@
     .vel-anim { animation: velFadeIn 0.5s ease-out forwards; }
   </style>
 
-  <rect width="272" height="180" rx="4.5" fill="#1a1b27" stroke="none"/>
+  <rect width="414" height="180" rx="4.5" fill="#1a1b27" stroke="none"/>
   <!-- Header -->
-  <text x="136.0" y="24.0" text-anchor="middle" class="vel-title">PULL REQUEST VELOCITY</text>
+  <text x="18" y="24.0" class="vel-title">PULL REQUEST VELOCITY</text>
+  <circle cx="169" cy="20.5" r="1.8" fill="#73daca"/>
+  <text x="177" y="23.5" class="vel-sub">CADENCE &amp; IMPACT</text>
+  <rect x="274.0" y="12.0" width="122.0" height="18.0" rx="3.5" fill="#73daca" fill-opacity="0.12" stroke="#73daca" stroke-opacity="0.45" stroke-width="0.8"/>
+  <text x="335.0" y="24.0" text-anchor="middle" class="vel-badge-txt">🔥 High Momentum</text>
   <!-- Left Section: Turnaround Speedometer Gauge -->
-  <circle cx="136.0" cy="86.0" r="37.0" fill="none" stroke="#212337" stroke-width="5.5" stroke-linecap="round"
-          stroke-dasharray="142.07 232.48" transform="rotate(160 136.0 86.0)"/>
-  <circle cx="136.0" cy="86.0" r="37.0" fill="none" stroke="url(#b6_vel-gauge-grad)" stroke-width="5.5" stroke-linecap="round"
-          stroke-dasharray="102.29 232.48" transform="rotate(160 136.0 86.0)" filter="url(#b6_vel-glow)"/>
-  <text x="136.0" y="85.0" text-anchor="middle" class="vel-gauge-val">&lt; 1h</text>
-  <text x="136.0" y="97.5" text-anchor="middle" class="vel-gauge-sub">AVG MERGE</text>
+  <circle cx="89.0" cy="86.0" r="37.0" fill="none" stroke="#212337" stroke-width="5.5" stroke-linecap="round"
+          stroke-dasharray="142.07 232.48" transform="rotate(160 89.0 86.0)"/>
+  <circle cx="89.0" cy="86.0" r="37.0" fill="none" stroke="url(#b6_vel-gauge-grad)" stroke-width="5.5" stroke-linecap="round"
+          stroke-dasharray="102.29 232.48" transform="rotate(160 89.0 86.0)" filter="url(#b6_vel-glow)"/>
+  <text x="89.0" y="85.0" text-anchor="middle" class="vel-gauge-val">&lt; 1h</text>
+  <text x="89.0" y="97.5" text-anchor="middle" class="vel-gauge-sub">AVG MERGE</text>
   <!-- Merge Rate & Distribution Bar -->
-  <text x="46.0" y="136.0" class="vel-kpi-lbl">MERGE RATE</text>
-  <text x="226.0" y="136.0" text-anchor="end" class="vel-rate-txt">83.3%</text>
-  <rect x="46.0" y="140.0" width="180.0" height="5.5" rx="2.75" fill="#212337"/>
+  <text x="22.0" y="136.0" class="vel-kpi-lbl">MERGE RATE</text>
+  <text x="156.0" y="136.0" text-anchor="end" class="vel-rate-txt">83.3%</text>
+  <rect x="22.0" y="140.0" width="134.0" height="5.5" rx="2.75" fill="#212337"/>
   <g clip-path="url(#b6_vel-dist-clip)">
-    <rect x="46.00" y="140.0" width="150.00" height="5.5" fill="#73daca"/>
-    <rect x="196.00" y="140.0" width="30.00" height="5.5" fill="#70a5fd"/>
+    <rect x="22.00" y="140.0" width="111.67" height="5.5" fill="#73daca"/>
+    <rect x="133.67" y="140.0" width="22.33" height="5.5" fill="#70a5fd"/>
   </g>
-  <text x="136.0" y="159.0" text-anchor="middle" class="vel-legend-txt">15 merged · 3 open · 0 closed</text>
+  <text x="89.0" y="159.0" text-anchor="middle" class="vel-legend-txt">15 merged · 3 open · 0 closed</text>
+  <!-- Center Divider -->
+  <line x1="172.0" y1="36" x2="172.0" y2="164" stroke="url(#b6_vel-divider-grad)" stroke-width="1"/>
+  <!-- Tile 1: Merged PRs -->
+  <g class="vel-anim">
+    <rect x="182.0" y="38.0" width="102.0" height="58.0" rx="4" fill="#1f2335" fill-opacity="0.45" stroke="#292e42" stroke-width="0.8"/>
+    <text x="191.0" y="52.0" class="vel-kpi-lbl">🔀 MERGED PRS</text>
+    <text x="191.0" y="71.0" class="vel-kpi-val">15</text>
+    <text x="191.0" y="85.0" class="vel-kpi-sub">of 18 authored (83%)</text>
+  </g>
+  <!-- Tile 2: Code Volume Impact -->
+  <g class="vel-anim" style="animation-delay: 60ms;">
+    <rect x="294.0" y="38.0" width="102.0" height="58.0" rx="4" fill="#1f2335" fill-opacity="0.45" stroke="#292e42" stroke-width="0.8"/>
+    <text x="303.0" y="52.0" class="vel-kpi-lbl">📦 CODE SHIPPED</text>
+    <text x="303.0" y="71.0" class="vel-kpi-val"><tspan fill="#73daca">+8.9k</tspan> <tspan font-size="10px" fill="#787c99">/</tspan> <tspan font-size="11.5px" fill="#f7768e">-10.4k</tspan></text>
+    <text x="303.0" y="85.0" class="vel-kpi-sub">196 files modified</text>
+  </g>
+  <!-- Tile 3: Reviews Conducted -->
+  <g class="vel-anim" style="animation-delay: 120ms;">
+    <rect x="182.0" y="104.0" width="102.0" height="58.0" rx="4" fill="#1f2335" fill-opacity="0.45" stroke="#292e42" stroke-width="0.8"/>
+    <text x="191.0" y="118.0" class="vel-kpi-lbl">👁️ PEER REVIEWS</text>
+    <text x="191.0" y="137.0" class="vel-kpi-val">0</text>
+    <text x="191.0" y="151.0" class="vel-kpi-sub">PR Reviews Completed</text>
+  </g>
+  <!-- Tile 4: Velocity Index -->
+  <g class="vel-anim" style="animation-delay: 180ms;">
+    <rect x="294.0" y="104.0" width="102.0" height="58.0" rx="4" fill="#1f2335" fill-opacity="0.45" stroke="#292e42" stroke-width="0.8"/>
+    <text x="303.0" y="118.0" class="vel-kpi-lbl">⚡ VELOCITY INDEX</text>
+    <text x="303.0" y="137.0" class="vel-kpi-val" fill="#73daca">72 <tspan font-size="10px" fill="#787c99">/ 100</tspan></text>
+    <text x="303.0" y="151.0" class="vel-kpi-sub">Top 25% Velocity</text>
+  </g>
   </svg>
 </svg>

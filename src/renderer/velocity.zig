@@ -133,61 +133,51 @@ pub fn renderVelocitySVG(
         \\
     , .{ width, height, opts.border_radius, opts.theme.bg_color, stroke_attr });
 
-    const is_compact = w_f < 320.0;
-
     // Header
     const header_y: f64 = 24.0;
     if (!opts.hide_title) {
-        if (is_compact) {
-            try w.print(
-                \\  <!-- Header -->
-                \\  <text x="{d:.1}" y="{d:.1}" text-anchor="middle" class="vel-title">PULL REQUEST VELOCITY</text>
-                \\
-            , .{ w_f / 2.0, header_y });
-        } else {
-            try w.print(
-                \\  <!-- Header -->
-                \\  <text x="18" y="{d:.1}" class="vel-title">PULL REQUEST VELOCITY</text>
-                \\  <circle cx="169" cy="{d:.1}" r="1.8" fill="{s}"/>
-                \\  <text x="177" y="{d:.1}" class="vel-sub">CADENCE &amp; IMPACT</text>
-                \\
-            , .{
-                header_y,
-                header_y - 3.5,
-                tier.color,
-                header_y - 0.5,
-            });
+        try w.print(
+            \\  <!-- Header -->
+            \\  <text x="18" y="{d:.1}" class="vel-title">PULL REQUEST VELOCITY</text>
+            \\  <circle cx="169" cy="{d:.1}" r="1.8" fill="{s}"/>
+            \\  <text x="177" y="{d:.1}" class="vel-sub">CADENCE &amp; IMPACT</text>
+            \\
+        , .{
+            header_y,
+            header_y - 3.5,
+            tier.color,
+            header_y - 0.5,
+        });
 
-            // Archetype / Speed Tier Badge on Right
-            const badge_w: f64 = 122.0;
-            const badge_h: f64 = 18.0;
-            const badge_x: f64 = w_f - 18.0 - badge_w;
-            const badge_y: f64 = header_y - 12.0;
+        // Archetype / Speed Tier Badge on Right
+        const badge_w: f64 = 122.0;
+        const badge_h: f64 = 18.0;
+        const badge_x: f64 = w_f - 18.0 - badge_w;
+        const badge_y: f64 = header_y - 12.0;
 
-            try w.print(
-                \\  <rect x="{d:.1}" y="{d:.1}" width="{d:.1}" height="{d:.1}" rx="3.5" fill="{s}" fill-opacity="0.12" stroke="{s}" stroke-opacity="0.45" stroke-width="0.8"/>
-                \\  <text x="{d:.1}" y="{d:.1}" text-anchor="middle" class="vel-badge-txt">{s} {s}</text>
-                \\
-            , .{
-                badge_x,
-                badge_y,
-                badge_w,
-                badge_h,
-                tier.color,
-                tier.color,
-                badge_x + (badge_w / 2.0),
-                badge_y + 12.0,
-                tier.icon,
-                esc_tier_name,
-            });
-        }
+        try w.print(
+            \\  <rect x="{d:.1}" y="{d:.1}" width="{d:.1}" height="{d:.1}" rx="3.5" fill="{s}" fill-opacity="0.12" stroke="{s}" stroke-opacity="0.45" stroke-width="0.8"/>
+            \\  <text x="{d:.1}" y="{d:.1}" text-anchor="middle" class="vel-badge-txt">{s} {s}</text>
+            \\
+        , .{
+            badge_x,
+            badge_y,
+            badge_w,
+            badge_h,
+            tier.color,
+            tier.color,
+            badge_x + (badge_w / 2.0),
+            badge_y + 12.0,
+            tier.icon,
+            esc_tier_name,
+        });
     }
 
     // Left Section: Speedometer Turnaround Gauge
     // Gauge center: (89, 86), radius = 37.
     // 220-degree sweep arc: starts at 160 deg, sweeps 220 deg to 380 deg (20 deg).
     const arc_r: f64 = 37.0;
-    const arc_cx: f64 = if (is_compact) w_f / 2.0 else 89.0;
+    const arc_cx: f64 = 89.0;
     const arc_cy: f64 = 86.0;
     const full_circumference: f64 = 2.0 * std.math.pi * arc_r; // ~232.478
     const sweep_angle: f64 = 220.0;
@@ -228,8 +218,8 @@ pub fn renderVelocitySVG(
     });
 
     // Merge Rate Header & Distribution Bar (Below Gauge)
-    const bar_w: f64 = if (is_compact) @min(180.0, w_f - 40.0) else 134.0;
-    const bar_x: f64 = if (is_compact) (w_f - bar_w) / 2.0 else 22.0;
+    const bar_x: f64 = 22.0;
+    const bar_w: f64 = 134.0;
     const bar_y: f64 = 140.0;
 
     try w.print(
@@ -289,14 +279,13 @@ pub fn renderVelocitySVG(
         stats.closed_prs,
     });
 
-    if (!is_compact) {
-        // Vertical Divider Line
-        const divider_x: f64 = 172.0;
-        try w.print(
-            \\  <!-- Center Divider -->
-            \\  <line x1="{d:.1}" y1="36" x2="{d:.1}" y2="164" stroke="url(#vel-divider-grad)" stroke-width="1"/>
-            \\
-        , .{ divider_x, divider_x });
+    // Vertical Divider Line
+    const divider_x: f64 = 172.0;
+    try w.print(
+        \\  <!-- Center Divider -->
+        \\  <line x1="{d:.1}" y1="36" x2="{d:.1}" y2="164" stroke="url(#vel-divider-grad)" stroke-width="1"/>
+        \\
+    , .{ divider_x, divider_x });
 
     // Right Section: 2x2 Glassmorphic Metric Matrix
     const right_start_x: f64 = 182.0;
@@ -422,8 +411,6 @@ pub fn renderVelocitySVG(
         t4_y + 47.0,
         esc_tier_percentile,
     });
-
-    }
 
     try w.writeAll("</svg>");
     return try stream.toOwnedSlice();

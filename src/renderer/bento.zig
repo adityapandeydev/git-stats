@@ -205,7 +205,7 @@ pub fn computeBentoLayout(
             const total_avail_w = canvas_w - (3.0 * gap);
             const half_w = total_avail_w / 2.0;
             const full_w = canvas_w - (2.0 * gap);
-            const row1_h = 160.0;
+            const row1_h = 180.0;
             const row2_h = 180.0;
 
             slots[0] = BentoSlot{ .x = gap, .y = gap, .w = full_w, .h = row1_h, .aspect = .wide_hero, .card_id = cards[0] };
@@ -218,33 +218,17 @@ pub fn computeBentoLayout(
                 .slots = slots,
                 .allocator = allocator,
             };
-        } else if (std.mem.eql(u8, template_name, "trio-1x3")) {
-            // 3 Columns in 1 Row
-            const total_avail_w = canvas_w - (4.0 * gap);
-            const slot_w = total_avail_w / 3.0;
-            const slot_h = custom_h orelse 180.0;
-
-            for (0..3) |i| {
-                const cur_x = gap + @as(f64, @floatFromInt(i)) * (slot_w + gap);
-                slots[i] = BentoSlot{ .x = cur_x, .y = gap, .w = slot_w, .h = slot_h, .aspect = .compact_col, .card_id = cards[i] };
-            }
-
-            return BentoLayout{
-                .canvas_w = canvas_w,
-                .canvas_h = slot_h + (2.0 * gap),
-                .slots = slots,
-                .allocator = allocator,
-            };
         } else if (std.mem.eql(u8, template_name, "pillar-left-stack")) {
             // Left Tall Pillar, Right 2 Stacked Cards
             const total_avail_w = canvas_w - (3.0 * gap);
-            const col_w = total_avail_w / 2.0;
+            const col1_w = total_avail_w - (total_avail_w * 424.0) / 824.0;
+            const col2_w = total_avail_w - col1_w;
             const card_h = 180.0;
-            const pillar_h = (2.0 * card_h) + gap; // Sub-pixel height harmonization: 368px if gap=8, 372px if gap=12
+            const pillar_h = (2.0 * card_h) + gap;
 
-            slots[0] = BentoSlot{ .x = gap, .y = gap, .w = col_w, .h = pillar_h, .aspect = .tall_pillar, .card_id = cards[0] };
-            slots[1] = BentoSlot{ .x = gap + col_w + gap, .y = gap, .w = col_w, .h = card_h, .aspect = .standard, .card_id = cards[1] };
-            slots[2] = BentoSlot{ .x = gap + col_w + gap, .y = gap + card_h + gap, .w = col_w, .h = card_h, .aspect = .standard, .card_id = cards[2] };
+            slots[0] = BentoSlot{ .x = gap, .y = gap, .w = col1_w, .h = pillar_h, .aspect = .tall_pillar, .card_id = cards[0] };
+            slots[1] = BentoSlot{ .x = gap + col1_w + gap, .y = gap, .w = col2_w, .h = card_h, .aspect = .standard, .card_id = cards[1] };
+            slots[2] = BentoSlot{ .x = gap + col1_w + gap, .y = gap + card_h + gap, .w = col2_w, .h = card_h, .aspect = .standard, .card_id = cards[2] };
 
             return BentoLayout{
                 .canvas_w = canvas_w,
@@ -274,170 +258,93 @@ pub fn computeBentoLayout(
     }
 
     if (n == 4 or (is_auto and n == 4)) {
-        if (std.mem.eql(u8, template_name, "hero-bookends")) {
-            // Top Hero (100%), Mid 2 Split (50/50), Bottom Hero (100%)
-            const full_w = canvas_w - (2.0 * gap);
-            const total_avail_w = canvas_w - (3.0 * gap);
-            const half_w = total_avail_w / 2.0;
-            const hero_h = 120.0;
-            const mid_h = 180.0;
+        // Balanced 2x2 Matrix
+        const total_avail_w = canvas_w - (3.0 * gap);
+        const slot_w = total_avail_w / 2.0;
+        const slot_h = 180.0;
 
-            slots[0] = BentoSlot{ .x = gap, .y = gap, .w = full_w, .h = hero_h, .aspect = .wide_hero, .card_id = cards[0] };
-            slots[1] = BentoSlot{ .x = gap, .y = gap + hero_h + gap, .w = half_w, .h = mid_h, .aspect = .standard, .card_id = cards[1] };
-            slots[2] = BentoSlot{ .x = gap + half_w + gap, .y = gap + hero_h + gap, .w = half_w, .h = mid_h, .aspect = .standard, .card_id = cards[2] };
-            slots[3] = BentoSlot{ .x = gap, .y = gap + hero_h + gap + mid_h + gap, .w = full_w, .h = hero_h, .aspect = .wide_hero, .card_id = cards[3] };
+        slots[0] = BentoSlot{ .x = gap, .y = gap, .w = slot_w, .h = slot_h, .aspect = .standard, .card_id = cards[0] };
+        slots[1] = BentoSlot{ .x = gap + slot_w + gap, .y = gap, .w = slot_w, .h = slot_h, .aspect = .standard, .card_id = cards[1] };
+        slots[2] = BentoSlot{ .x = gap, .y = gap + slot_h + gap, .w = slot_w, .h = slot_h, .aspect = .standard, .card_id = cards[2] };
+        slots[3] = BentoSlot{ .x = gap + slot_w + gap, .y = gap + slot_h + gap, .w = slot_w, .h = slot_h, .aspect = .standard, .card_id = cards[3] };
 
-            return BentoLayout{
-                .canvas_w = canvas_w,
-                .canvas_h = (2.0 * hero_h) + mid_h + (4.0 * gap),
-                .slots = slots,
-                .allocator = allocator,
-            };
-        } else {
-            // Default N = 4: Balanced 2x2 Matrix
-            const total_avail_w = canvas_w - (3.0 * gap);
-            const slot_w = total_avail_w / 2.0;
-            const slot_h = 180.0;
-
-            slots[0] = BentoSlot{ .x = gap, .y = gap, .w = slot_w, .h = slot_h, .aspect = .standard, .card_id = cards[0] };
-            slots[1] = BentoSlot{ .x = gap + slot_w + gap, .y = gap, .w = slot_w, .h = slot_h, .aspect = .standard, .card_id = cards[1] };
-            slots[2] = BentoSlot{ .x = gap, .y = gap + slot_h + gap, .w = slot_w, .h = slot_h, .aspect = .standard, .card_id = cards[2] };
-            slots[3] = BentoSlot{ .x = gap + slot_w + gap, .y = gap + slot_h + gap, .w = slot_w, .h = slot_h, .aspect = .standard, .card_id = cards[3] };
-
-            return BentoLayout{
-                .canvas_w = canvas_w,
-                .canvas_h = (2.0 * slot_h) + (3.0 * gap),
-                .slots = slots,
-                .allocator = allocator,
-            };
-        }
+        return BentoLayout{
+            .canvas_w = canvas_w,
+            .canvas_h = (2.0 * slot_h) + (3.0 * gap),
+            .slots = slots,
+            .allocator = allocator,
+        };
     }
 
     if (n == 5 or (is_auto and n == 5)) {
-        if (std.mem.eql(u8, template_name, "split-2-over-3")) {
-            // Row 1: 2 Wide Cards, Row 2: 3 Compact Cards
-            const total_avail_w = canvas_w - (3.0 * gap);
-            const half_w = total_avail_w / 2.0;
-            const trio_avail_w = canvas_w - (4.0 * gap);
-            const trio_w = trio_avail_w / 3.0;
-            const slot_h = 180.0;
+        // N = 5: Top Hero (100% width, full 180px height) + 2x2 Core Matrix
+        const full_w = canvas_w - (2.0 * gap);
+        const total_avail_w = canvas_w - (3.0 * gap);
+        const half_w = total_avail_w / 2.0;
+        const hero_h = 180.0;
+        const slot_h = 180.0;
 
-            slots[0] = BentoSlot{ .x = gap, .y = gap, .w = half_w, .h = slot_h, .aspect = .standard, .card_id = cards[0] };
-            slots[1] = BentoSlot{ .x = gap + half_w + gap, .y = gap, .w = half_w, .h = slot_h, .aspect = .standard, .card_id = cards[1] };
+        slots[0] = BentoSlot{ .x = gap, .y = gap, .w = full_w, .h = hero_h, .aspect = .wide_hero, .card_id = cards[0] };
+        slots[1] = BentoSlot{ .x = gap, .y = gap + hero_h + gap, .w = half_w, .h = slot_h, .aspect = .standard, .card_id = cards[1] };
+        slots[2] = BentoSlot{ .x = gap + half_w + gap, .y = gap + hero_h + gap, .w = half_w, .h = slot_h, .aspect = .standard, .card_id = cards[2] };
+        slots[3] = BentoSlot{ .x = gap, .y = gap + hero_h + gap + slot_h + gap, .w = half_w, .h = slot_h, .aspect = .standard, .card_id = cards[3] };
+        slots[4] = BentoSlot{ .x = gap + half_w + gap, .y = gap + hero_h + gap + slot_h + gap, .w = half_w, .h = slot_h, .aspect = .standard, .card_id = cards[4] };
 
-            const r2_y = gap + slot_h + gap;
-            slots[2] = BentoSlot{ .x = gap, .y = r2_y, .w = trio_w, .h = slot_h, .aspect = .compact_col, .card_id = cards[2] };
-            slots[3] = BentoSlot{ .x = gap + trio_w + gap, .y = r2_y, .w = trio_w, .h = slot_h, .aspect = .compact_col, .card_id = cards[3] };
-            slots[4] = BentoSlot{ .x = gap + (2.0 * (trio_w + gap)), .y = r2_y, .w = trio_w, .h = slot_h, .aspect = .compact_col, .card_id = cards[4] };
-
-            return BentoLayout{
-                .canvas_w = canvas_w,
-                .canvas_h = (2.0 * slot_h) + (3.0 * gap),
-                .slots = slots,
-                .allocator = allocator,
-            };
-        } else {
-            // Default N = 5: Top Hero (100%) + 2x2 Core Matrix
-            const full_w = canvas_w - (2.0 * gap);
-            const total_avail_w = canvas_w - (3.0 * gap);
-            const half_w = total_avail_w / 2.0;
-            const hero_h = 120.0;
-            const slot_h = 180.0;
-
-            slots[0] = BentoSlot{ .x = gap, .y = gap, .w = full_w, .h = hero_h, .aspect = .wide_hero, .card_id = cards[0] };
-            slots[1] = BentoSlot{ .x = gap, .y = gap + hero_h + gap, .w = half_w, .h = slot_h, .aspect = .standard, .card_id = cards[1] };
-            slots[2] = BentoSlot{ .x = gap + half_w + gap, .y = gap + hero_h + gap, .w = half_w, .h = slot_h, .aspect = .standard, .card_id = cards[2] };
-            slots[3] = BentoSlot{ .x = gap, .y = gap + hero_h + gap + slot_h + gap, .w = half_w, .h = slot_h, .aspect = .standard, .card_id = cards[3] };
-            slots[4] = BentoSlot{ .x = gap + half_w + gap, .y = gap + hero_h + gap + slot_h + gap, .w = half_w, .h = slot_h, .aspect = .standard, .card_id = cards[4] };
-
-            return BentoLayout{
-                .canvas_w = canvas_w,
-                .canvas_h = hero_h + (2.0 * slot_h) + (4.0 * gap),
-                .slots = slots,
-                .allocator = allocator,
-            };
-        }
+        return BentoLayout{
+            .canvas_w = canvas_w,
+            .canvas_h = hero_h + (2.0 * slot_h) + (4.0 * gap),
+            .slots = slots,
+            .allocator = allocator,
+        };
     }
 
     if (n == 6 or (is_auto and n == 6)) {
-        if (std.mem.eql(u8, template_name, "panoramic-3x2")) {
-            // 3 Columns x 2 Rows
-            const total_avail_w = canvas_w - (4.0 * gap);
-            const slot_w = total_avail_w / 3.0;
-            const slot_h = 180.0;
+        // N = 6: 2 Columns x 3 Rows
+        const total_avail_w = canvas_w - (3.0 * gap);
+        const slot_w = total_avail_w / 2.0;
+        const slot_h = 180.0;
 
-            for (0..6) |i| {
-                const col = i % 3;
-                const row = i / 3;
-                const cur_x = gap + @as(f64, @floatFromInt(col)) * (slot_w + gap);
-                const cur_y = gap + @as(f64, @floatFromInt(row)) * (slot_h + gap);
-                slots[i] = BentoSlot{ .x = cur_x, .y = cur_y, .w = slot_w, .h = slot_h, .aspect = .compact_col, .card_id = cards[i] };
-            }
-
-            return BentoLayout{
-                .canvas_w = canvas_w,
-                .canvas_h = (2.0 * slot_h) + (3.0 * gap),
-                .slots = slots,
-                .allocator = allocator,
-            };
-        } else {
-            // Default N = 6: 2 Columns x 3 Rows
-            const total_avail_w = canvas_w - (3.0 * gap);
-            const slot_w = total_avail_w / 2.0;
-            const slot_h = 180.0;
-
-            for (0..6) |i| {
-                const col = i % 2;
-                const row = i / 2;
-                const cur_x = gap + @as(f64, @floatFromInt(col)) * (slot_w + gap);
-                const cur_y = gap + @as(f64, @floatFromInt(row)) * (slot_h + gap);
-                slots[i] = BentoSlot{ .x = cur_x, .y = cur_y, .w = slot_w, .h = slot_h, .aspect = .standard, .card_id = cards[i] };
-            }
-
-            return BentoLayout{
-                .canvas_w = canvas_w,
-                .canvas_h = (3.0 * slot_h) + (4.0 * gap),
-                .slots = slots,
-                .allocator = allocator,
-            };
+        for (0..6) |i| {
+            const col = i % 2;
+            const row = i / 2;
+            const cur_x = gap + @as(f64, @floatFromInt(col)) * (slot_w + gap);
+            const cur_y = gap + @as(f64, @floatFromInt(row)) * (slot_h + gap);
+            slots[i] = BentoSlot{ .x = cur_x, .y = cur_y, .w = slot_w, .h = slot_h, .aspect = .standard, .card_id = cards[i] };
         }
+
+        return BentoLayout{
+            .canvas_w = canvas_w,
+            .canvas_h = (3.0 * slot_h) + (4.0 * gap),
+            .slots = slots,
+            .allocator = allocator,
+        };
     }
 
     // Default N = 7 (The Complete Suite Master Dashboard)
-    // Row 1: Hero Ribbon (100% width)
-    // Row 2: Dual Core (Left 2 Stacked Cards, Right 1 Tall Pillar)
-    // Row 3: Telemetry Trio (3 Columns in a Row)
+    // Row 1: Top Hero Ribbon (100% width, height = 180.0px for full Milestones or any hero card)
+    // Row 2, 3, 4: 2 Columns x 3 Rows (all slots width >= 414px, height = 180px)
     const full_w = canvas_w - (2.0 * gap);
-    const hero_h = 110.0;
+    const hero_h = 180.0;
+    const total_avail_w = canvas_w - (3.0 * gap);
+    const slot_w = total_avail_w / 2.0;
+    const slot_h = 180.0;
 
-    // Row 1
+    // Row 1: Hero
     slots[0] = BentoSlot{ .x = gap, .y = gap, .w = full_w, .h = hero_h, .aspect = .wide_hero, .card_id = cards[0] };
 
-    // Row 2
-    const r2_y = gap + hero_h + gap;
-    const total_avail_w = canvas_w - (3.0 * gap);
-    const col1_w = (total_avail_w * 424.0) / 824.0;
-    const col2_w = total_avail_w - col1_w;
-    const r2_card_h = 180.0;
-    const r2_pillar_h = (2.0 * r2_card_h) + gap;
-
-    slots[1] = BentoSlot{ .x = gap, .y = r2_y, .w = col1_w, .h = r2_card_h, .aspect = .standard, .card_id = cards[1] };
-    slots[2] = BentoSlot{ .x = gap, .y = r2_y + r2_card_h + gap, .w = col1_w, .h = r2_card_h, .aspect = .standard, .card_id = cards[2] };
-    slots[3] = BentoSlot{ .x = gap + col1_w + gap, .y = r2_y, .w = col2_w, .h = r2_pillar_h, .aspect = .tall_pillar, .card_id = cards[3] };
-
-    // Row 3 (Trio)
-    const r3_y = r2_y + r2_pillar_h + gap;
-    const trio_avail_w = canvas_w - (4.0 * gap);
-    const trio_w = trio_avail_w / 3.0;
-    const trio_h = 180.0;
-
-    slots[4] = BentoSlot{ .x = gap, .y = r3_y, .w = trio_w, .h = trio_h, .aspect = .compact_col, .card_id = cards[4] };
-    slots[5] = BentoSlot{ .x = gap + trio_w + gap, .y = r3_y, .w = trio_w, .h = trio_h, .aspect = .compact_col, .card_id = cards[5] };
-    slots[6] = BentoSlot{ .x = gap + (2.0 * (trio_w + gap)), .y = r3_y, .w = trio_w, .h = trio_h, .aspect = .compact_col, .card_id = cards[6] };
+    // Rows 2, 3, 4: 2 columns of 3 rows
+    for (1..7) |i| {
+        const pair_idx = i - 1;
+        const col = pair_idx % 2;
+        const row = pair_idx / 2;
+        const cur_x = gap + @as(f64, @floatFromInt(col)) * (slot_w + gap);
+        const cur_y = gap + hero_h + gap + @as(f64, @floatFromInt(row)) * (slot_h + gap);
+        slots[i] = BentoSlot{ .x = cur_x, .y = cur_y, .w = slot_w, .h = slot_h, .aspect = .standard, .card_id = cards[i] };
+    }
 
     return BentoLayout{
         .canvas_w = canvas_w,
-        .canvas_h = r3_y + trio_h + gap,
+        .canvas_h = gap + hero_h + gap + (3.0 * slot_h) + (3.0 * gap) + gap,
         .slots = slots,
         .allocator = allocator,
     };

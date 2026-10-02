@@ -67,44 +67,7 @@ jobs:
             --border-radius=4.5 \
             --output="generated/stats.svg"
 
-          # 5. Generate Commit Rhythm Card (24h x 7d Matrix)
-          ./zig-out/bin/git_stats --rhythm \
-            --username="${{ github.repository_owner }}" \
-            --theme="tokyonight" \
-            --tz=5.5 \
-            --card-width=424 \
-            --card-height=180 \
-            --border-radius=4.5 \
-            --output="generated/rhythm.svg"
-
-          # 6. Generate Developer DNA Radar Card (5-Axis Polyglot Radar)
-          ./zig-out/bin/git_stats --radar \
-            --username="${{ github.repository_owner }}" \
-            --theme="tokyonight" \
-            --card-width=424 \
-            --card-height=180 \
-            --border-radius=4.5 \
-            --output="generated/radar.svg"
-
-          # 7. Generate PR Velocity & Shipping Impact Card
-          ./zig-out/bin/git_stats --velocity \
-            --username="${{ github.repository_owner }}" \
-            --theme="tokyonight" \
-            --card-width=424 \
-            --card-height=180 \
-            --border-radius=4.5 \
-            --output="generated/velocity.svg"
-
-          # 8. Generate Career Milestones & Achievements Card
-          ./zig-out/bin/git_stats --milestones \
-            --username="${{ github.repository_owner }}" \
-            --theme="tokyonight" \
-            --card-width=424 \
-            --card-height=180 \
-            --border-radius=4.5 \
-            --output="generated/milestones.svg"
-
-          # 9. Generate Universal Bento Grid (Desktop Profile Layout)
+          # 5. Generate Universal Bento Grid (Desktop Profile Layout)
           ./zig-out/bin/git_stats --bento \
             --bento-layout="pillar-right-stack" \
             --cards="streak,stats,languages" \
@@ -114,7 +77,7 @@ jobs:
             --hide="jupyter notebook,qml,javascript,html,css,tex" \
             --output="generated/bento.svg"
 
-          # 10. Generate Mobile Stack Bento Grid (<picture> media query ready)
+          # 6. Generate Mobile Stack Bento Grid (<picture> media query ready)
           ./zig-out/bin/git_stats --bento \
             --bento-layout="mobile-stack" \
             --cards="streak,stats,languages" \

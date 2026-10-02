@@ -417,10 +417,12 @@ test "bento: compute layout geometries for N=1 to N=7" {
     defer l7.deinit();
     try std.testing.expectEqual(@as(usize, 7), l7.slots.len);
     try std.testing.expectEqual(bento.SlotAspect.wide_hero, l7.slots[0].aspect); // Milestones top ribbon
-    try std.testing.expectEqual(bento.SlotAspect.tall_pillar, l7.slots[3].aspect); // Languages pillar
-    try std.testing.expectEqual(bento.SlotAspect.compact_col, l7.slots[4].aspect); // Rhythm
-    try std.testing.expectEqual(bento.SlotAspect.compact_col, l7.slots[5].aspect); // Radar
-    try std.testing.expectEqual(bento.SlotAspect.compact_col, l7.slots[6].aspect); // Velocity
+    try std.testing.expectEqual(@as(f64, 180.0), l7.slots[0].h); // Full 180px height: zero cutoff
+    try std.testing.expectEqual(bento.SlotAspect.standard, l7.slots[1].aspect);
+    try std.testing.expectEqual(bento.SlotAspect.standard, l7.slots[2].aspect);
+    try std.testing.expectEqual(bento.SlotAspect.standard, l7.slots[4].aspect);
+    try std.testing.expectEqual(bento.SlotAspect.standard, l7.slots[5].aspect);
+    try std.testing.expectEqual(bento.SlotAspect.standard, l7.slots[6].aspect);
 
     // Mobile stack
     var l_mob = try bento.computeBentoLayout(allocator, &cards3, "mobile-stack", 400.0, 10.0, null, null);
