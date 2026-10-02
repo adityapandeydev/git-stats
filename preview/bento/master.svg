@@ -1,0 +1,763 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 864.0 710.0" width="864.0" height="710.0">
+  <defs>
+    <linearGradient id="bento-bg-grad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#1a1b27" stop-opacity="1.0"/>
+      <stop offset="100%" stop-color="#1a1b27" stop-opacity="0.95"/>
+    </linearGradient>
+  </defs>
+  <style>
+    .bento-master { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; }
+    .bento-slot { overflow: hidden; }
+  </style>
+  <!-- Master Bento Canvas Frame -->
+  <rect width="864.0" height="710.0" rx="4.5" fill="url(#bento-bg-grad)" stroke="#24283b" stroke-width="1"/>
+  <!-- Slot 1: milestones (wide_hero) -->
+  <svg x="12.0" y="12.0" width="840.0" height="110.0" viewBox="0 0 840.0 110.0" class="bento-slot bento-slot-1">
+    <defs>
+    <linearGradient id="b0_mil-glass-grad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#24283b" stop-opacity="0.6"/>
+      <stop offset="100%" stop-color="#1f2335" stop-opacity="0.3"/>
+    </linearGradient>
+  </defs>
+  <style>
+    .mil-title { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; font-weight: 700; font-size: 11px; letter-spacing: 0.6px; fill: #70a5fd; }
+    .mil-sub { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; font-weight: 500; font-size: 7.5px; letter-spacing: 0.35px; fill: #787c99; }
+    .mil-badge-txt { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; font-weight: 800; font-size: 9px; letter-spacing: 0.4px; fill: #70a5fd; }
+    .mil-lbl { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; font-weight: 700; font-size: 7.2px; letter-spacing: 0.35px; fill: #7aa2f7; }
+    .mil-val { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; font-weight: 800; font-size: 11.5px; fill: #c0caf5; }
+    .mil-tier-txt { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; font-weight: 800; font-size: 6.5px; letter-spacing: 0.5px; }
+    .mil-target-txt { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; font-weight: 500; font-size: 6.8px; fill: #787c99; }
+    @keyframes milFadeIn {
+      from { opacity: 0; transform: translateY(4px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    .mil-anim { animation: milFadeIn 0.5s ease-out forwards; }
+  </style>
+
+  <rect width="840" height="110" rx="4.5" fill="#1a1b27" stroke="none"/>
+  <!-- Header -->
+  <text x="18" y="24.0" class="mil-title">CAREER MILESTONES</text>
+  <circle cx="145" cy="20.5" r="1.8" fill="#70a5fd"/>
+  <text x="153" y="23.5" class="mil-sub">ACHIEVEMENTS &amp; TROPHIES</text>
+  <rect x="680.0" y="12.0" width="142.0" height="18.0" rx="3.5" fill="#70a5fd" fill-opacity="0.12" stroke="#70a5fd" stroke-opacity="0.45" stroke-width="0.8"/>
+  <text x="751.0" y="24.0" text-anchor="middle" class="mil-badge-txt">💎 Diamond Architect</text>
+  <!-- Milestone Tile 1: STREAK RUNNER -->
+  <g class="mil-anim" style="animation-delay: 0ms;">
+    <rect x="18.0" y="38.0" width="261.7" height="58.0" rx="4.5" fill="#1f2335" fill-opacity="0.45" stroke="#bb9af7" stroke-opacity="0.30" stroke-width="0.8"/>
+    <!-- Top Heading Row (Full Width) -->
+    <text x="27.5" y="51.5" class="mil-lbl">STREAK RUNNER</text>
+    <text x="270.2" y="51.5" text-anchor="end" class="mil-target-txt">Max Tier</text>
+    <!-- Bottom Section: Logo + Aligned Text -->
+    <circle cx="37.5" cy="74.5" r="11.5" fill="#bb9af7" fill-opacity="0.12" stroke="#bb9af7" stroke-opacity="0.40" stroke-width="0.8"/>
+    <text x="37.5" y="78.5" text-anchor="middle" font-size="11.5px">🔥</text>
+    <text x="55.0" y="71.0" class="mil-val">664 Days</text>
+    <!-- Tier Pill -->
+    <rect x="55.0" y="77.0" width="44.0" height="11.5" rx="2.5" fill="#bb9af7" fill-opacity="0.14" stroke="#bb9af7" stroke-opacity="0.45" stroke-width="0.6"/>
+    <text x="77.0" y="85.2" text-anchor="middle" class="mil-tier-txt" fill="#bb9af7">DIAMOND</text>
+  </g>
+  <!-- Milestone Tile 2: POLYGLOT -->
+  <g class="mil-anim" style="animation-delay: 45ms;">
+    <rect x="289.2" y="38.0" width="261.7" height="58.0" rx="4.5" fill="#1f2335" fill-opacity="0.45" stroke="#bb9af7" stroke-opacity="0.30" stroke-width="0.8"/>
+    <!-- Top Heading Row (Full Width) -->
+    <text x="298.7" y="51.5" class="mil-lbl">POLYGLOT</text>
+    <text x="541.3" y="51.5" text-anchor="end" class="mil-target-txt">Max Tier</text>
+    <!-- Bottom Section: Logo + Aligned Text -->
+    <circle cx="308.7" cy="74.5" r="11.5" fill="#bb9af7" fill-opacity="0.12" stroke="#bb9af7" stroke-opacity="0.40" stroke-width="0.8"/>
+    <text x="308.7" y="78.5" text-anchor="middle" font-size="11.5px">🌐</text>
+    <text x="326.2" y="71.0" class="mil-val">28 Stacks</text>
+    <!-- Tier Pill -->
+    <rect x="326.2" y="77.0" width="44.0" height="11.5" rx="2.5" fill="#bb9af7" fill-opacity="0.14" stroke="#bb9af7" stroke-opacity="0.45" stroke-width="0.6"/>
+    <text x="348.2" y="85.2" text-anchor="middle" class="mil-tier-txt" fill="#bb9af7">DIAMOND</text>
+  </g>
+  <!-- Milestone Tile 3: CODE TITAN -->
+  <g class="mil-anim" style="animation-delay: 90ms;">
+    <rect x="560.3" y="38.0" width="261.7" height="58.0" rx="4.5" fill="#1f2335" fill-opacity="0.45" stroke="#70a5fd" stroke-opacity="0.30" stroke-width="0.8"/>
+    <!-- Top Heading Row (Full Width) -->
+    <text x="569.8" y="51.5" class="mil-lbl">CODE TITAN</text>
+    <text x="812.5" y="51.5" text-anchor="end" class="mil-target-txt">Next: 5k</text>
+    <!-- Bottom Section: Logo + Aligned Text -->
+    <circle cx="579.8" cy="74.5" r="11.5" fill="#70a5fd" fill-opacity="0.12" stroke="#70a5fd" stroke-opacity="0.40" stroke-width="0.8"/>
+    <text x="579.8" y="78.5" text-anchor="middle" font-size="11.5px">⚡</text>
+    <text x="597.3" y="71.0" class="mil-val">2.1k Contribs</text>
+    <!-- Tier Pill -->
+    <rect x="597.3" y="77.0" width="44.0" height="11.5" rx="2.5" fill="#70a5fd" fill-opacity="0.14" stroke="#70a5fd" stroke-opacity="0.45" stroke-width="0.6"/>
+    <text x="619.3" y="85.2" text-anchor="middle" class="mil-tier-txt" fill="#70a5fd">PLATINUM</text>
+  </g>
+  <!-- Milestone Tile 4: PR SPECIALIST -->
+  <g class="mil-anim" style="animation-delay: 135ms;">
+    <rect x="18.0" y="105.0" width="261.7" height="58.0" rx="4.5" fill="#1f2335" fill-opacity="0.45" stroke="#e0af68" stroke-opacity="0.30" stroke-width="0.8"/>
+    <!-- Top Heading Row (Full Width) -->
+    <text x="27.5" y="118.5" class="mil-lbl">PR SPECIALIST</text>
+    <text x="270.2" y="118.5" text-anchor="end" class="mil-target-txt">Next: 20</text>
+    <!-- Bottom Section: Logo + Aligned Text -->
+    <circle cx="37.5" cy="141.5" r="11.5" fill="#e0af68" fill-opacity="0.12" stroke="#e0af68" stroke-opacity="0.40" stroke-width="0.8"/>
+    <text x="37.5" y="145.5" text-anchor="middle" font-size="11.5px">🔀</text>
+    <text x="55.0" y="138.0" class="mil-val">15 Merged</text>
+    <!-- Tier Pill -->
+    <rect x="55.0" y="144.0" width="44.0" height="11.5" rx="2.5" fill="#e0af68" fill-opacity="0.14" stroke="#e0af68" stroke-opacity="0.45" stroke-width="0.6"/>
+    <text x="77.0" y="152.2" text-anchor="middle" class="mil-tier-txt" fill="#e0af68">GOLD</text>
+  </g>
+  <!-- Milestone Tile 5: REPO MASTER -->
+  <g class="mil-anim" style="animation-delay: 180ms;">
+    <rect x="289.2" y="105.0" width="261.7" height="58.0" rx="4.5" fill="#1f2335" fill-opacity="0.45" stroke="#bb9af7" stroke-opacity="0.30" stroke-width="0.8"/>
+    <!-- Top Heading Row (Full Width) -->
+    <text x="298.7" y="118.5" class="mil-lbl">REPO MASTER</text>
+    <text x="541.3" y="118.5" text-anchor="end" class="mil-target-txt">Max Tier</text>
+    <!-- Bottom Section: Logo + Aligned Text -->
+    <circle cx="308.7" cy="141.5" r="11.5" fill="#bb9af7" fill-opacity="0.12" stroke="#bb9af7" stroke-opacity="0.40" stroke-width="0.8"/>
+    <text x="308.7" y="145.5" text-anchor="middle" font-size="11.5px">📦</text>
+    <text x="326.2" y="138.0" class="mil-val">39 Repos</text>
+    <!-- Tier Pill -->
+    <rect x="326.2" y="144.0" width="44.0" height="11.5" rx="2.5" fill="#bb9af7" fill-opacity="0.14" stroke="#bb9af7" stroke-opacity="0.45" stroke-width="0.6"/>
+    <text x="348.2" y="152.2" text-anchor="middle" class="mil-tier-txt" fill="#bb9af7">DIAMOND</text>
+  </g>
+  <!-- Milestone Tile 6: STAR MAGNET -->
+  <g class="mil-anim" style="animation-delay: 225ms;">
+    <rect x="560.3" y="105.0" width="261.7" height="58.0" rx="4.5" fill="#1f2335" fill-opacity="0.45" stroke="#ff9e64" stroke-opacity="0.30" stroke-width="0.8"/>
+    <!-- Top Heading Row (Full Width) -->
+    <text x="569.8" y="118.5" class="mil-lbl">STAR MAGNET</text>
+    <text x="812.5" y="118.5" text-anchor="end" class="mil-target-txt">Next: 5</text>
+    <!-- Bottom Section: Logo + Aligned Text -->
+    <circle cx="579.8" cy="141.5" r="11.5" fill="#ff9e64" fill-opacity="0.12" stroke="#ff9e64" stroke-opacity="0.40" stroke-width="0.8"/>
+    <text x="579.8" y="145.5" text-anchor="middle" font-size="11.5px">⭐</text>
+    <text x="597.3" y="138.0" class="mil-val">1 Star</text>
+    <!-- Tier Pill -->
+    <rect x="597.3" y="144.0" width="44.0" height="11.5" rx="2.5" fill="#ff9e64" fill-opacity="0.14" stroke="#ff9e64" stroke-opacity="0.45" stroke-width="0.6"/>
+    <text x="619.3" y="152.2" text-anchor="middle" class="mil-tier-txt" fill="#ff9e64">BRONZE</text>
+  </g>
+  </svg>
+  <!-- Slot 2: streak (standard) -->
+  <svg x="12.0" y="134.0" width="426.1" height="180.0" viewBox="0 0 426.1 180.0" class="bento-slot bento-slot-2">
+    <defs>
+    <filter id="b1_core-glow" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur in="SourceGraphic" stdDeviation="4" result="blur1"/>
+      <feGaussianBlur in="SourceGraphic" stdDeviation="8" result="blur2"/>
+      <feMerge>
+        <feMergeNode in="blur2"/>
+        <feMergeNode in="blur1"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+    <filter id="b1_subtle-glow" x="-30%" y="-30%" width="160%" height="160%">
+      <feGaussianBlur in="SourceGraphic" stdDeviation="2.5" result="blur"/>
+      <feMerge>
+        <feMergeNode in="blur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+    <linearGradient id="b1_flame-grad" x1="0%" y1="100%" x2="0%" y2="0%">
+      <stop offset="0%" stop-color="#ff9e64"/>
+      <stop offset="50%" stop-color="#f7768e"/>
+      <stop offset="100%" stop-color="#bb9af7"/>
+    </linearGradient>
+    <radialGradient id="b1_energy-aura" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#bb9af7" stop-opacity="0.35"/>
+      <stop offset="60%" stop-color="#f7768e" stop-opacity="0.08"/>
+      <stop offset="100%" stop-color="#1a1b27" stop-opacity="0.0"/>
+    </radialGradient>
+    <linearGradient id="b1_divider-grad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#70a5fd" stop-opacity="0.0"/>
+      <stop offset="50%" stop-color="#70a5fd" stop-opacity="0.35"/>
+      <stop offset="100%" stop-color="#70a5fd" stop-opacity="0.0"/>
+    </linearGradient>
+    <linearGradient id="b1_sparkline-grad" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#70a5fd"/>
+      <stop offset="50%" stop-color="#bb9af7"/>
+      <stop offset="100%" stop-color="#f7768e"/>
+    </linearGradient>
+    <linearGradient id="b1_sparkline-fill" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#bb9af7" stop-opacity="0.22"/>
+      <stop offset="100%" stop-color="#1a1b27" stop-opacity="0.0"/>
+    </linearGradient>
+  </defs>
+  <style>
+    @keyframes flamePulse {
+      0%, 100% { transform: scale(1.0); }
+      50% { transform: scale(1.08); }
+    }
+    @keyframes auraPulse {
+      0%, 100% { transform: scale(1.0); opacity: 0.8; }
+      50% { transform: scale(1.15); opacity: 1.0; }
+    }
+    @keyframes ringSpin {
+      from { stroke-dashoffset: 0; }
+      to { stroke-dashoffset: 48; }
+    }
+    @keyframes cardFadeIn {
+      from { opacity: 0; transform: translateY(4px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    .stat-val { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; font-weight: 800; }
+    .stat-lbl { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; font-weight: 600; }
+    .stat-sub { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; font-weight: 400; }
+    .spark-lbl { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; font-weight: 700; }
+  </style>
+  <rect width="426" height="180" rx="4.5" fill="#1a1b27" stroke="none"/>
+  <line x1="151.2" y1="22.0" x2="151.2" y2="130.0" stroke="url(#b1_divider-grad)" stroke-width="1"/>
+  <line x1="274.8" y1="22.0" x2="274.8" y2="130.0" stroke="url(#b1_divider-grad)" stroke-width="1"/>
+  <!-- Left Column: Total Contributions -->
+  <g transform="translate(93.7, 0.0)">
+    <text x="0" y="60" text-anchor="middle" class="stat-val" font-size="24" fill="#70a5fd">2051</text>
+    <text x="0" y="82" text-anchor="middle" class="stat-lbl" font-size="12" fill="#a9b1d6">Total Contributions</text>
+    <text x="0" y="103" text-anchor="middle" class="stat-sub" font-size="10.5" fill="#565f89">Oct 7, 2022 - Present</text>
+  </g>
+  <!-- Center Column: Glowing Energy Core -->
+  <g transform="translate(213.0, 33.0)">
+    <!-- Radial Aura -->
+    <circle cx="0" cy="0" r="30" fill="url(#b1_energy-aura)" style="animation: auraPulse 3.5s ease-in-out infinite; transform-origin: 0px 0px;"/>
+    <!-- Orbit Ring -->
+    <circle cx="0" cy="0" r="21" fill="none" stroke="url(#b1_flame-grad)" stroke-width="1.3" stroke-dasharray="5 3.5" opacity="0.65" style="animation: ringSpin 12s linear infinite;"/>
+    <!-- Vector Flame Core -->
+    <g style="animation: flamePulse 2.8s ease-in-out infinite; transform-origin: 0px 0px;">
+      <!-- Flame Silhouette -->
+      <path d="M 0 -12 C 1.2 -7.5 3.5 -4.5 6 -2.5 C 8 -1 9.5 1.5 9.5 4.5 C 9.5 9.5 5 13.5 0 13.5 C -5 13.5 -9.5 9.5 -9.5 4.5 C -9.5 1 -7 -2 -4.5 -4 C -4 -1 -2 1.5 -0.5 1.5 C -0.5 1.5 0.5 -1 0.5 -3.5 C 0.5 -6 -0.5 -8.5 0 -12 Z" fill="url(#b1_flame-grad)" filter="url(#b1_core-glow)"/>
+      <!-- Inner Flame Highlight -->
+      <path d="M 0 -3.5 C 1 -1.5 2.5 0.5 2.5 3 C 2.5 5 1.2 6.5 0 6.5 C -1.2 6.5 -2.5 5 -2.5 3 C -2.5 1 -1 -0.5 0 -3.5 Z" fill="#ffffff" opacity="0.9"/>
+    </g>
+  </g>
+
+  <!-- Current Streak Count -->
+  <text x="213.0" y="76.0" text-anchor="middle" class="stat-val" font-size="28" fill="url(#b1_flame-grad)" filter="url(#b1_subtle-glow)">664</text>
+
+  <!-- Streak Pill Badge -->
+  <g transform="translate(213.0, 86.0)">
+    <rect x="-60" y="0" width="120" height="17" rx="8.5" fill="#bb9af7" fill-opacity="0.16" stroke="url(#b1_flame-grad)" stroke-width="1"/>
+    <text x="0" y="11.5" text-anchor="middle" class="stat-lbl" font-size="8.8" letter-spacing="0.8" fill="#ffffff">⚡ MYTHIC STREAK</text>
+  </g>
+
+  <!-- Range Subtitle -->
+  <text x="213.0" y="118.0" text-anchor="middle" class="stat-sub" font-size="10.5" fill="#787c99">Dec 8, 2024 - Oct 2</text>
+  <!-- Right Column: Longest Streak -->
+  <g transform="translate(332.3, 0.0)">
+    <text x="0" y="60" text-anchor="middle" class="stat-val" font-size="24" fill="#70a5fd">664</text>
+    <text x="0" y="82" text-anchor="middle" class="stat-lbl" font-size="12" fill="#a9b1d6">Longest Streak</text>
+    <text x="0" y="103" text-anchor="middle" class="stat-sub" font-size="10.5" fill="#565f89">Dec 8, 2024 - Oct 2</text>
+  </g>
+  <!-- 14-Day Activity Sparkline -->
+  <text x="28.0" y="136.0" class="spark-lbl" font-size="8.5" letter-spacing="0.8" fill="#565f89">14-DAY ACTIVITY MOMENTUM</text>
+  <text x="398.0" y="136.0" text-anchor="end" class="spark-lbl" font-size="8.5" letter-spacing="0.5" fill="#bb9af7">113 COMMITS</text>
+  <path d="M 28.00 147.33 C 39.38 147.33, 45.08 162.44, 56.46 162.44 C 67.85 162.44, 73.54 158.89, 84.92 158.89 C 96.31 158.89, 102.00 142.00, 113.38 142.00 C 124.77 142.00, 130.46 165.11, 141.85 165.11 C 153.23 165.11, 158.92 165.11, 170.31 165.11 C 181.69 165.11, 187.38 165.11, 198.77 165.11 C 210.15 165.11, 215.85 162.44, 227.23 162.44 C 238.62 162.44, 244.31 165.11, 255.69 165.11 C 267.08 165.11, 272.77 163.33, 284.15 163.33 C 295.54 163.33, 301.23 148.22, 312.62 148.22 C 324.00 148.22, 329.69 161.56, 341.08 161.56 C 352.46 161.56, 358.15 153.56, 369.54 153.56 C 380.92 153.56, 386.62 163.33, 398.00 163.33 L 398.00 170.00 L 28.00 170.00 Z" fill="url(#b1_sparkline-fill)"/>
+  <path d="M 28.00 147.33 C 39.38 147.33, 45.08 162.44, 56.46 162.44 C 67.85 162.44, 73.54 158.89, 84.92 158.89 C 96.31 158.89, 102.00 142.00, 113.38 142.00 C 124.77 142.00, 130.46 165.11, 141.85 165.11 C 153.23 165.11, 158.92 165.11, 170.31 165.11 C 181.69 165.11, 187.38 165.11, 198.77 165.11 C 210.15 165.11, 215.85 162.44, 227.23 162.44 C 238.62 162.44, 244.31 165.11, 255.69 165.11 C 267.08 165.11, 272.77 163.33, 284.15 163.33 C 295.54 163.33, 301.23 148.22, 312.62 148.22 C 324.00 148.22, 329.69 161.56, 341.08 161.56 C 352.46 161.56, 358.15 153.56, 369.54 153.56 C 380.92 153.56, 386.62 163.33, 398.00 163.33" fill="none" stroke="url(#b1_sparkline-grad)" stroke-width="2" stroke-linecap="round"/>
+  <circle cx="28.00" cy="147.33" r="1.8" fill="#70a5fd" opacity="0.6"/>
+  <circle cx="56.46" cy="162.44" r="1.8" fill="#70a5fd" opacity="0.6"/>
+  <circle cx="84.92" cy="158.89" r="1.8" fill="#70a5fd" opacity="0.6"/>
+  <circle cx="113.38" cy="142.00" r="1.8" fill="#70a5fd" opacity="0.6"/>
+  <circle cx="141.85" cy="165.11" r="1.8" fill="#70a5fd" opacity="0.6"/>
+  <circle cx="170.31" cy="165.11" r="1.8" fill="#70a5fd" opacity="0.6"/>
+  <circle cx="198.77" cy="165.11" r="1.8" fill="#70a5fd" opacity="0.6"/>
+  <circle cx="227.23" cy="162.44" r="1.8" fill="#70a5fd" opacity="0.6"/>
+  <circle cx="255.69" cy="165.11" r="1.8" fill="#70a5fd" opacity="0.6"/>
+  <circle cx="284.15" cy="163.33" r="1.8" fill="#70a5fd" opacity="0.6"/>
+  <circle cx="312.62" cy="148.22" r="1.8" fill="#70a5fd" opacity="0.6"/>
+  <circle cx="341.08" cy="161.56" r="1.8" fill="#70a5fd" opacity="0.6"/>
+  <circle cx="369.54" cy="153.56" r="1.8" fill="#70a5fd" opacity="0.6"/>
+  <!-- Today Active Dot -->
+  <circle cx="398.00" cy="163.33" r="3.2" fill="#bb9af7" filter="url(#b1_subtle-glow)"/>
+  <circle cx="398.00" cy="163.33" r="1.5" fill="#ffffff"/>
+  </svg>
+  <!-- Slot 3: stats (standard) -->
+  <svg x="12.0" y="326.0" width="426.1" height="180.0" viewBox="0 0 426.1 180.0" class="bento-slot bento-slot-3">
+    <defs>
+    <filter id="b2_ring-glow" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur in="SourceGraphic" stdDeviation="4" result="blur1"/>
+      <feGaussianBlur in="SourceGraphic" stdDeviation="10" result="blur2"/>
+      <feMerge>
+        <feMergeNode in="blur2"/>
+        <feMergeNode in="blur1"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+    <linearGradient id="b2_tier-grad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#bb9af7"/>
+      <stop offset="100%" stop-color="#7aa2f7"/>
+    </linearGradient>
+    <linearGradient id="b2_stats-divider-grad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#1a1b27" stop-opacity="0.0"/>
+      <stop offset="50%" stop-color="#3b4261" stop-opacity="0.7"/>
+      <stop offset="100%" stop-color="#1a1b27" stop-opacity="0.0"/>
+    </linearGradient>
+    <radialGradient id="b2_ring-aura" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#bb9af7" stop-opacity="0.28"/>
+      <stop offset="65%" stop-color="#7aa2f7" stop-opacity="0.10"/>
+      <stop offset="100%" stop-color="#7aa2f7" stop-opacity="0.0"/>
+    </radialGradient>
+  </defs>
+  <style>
+    @keyframes ringFlow {
+      from { stroke-dashoffset: 263.9; }
+      to { stroke-dashoffset: 54.5; }
+    }
+    @keyframes auraBreathe {
+      0%, 100% { transform: scale(1.0); opacity: 0.8; }
+      50% { transform: scale(1.12); opacity: 1.0; }
+    }
+    .stat-heading { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; font-weight: 700; }
+    .matrix-val { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; font-weight: 800; font-size: 18.5px; fill: #c0caf5; }
+    .matrix-lbl { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; font-weight: 700; font-size: 8.5px; letter-spacing: 0.7px; }
+    .matrix-sub { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; font-weight: 500; }
+    .tier-badge-txt { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; font-weight: 900; }
+    .tier-sub-txt { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; font-weight: 700; }
+  </style>
+  <rect width="426" height="180" rx="4.5" fill="#1a1b27" stroke="none"/>
+  <!-- Header -->
+  <text x="22" y="25.0" class="stat-heading" font-size="12.5" letter-spacing="1.2" fill="#70a5fd">DEVELOPER STATS</text>
+  <circle cx="178" cy="21.5" r="2.5" fill="#bb9af7"/>
+  <text x="186" y="24.5" class="matrix-sub" font-size="9" letter-spacing="0.5" fill="#787c99">ALL-TIME</text>
+  <!-- Tile 1: Commits -->
+  <g transform="translate(22.0, 38.0)">
+    <rect width="108.0" height="56.0" rx="6" fill="#1f2335" fill-opacity="0.5" stroke="#292e42" stroke-width="0.8"/>
+    <text x="13" y="21.0" class="matrix-lbl" fill="#7aa2f7">COMMITS</text>
+    <circle cx="92" cy="17.0" r="10" fill="#7aa2f7" fill-opacity="0.12"/>
+    <circle cx="92" cy="17.0" r="4.2" fill="none" stroke="#70a5fd" stroke-width="1.6"/>
+    <circle cx="92" cy="17.0" r="1.8" fill="#70a5fd"/>
+    <text x="13" y="45.5" class="matrix-val">1,977</text>
+  </g>
+  <!-- Tile 2: Merged PRs -->
+  <g transform="translate(138.0, 38.0)">
+    <rect width="108.0" height="56.0" rx="6" fill="#1f2335" fill-opacity="0.5" stroke="#292e42" stroke-width="0.8"/>
+    <text x="13" y="21.0" class="matrix-lbl" fill="#bb9af7">MERGED PRS</text>
+    <circle cx="92" cy="17.0" r="10" fill="#bb9af7" fill-opacity="0.12"/>
+    <g transform="translate(92, 17.0)">
+      <path d="M -3 -5 L -3 5 M 3 -5 L 3 -1 C 3 2 -3 2 -3 2" fill="none" stroke="#bb9af7" stroke-width="1.4" stroke-linecap="round"/>
+      <circle cx="-3" cy="-5" r="1.6" fill="#bb9af7"/>
+      <circle cx="3" cy="-5" r="1.6" fill="#bb9af7"/>
+      <circle cx="-3" cy="5" r="1.6" fill="#bb9af7"/>
+    </g>
+    <text x="13" y="45.5" class="matrix-val">15</text>
+  </g>
+  <!-- Tile 3: Stars Earned -->
+  <g transform="translate(22.0, 102.0)">
+    <rect width="108.0" height="56.0" rx="6" fill="#1f2335" fill-opacity="0.5" stroke="#292e42" stroke-width="0.8"/>
+    <text x="13" y="21.0" class="matrix-lbl" fill="#e0af68">TOTAL STARS</text>
+    <circle cx="92" cy="17.0" r="10" fill="#e0af68" fill-opacity="0.12"/>
+    <g transform="translate(92, 17.0)">
+      <path d="M 0 -5 L 1.3 -1.5 L 5 -1.2 L 2.3 1.2 L 3 5 L 0 3.1 L -3 5 L -2.3 1.2 L -5 -1.2 L -1.3 -1.5 Z" fill="#e0af68"/>
+    </g>
+    <text x="13" y="45.5" class="matrix-val">1</text>
+  </g>
+  <!-- Tile 4: Repositories -->
+  <g transform="translate(138.0, 102.0)">
+    <rect width="108.0" height="56.0" rx="6" fill="#1f2335" fill-opacity="0.5" stroke="#292e42" stroke-width="0.8"/>
+    <text x="13" y="21.0" class="matrix-lbl" letter-spacing="0.6" fill="#73daca">REPOSITORIES</text>
+    <circle cx="92" cy="17.0" r="10" fill="#73daca" fill-opacity="0.12"/>
+    <g transform="translate(92, 17.0)">
+      <path d="M -4.5 -4.5 C -2.5 -5.5 0 -5.5 0 -3.5 L 0 4.5 C 0 2.5 -2.5 2.5 -4.5 3.5 Z M 4.5 -4.5 C 2.5 -5.5 0 -5.5 0 -3.5 L 0 4.5 C 0 2.5 2.5 2.5 4.5 3.5 Z" fill="none" stroke="#73daca" stroke-width="1.3" stroke-linejoin="round"/>
+    </g>
+    <text x="13" y="45.5" class="matrix-val">39</text>
+  </g>
+  <!-- Glass Divider -->
+  <line x1="254.0" y1="22" x2="254.0" y2="158.0" stroke="url(#b2_stats-divider-grad)" stroke-width="1"/>
+  <!-- Radial Rating Gauge -->
+  <g transform="translate(336.5, 75.0)">
+    <!-- Aura Glow -->
+    <circle cx="0" cy="0" r="54" fill="url(#b2_ring-aura)" style="animation: auraBreathe 4s ease-in-out infinite; transform-origin: 0px 0px;"/>
+    <!-- Inactive Track -->
+    <circle cx="0" cy="0" r="42.0" fill="none" stroke="#24283b" stroke-width="6.5" stroke-linecap="round"/>
+    <!-- Active Gradient Progress Ring -->
+    <circle cx="0" cy="0" r="42.0" fill="none" stroke="url(#b2_tier-grad)" stroke-width="6.5" stroke-linecap="round"
+      stroke-dasharray="263.9" stroke-dashoffset="54.5" transform="rotate(-90)" style="animation: ringFlow 1.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;"/>
+    <!-- Tier Grade Badge Text -->
+    <text x="0" y="5" text-anchor="middle" class="tier-badge-txt" font-size="28" fill="url(#b2_tier-grad)" filter="url(#b2_ring-glow)">S</text>
+    <!-- Numeric Score -->
+    <text x="0" y="22" text-anchor="middle" class="tier-sub-txt" font-size="10.5" fill="#a9b1d6">793 / 1000</text>
+  </g>
+  <!-- Rank Pill Badge -->
+  <g transform="translate(279.5, 138.0)">
+    <rect width="114.0" height="19.0" rx="9.5" fill="#bb9af7" fill-opacity="0.16" stroke="url(#b2_tier-grad)" stroke-width="1"/>
+    <text x="57.0" y="12.5" text-anchor="middle" class="stat-heading" font-size="8.8" letter-spacing="0.8" fill="#ffffff">Top 2%</text>
+  </g>
+  <text x="336.5" y="169" text-anchor="middle" class="matrix-sub" font-size="9.5" letter-spacing="0.5" fill="#787c99">Master Craftsman</text>
+  </svg>
+  <!-- Slot 4: languages (tall_pillar) -->
+  <svg x="450.1" y="134.0" width="401.9" height="372.0" viewBox="0 0 401.9 372.0" class="bento-slot bento-slot-4">
+    <style>
+        .card-title { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; font-size: 16px; font-weight: 600; fill: #70a5fd; }
+        .lang-name { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; font-size: 12.5px; font-weight: 500; fill: #c0caf5; }
+        .lang-pct { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; font-size: 12px; font-weight: 400; fill: #7982a9; }
+        .bar-bg { fill: #212337; rx: 5px; }
+        .bar-segment { transition: all 0.3s ease; }
+    
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(4px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        @keyframes scaleBar {
+            from { transform: scaleX(0); }
+            to { transform: scaleX(1); }
+        }
+        .animate-item { animation: fadeIn 0.4s ease-out forwards; }
+        .bar-container { transform-origin: left; animation: scaleBar 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
+        </style><rect width="401" height="372" rx="4.5" fill="#1a1b27" stroke="none"/><text x="25" y="28" class="card-title">Most Used Languages</text>
+    <defs>
+        <clipPath id="b3_bar-clip">
+            <rect x="25" y="52" width="351" height="10" rx="5" ry="5"/>
+        </clipPath>
+    </defs>
+    <rect class="bar-bg" x="25" y="52" width="351" height="10" rx="5"/>
+<g clip-path="url(#b3_bar-clip)" class="bar-container"><rect x="25.00" y="52" width="97.47" height="10" fill="#DA5B0B" class="bar-segment"><title>Jupyter Notebook: 27.77%</title></rect><rect x="122.47" y="52" width="82.11" height="10" fill="#3178c6" class="bar-segment"><title>TypeScript: 23.39%</title></rect><rect x="204.58" y="52" width="41.40" height="10" fill="#dea584" class="bar-segment"><title>Rust: 11.79%</title></rect><rect x="245.97" y="52" width="34.45" height="10" fill="#00ADD8" class="bar-segment"><title>Go: 9.81%</title></rect><rect x="280.42" y="52" width="31.46" height="10" fill="#44a51c" class="bar-segment"><title>QML: 8.96%</title></rect><rect x="311.88" y="52" width="29.06" height="10" fill="#b07219" class="bar-segment"><title>Java: 8.28%</title></rect><rect x="340.94" y="52" width="19.39" height="10" fill="#3D6117" class="bar-segment"><title>TeX: 5.52%</title></rect><rect x="360.32" y="52" width="15.68" height="10" fill="#ec915c" class="bar-segment"><title>Zig: 4.47%</title></rect></g><g class="animate-item" style="animation-delay: 100ms;">
+<circle cx="30.0" cy="129.5" r="4.5" fill="#DA5B0B"/>
+<text x="41.0" y="134.0" class="lang-name">Jupyter Notebook</text><text x="185.5" y="134.0" text-anchor="end" class="lang-pct">27.77%</text>
+</g><g class="animate-item" style="animation-delay: 140ms;">
+<circle cx="30.0" cy="199.5" r="4.5" fill="#3178c6"/>
+<text x="41.0" y="204.0" class="lang-name">TypeScript</text><text x="185.5" y="204.0" text-anchor="end" class="lang-pct">23.39%</text>
+</g><g class="animate-item" style="animation-delay: 180ms;">
+<circle cx="30.0" cy="269.5" r="4.5" fill="#dea584"/>
+<text x="41.0" y="274.0" class="lang-name">Rust</text><text x="185.5" y="274.0" text-anchor="end" class="lang-pct">11.79%</text>
+</g><g class="animate-item" style="animation-delay: 220ms;">
+<circle cx="30.0" cy="339.5" r="4.5" fill="#00ADD8"/>
+<text x="41.0" y="344.0" class="lang-name">Go</text><text x="185.5" y="344.0" text-anchor="end" class="lang-pct">9.81%</text>
+</g><g class="animate-item" style="animation-delay: 260ms;">
+<circle cx="205.5" cy="129.5" r="4.5" fill="#44a51c"/>
+<text x="216.5" y="134.0" class="lang-name">QML</text><text x="361.0" y="134.0" text-anchor="end" class="lang-pct">8.96%</text>
+</g><g class="animate-item" style="animation-delay: 300ms;">
+<circle cx="205.5" cy="199.5" r="4.5" fill="#b07219"/>
+<text x="216.5" y="204.0" class="lang-name">Java</text><text x="361.0" y="204.0" text-anchor="end" class="lang-pct">8.28%</text>
+</g><g class="animate-item" style="animation-delay: 340ms;">
+<circle cx="205.5" cy="269.5" r="4.5" fill="#3D6117"/>
+<text x="216.5" y="274.0" class="lang-name">TeX</text><text x="361.0" y="274.0" text-anchor="end" class="lang-pct">5.52%</text>
+</g><g class="animate-item" style="animation-delay: 380ms;">
+<circle cx="205.5" cy="339.5" r="4.5" fill="#ec915c"/>
+<text x="216.5" y="344.0" class="lang-name">Zig</text><text x="361.0" y="344.0" text-anchor="end" class="lang-pct">4.47%</text>
+</g>
+  </svg>
+  <!-- Slot 5: rhythm (compact_col) -->
+  <svg x="12.0" y="518.0" width="272.0" height="180.0" viewBox="0 0 272.0 180.0" class="bento-slot bento-slot-5">
+    <defs>
+    <linearGradient id="b4_rhythm-divider-grad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#1a1b27" stop-opacity="0.0"/>
+      <stop offset="50%" stop-color="#3b4261" stop-opacity="0.7"/>
+      <stop offset="100%" stop-color="#1a1b27" stop-opacity="0.0"/>
+    </linearGradient>
+    <linearGradient id="b4_rhythm-day-grad" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#70a5fd"/>
+      <stop offset="100%" stop-color="#7aa2f7"/>
+    </linearGradient>
+    <linearGradient id="b4_rhythm-night-grad" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#bb9af7"/>
+      <stop offset="100%" stop-color="#9d7cd8"/>
+    </linearGradient>
+    <filter id="b4_peak-glow" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur in="SourceGraphic" stdDeviation="2.5" result="blur"/>
+      <feMerge>
+        <feMergeNode in="blur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+  </defs>
+  <style>
+    .rhythm-title { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; font-weight: 700; font-size: 12.5px; letter-spacing: 1.2px; fill: #70a5fd; }
+    .rhythm-sub { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; font-weight: 500; font-size: 9px; letter-spacing: 0.5px; fill: #787c99; }
+    .rhythm-lbl { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; font-weight: 600; font-size: 8px; fill: #565f89; }
+    .rhythm-persona-txt { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; font-weight: 800; font-size: 10px; letter-spacing: 0.6px; fill: #70a5fd; }
+    .rhythm-kpi-lbl { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; font-weight: 700; font-size: 8px; letter-spacing: 0.8px; fill: #7aa2f7; }
+    .rhythm-kpi-val { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; font-weight: 800; font-size: 13px; fill: #c0caf5; }
+    .rhythm-stat-txt { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; font-weight: 600; font-size: 7.8px; letter-spacing: 0.2px; fill: #7982a9; }
+    .rhythm-count-txt { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; font-weight: 500; font-size: 8px; fill: #565f89; }
+  </style>
+  <rect width="272" height="180" rx="4.5" fill="#1a1b27" stroke="none"/>
+  <!-- Header -->
+  <text x="136.0" y="25.0" text-anchor="middle" class="rhythm-title">COMMIT RHYTHM</text>
+  <text x="26.0" y="58.0" class="rhythm-lbl" text-anchor="end">Mon</text>
+  <text x="26.0" y="70.0" class="rhythm-lbl" text-anchor="end">Tue</text>
+  <text x="26.0" y="82.0" class="rhythm-lbl" text-anchor="end">Wed</text>
+  <text x="26.0" y="94.0" class="rhythm-lbl" text-anchor="end">Thu</text>
+  <text x="26.0" y="106.0" class="rhythm-lbl" text-anchor="end">Fri</text>
+  <text x="26.0" y="118.0" class="rhythm-lbl" text-anchor="end">Sat</text>
+  <text x="26.0" y="130.0" class="rhythm-lbl" text-anchor="end">Sun</text>
+  <!-- Matrix Cells -->
+  <g transform="translate(32.0, 50.0)">
+    <rect x="0.0" y="0.0" width="7.0" height="8.5" rx="2" fill="#3d59a1"/>
+    <rect x="8.8" y="0.0" width="7.0" height="8.5" rx="2" fill="#2e3c64"/>
+    <rect x="17.6" y="0.0" width="7.0" height="8.5" rx="2" fill="#1f2335" fill-opacity="0.35"/>
+    <rect x="26.4" y="0.0" width="7.0" height="8.5" rx="2" fill="#3d59a1"/>
+    <rect x="35.2" y="0.0" width="7.0" height="8.5" rx="2" fill="#1f2335" fill-opacity="0.35"/>
+    <rect x="44.0" y="0.0" width="7.0" height="8.5" rx="2" fill="#2e3c64"/>
+    <rect x="52.8" y="0.0" width="7.0" height="8.5" rx="2" fill="#1f2335" fill-opacity="0.35"/>
+    <rect x="61.6" y="0.0" width="7.0" height="8.5" rx="2" fill="#1f2335" fill-opacity="0.35"/>
+    <rect x="70.4" y="0.0" width="7.0" height="8.5" rx="2" fill="#1f2335" fill-opacity="0.35"/>
+    <rect x="79.2" y="0.0" width="7.0" height="8.5" rx="2" fill="#2e3c64"/>
+    <rect x="88.0" y="0.0" width="7.0" height="8.5" rx="2" fill="#2e3c64"/>
+    <rect x="96.8" y="0.0" width="7.0" height="8.5" rx="2" fill="#3d59a1"/>
+    <rect x="105.6" y="0.0" width="7.0" height="8.5" rx="2" fill="#3d59a1"/>
+    <rect x="114.4" y="0.0" width="7.0" height="8.5" rx="2" fill="#3d59a1"/>
+    <rect x="123.2" y="0.0" width="7.0" height="8.5" rx="2" fill="#2e3c64"/>
+    <rect x="132.0" y="0.0" width="7.0" height="8.5" rx="2" fill="#2e3c64"/>
+    <rect x="140.8" y="0.0" width="7.0" height="8.5" rx="2" fill="#1f2335" fill-opacity="0.35"/>
+    <rect x="149.6" y="0.0" width="7.0" height="8.5" rx="2" fill="#3d59a1"/>
+    <rect x="158.4" y="0.0" width="7.0" height="8.5" rx="2" fill="#bb9af7" filter="url(#b4_peak-glow)"/>
+    <rect x="167.2" y="0.0" width="7.0" height="8.5" rx="2" fill="#1f2335" fill-opacity="0.35"/>
+    <rect x="176.0" y="0.0" width="7.0" height="8.5" rx="2" fill="#2e3c64"/>
+    <rect x="184.8" y="0.0" width="7.0" height="8.5" rx="2" fill="#3d59a1"/>
+    <rect x="193.6" y="0.0" width="7.0" height="8.5" rx="2" fill="#2e3c64"/>
+    <rect x="202.4" y="0.0" width="7.0" height="8.5" rx="2" fill="#7aa2f7"/>
+    <rect x="0.0" y="12.0" width="7.0" height="8.5" rx="2" fill="#7aa2f7"/>
+    <rect x="8.8" y="12.0" width="7.0" height="8.5" rx="2" fill="#3d59a1"/>
+    <rect x="17.6" y="12.0" width="7.0" height="8.5" rx="2" fill="#2e3c64"/>
+    <rect x="26.4" y="12.0" width="7.0" height="8.5" rx="2" fill="#2e3c64"/>
+    <rect x="35.2" y="12.0" width="7.0" height="8.5" rx="2" fill="#2e3c64"/>
+    <rect x="44.0" y="12.0" width="7.0" height="8.5" rx="2" fill="#1f2335" fill-opacity="0.35"/>
+    <rect x="52.8" y="12.0" width="7.0" height="8.5" rx="2" fill="#1f2335" fill-opacity="0.35"/>
+    <rect x="61.6" y="12.0" width="7.0" height="8.5" rx="2" fill="#1f2335" fill-opacity="0.35"/>
+    <rect x="70.4" y="12.0" width="7.0" height="8.5" rx="2" fill="#2e3c64"/>
+    <rect x="79.2" y="12.0" width="7.0" height="8.5" rx="2" fill="#7aa2f7"/>
+    <rect x="88.0" y="12.0" width="7.0" height="8.5" rx="2" fill="#3d59a1"/>
+    <rect x="96.8" y="12.0" width="7.0" height="8.5" rx="2" fill="#7aa2f7"/>
+    <rect x="105.6" y="12.0" width="7.0" height="8.5" rx="2" fill="#7aa2f7"/>
+    <rect x="114.4" y="12.0" width="7.0" height="8.5" rx="2" fill="#3d59a1"/>
+    <rect x="123.2" y="12.0" width="7.0" height="8.5" rx="2" fill="#7aa2f7"/>
+    <rect x="132.0" y="12.0" width="7.0" height="8.5" rx="2" fill="#2e3c64"/>
+    <rect x="140.8" y="12.0" width="7.0" height="8.5" rx="2" fill="#3d59a1"/>
+    <rect x="149.6" y="12.0" width="7.0" height="8.5" rx="2" fill="#2e3c64"/>
+    <rect x="158.4" y="12.0" width="7.0" height="8.5" rx="2" fill="#2e3c64"/>
+    <rect x="167.2" y="12.0" width="7.0" height="8.5" rx="2" fill="#1f2335" fill-opacity="0.35"/>
+    <rect x="176.0" y="12.0" width="7.0" height="8.5" rx="2" fill="#2e3c64"/>
+    <rect x="184.8" y="12.0" width="7.0" height="8.5" rx="2" fill="#3d59a1"/>
+    <rect x="193.6" y="12.0" width="7.0" height="8.5" rx="2" fill="#2e3c64"/>
+    <rect x="202.4" y="12.0" width="7.0" height="8.5" rx="2" fill="#2e3c64"/>
+    <rect x="0.0" y="24.0" width="7.0" height="8.5" rx="2" fill="#1f2335" fill-opacity="0.35"/>
+    <rect x="8.8" y="24.0" width="7.0" height="8.5" rx="2" fill="#1f2335" fill-opacity="0.35"/>
+    <rect x="17.6" y="24.0" width="7.0" height="8.5" rx="2" fill="#1f2335" fill-opacity="0.35"/>
+    <rect x="26.4" y="24.0" width="7.0" height="8.5" rx="2" fill="#1f2335" fill-opacity="0.35"/>
+    <rect x="35.2" y="24.0" width="7.0" height="8.5" rx="2" fill="#1f2335" fill-opacity="0.35"/>
+    <rect x="44.0" y="24.0" width="7.0" height="8.5" rx="2" fill="#2e3c64"/>
+    <rect x="52.8" y="24.0" width="7.0" height="8.5" rx="2" fill="#1f2335" fill-opacity="0.35"/>
+    <rect x="61.6" y="24.0" width="7.0" height="8.5" rx="2" fill="#2e3c64"/>
+    <rect x="70.4" y="24.0" width="7.0" height="8.5" rx="2" fill="#2e3c64"/>
+    <rect x="79.2" y="24.0" width="7.0" height="8.5" rx="2" fill="#2e3c64"/>
+    <rect x="88.0" y="24.0" width="7.0" height="8.5" rx="2" fill="#2e3c64"/>
+    <rect x="96.8" y="24.0" width="7.0" height="8.5" rx="2" fill="#bb9af7"/>
+    <rect x="105.6" y="24.0" width="7.0" height="8.5" rx="2" fill="#7aa2f7"/>
+    <rect x="114.4" y="24.0" width="7.0" height="8.5" rx="2" fill="#3d59a1"/>
+    <rect x="123.2" y="24.0" width="7.0" height="8.5" rx="2" fill="#2e3c64"/>
+    <rect x="132.0" y="24.0" width="7.0" height="8.5" rx="2" fill="#1f2335" fill-opacity="0.35"/>
+    <rect x="140.8" y="24.0" width="7.0" height="8.5" rx="2" fill="#3d59a1"/>
+    <rect x="149.6" y="24.0" width="7.0" height="8.5" rx="2" fill="#3d59a1"/>
+    <rect x="158.4" y="24.0" width="7.0" height="8.5" rx="2" fill="#3d59a1"/>
+    <rect x="167.2" y="24.0" width="7.0" height="8.5" rx="2" fill="#3d59a1"/>
+    <rect x="176.0" y="24.0" width="7.0" height="8.5" rx="2" fill="#2e3c64"/>
+    <rect x="184.8" y="24.0" width="7.0" height="8.5" rx="2" fill="#1f2335" fill-opacity="0.35"/>
+    <rect x="193.6" y="24.0" width="7.0" height="8.5" rx="2" fill="#2e3c64"/>
+    <rect x="202.4" y="24.0" width="7.0" height="8.5" rx="2" fill="#2e3c64"/>
+    <rect x="0.0" y="36.0" width="7.0" height="8.5" rx="2" fill="#1f2335" fill-opacity="0.35"/>
+    <rect x="8.8" y="36.0" width="7.0" height="8.5" rx="2" fill="#1f2335" fill-opacity="0.35"/>
+    <rect x="17.6" y="36.0" width="7.0" height="8.5" rx="2" fill="#1f2335" fill-opacity="0.35"/>
+    <rect x="26.4" y="36.0" width="7.0" height="8.5" rx="2" fill="#1f2335" fill-opacity="0.35"/>
+    <rect x="35.2" y="36.0" width="7.0" height="8.5" rx="2" fill="#1f2335" fill-opacity="0.35"/>
+    <rect x="44.0" y="36.0" width="7.0" height="8.5" rx="2" fill="#1f2335" fill-opacity="0.35"/>
+    <rect x="52.8" y="36.0" width="7.0" height="8.5" rx="2" fill="#1f2335" fill-opacity="0.35"/>
+    <rect x="61.6" y="36.0" width="7.0" height="8.5" rx="2" fill="#1f2335" fill-opacity="0.35"/>
+    <rect x="70.4" y="36.0" width="7.0" height="8.5" rx="2" fill="#1f2335" fill-opacity="0.35"/>
+    <rect x="79.2" y="36.0" width="7.0" height="8.5" rx="2" fill="#2e3c64"/>
+    <rect x="88.0" y="36.0" width="7.0" height="8.5" rx="2" fill="#7aa2f7"/>
+    <rect x="96.8" y="36.0" width="7.0" height="8.5" rx="2" fill="#3d59a1"/>
+    <rect x="105.6" y="36.0" width="7.0" height="8.5" rx="2" fill="#7aa2f7"/>
+    <rect x="114.4" y="36.0" width="7.0" height="8.5" rx="2" fill="#3d59a1"/>
+    <rect x="123.2" y="36.0" width="7.0" height="8.5" rx="2" fill="#1f2335" fill-opacity="0.35"/>
+    <rect x="132.0" y="36.0" width="7.0" height="8.5" rx="2" fill="#3d59a1"/>
+    <rect x="140.8" y="36.0" width="7.0" height="8.5" rx="2" fill="#3d59a1"/>
+    <rect x="149.6" y="36.0" width="7.0" height="8.5" rx="2" fill="#3d59a1"/>
+    <rect x="158.4" y="36.0" width="7.0" height="8.5" rx="2" fill="#3d59a1"/>
+    <rect x="167.2" y="36.0" width="7.0" height="8.5" rx="2" fill="#3d59a1"/>
+    <rect x="176.0" y="36.0" width="7.0" height="8.5" rx="2" fill="#1f2335" fill-opacity="0.35"/>
+    <rect x="184.8" y="36.0" width="7.0" height="8.5" rx="2" fill="#7aa2f7"/>
+    <rect x="193.6" y="36.0" width="7.0" height="8.5" rx="2" fill="#2e3c64"/>
+    <rect x="202.4" y="36.0" width="7.0" height="8.5" rx="2" fill="#1f2335" fill-opacity="0.35"/>
+    <rect x="0.0" y="48.0" width="7.0" height="8.5" rx="2" fill="#2e3c64"/>
+    <rect x="8.8" y="48.0" width="7.0" height="8.5" rx="2" fill="#2e3c64"/>
+    <rect x="17.6" y="48.0" width="7.0" height="8.5" rx="2" fill="#1f2335" fill-opacity="0.35"/>
+    <rect x="26.4" y="48.0" width="7.0" height="8.5" rx="2" fill="#3d59a1"/>
+    <rect x="35.2" y="48.0" width="7.0" height="8.5" rx="2" fill="#2e3c64"/>
+    <rect x="44.0" y="48.0" width="7.0" height="8.5" rx="2" fill="#2e3c64"/>
+    <rect x="52.8" y="48.0" width="7.0" height="8.5" rx="2" fill="#1f2335" fill-opacity="0.35"/>
+    <rect x="61.6" y="48.0" width="7.0" height="8.5" rx="2" fill="#1f2335" fill-opacity="0.35"/>
+    <rect x="70.4" y="48.0" width="7.0" height="8.5" rx="2" fill="#2e3c64"/>
+    <rect x="79.2" y="48.0" width="7.0" height="8.5" rx="2" fill="#2e3c64"/>
+    <rect x="88.0" y="48.0" width="7.0" height="8.5" rx="2" fill="#2e3c64"/>
+    <rect x="96.8" y="48.0" width="7.0" height="8.5" rx="2" fill="#2e3c64"/>
+    <rect x="105.6" y="48.0" width="7.0" height="8.5" rx="2" fill="#bb9af7"/>
+    <rect x="114.4" y="48.0" width="7.0" height="8.5" rx="2" fill="#7aa2f7"/>
+    <rect x="123.2" y="48.0" width="7.0" height="8.5" rx="2" fill="#3d59a1"/>
+    <rect x="132.0" y="48.0" width="7.0" height="8.5" rx="2" fill="#3d59a1"/>
+    <rect x="140.8" y="48.0" width="7.0" height="8.5" rx="2" fill="#2e3c64"/>
+    <rect x="149.6" y="48.0" width="7.0" height="8.5" rx="2" fill="#1f2335" fill-opacity="0.35"/>
+    <rect x="158.4" y="48.0" width="7.0" height="8.5" rx="2" fill="#3d59a1"/>
+    <rect x="167.2" y="48.0" width="7.0" height="8.5" rx="2" fill="#3d59a1"/>
+    <rect x="176.0" y="48.0" width="7.0" height="8.5" rx="2" fill="#3d59a1"/>
+    <rect x="184.8" y="48.0" width="7.0" height="8.5" rx="2" fill="#2e3c64"/>
+    <rect x="193.6" y="48.0" width="7.0" height="8.5" rx="2" fill="#3d59a1"/>
+    <rect x="202.4" y="48.0" width="7.0" height="8.5" rx="2" fill="#2e3c64"/>
+    <rect x="0.0" y="60.0" width="7.0" height="8.5" rx="2" fill="#3d59a1"/>
+    <rect x="8.8" y="60.0" width="7.0" height="8.5" rx="2" fill="#3d59a1"/>
+    <rect x="17.6" y="60.0" width="7.0" height="8.5" rx="2" fill="#2e3c64"/>
+    <rect x="26.4" y="60.0" width="7.0" height="8.5" rx="2" fill="#2e3c64"/>
+    <rect x="35.2" y="60.0" width="7.0" height="8.5" rx="2" fill="#1f2335" fill-opacity="0.35"/>
+    <rect x="44.0" y="60.0" width="7.0" height="8.5" rx="2" fill="#3d59a1"/>
+    <rect x="52.8" y="60.0" width="7.0" height="8.5" rx="2" fill="#1f2335" fill-opacity="0.35"/>
+    <rect x="61.6" y="60.0" width="7.0" height="8.5" rx="2" fill="#2e3c64"/>
+    <rect x="70.4" y="60.0" width="7.0" height="8.5" rx="2" fill="#2e3c64"/>
+    <rect x="79.2" y="60.0" width="7.0" height="8.5" rx="2" fill="#3d59a1"/>
+    <rect x="88.0" y="60.0" width="7.0" height="8.5" rx="2" fill="#3d59a1"/>
+    <rect x="96.8" y="60.0" width="7.0" height="8.5" rx="2" fill="#3d59a1"/>
+    <rect x="105.6" y="60.0" width="7.0" height="8.5" rx="2" fill="#7aa2f7"/>
+    <rect x="114.4" y="60.0" width="7.0" height="8.5" rx="2" fill="#bb9af7"/>
+    <rect x="123.2" y="60.0" width="7.0" height="8.5" rx="2" fill="#3d59a1"/>
+    <rect x="132.0" y="60.0" width="7.0" height="8.5" rx="2" fill="#3d59a1"/>
+    <rect x="140.8" y="60.0" width="7.0" height="8.5" rx="2" fill="#2e3c64"/>
+    <rect x="149.6" y="60.0" width="7.0" height="8.5" rx="2" fill="#2e3c64"/>
+    <rect x="158.4" y="60.0" width="7.0" height="8.5" rx="2" fill="#3d59a1"/>
+    <rect x="167.2" y="60.0" width="7.0" height="8.5" rx="2" fill="#2e3c64"/>
+    <rect x="176.0" y="60.0" width="7.0" height="8.5" rx="2" fill="#2e3c64"/>
+    <rect x="184.8" y="60.0" width="7.0" height="8.5" rx="2" fill="#2e3c64"/>
+    <rect x="193.6" y="60.0" width="7.0" height="8.5" rx="2" fill="#3d59a1"/>
+    <rect x="202.4" y="60.0" width="7.0" height="8.5" rx="2" fill="#3d59a1"/>
+    <rect x="0.0" y="72.0" width="7.0" height="8.5" rx="2" fill="#3d59a1"/>
+    <rect x="8.8" y="72.0" width="7.0" height="8.5" rx="2" fill="#1f2335" fill-opacity="0.35"/>
+    <rect x="17.6" y="72.0" width="7.0" height="8.5" rx="2" fill="#1f2335" fill-opacity="0.35"/>
+    <rect x="26.4" y="72.0" width="7.0" height="8.5" rx="2" fill="#2e3c64"/>
+    <rect x="35.2" y="72.0" width="7.0" height="8.5" rx="2" fill="#1f2335" fill-opacity="0.35"/>
+    <rect x="44.0" y="72.0" width="7.0" height="8.5" rx="2" fill="#1f2335" fill-opacity="0.35"/>
+    <rect x="52.8" y="72.0" width="7.0" height="8.5" rx="2" fill="#2e3c64"/>
+    <rect x="61.6" y="72.0" width="7.0" height="8.5" rx="2" fill="#3d59a1"/>
+    <rect x="70.4" y="72.0" width="7.0" height="8.5" rx="2" fill="#7aa2f7"/>
+    <rect x="79.2" y="72.0" width="7.0" height="8.5" rx="2" fill="#3d59a1"/>
+    <rect x="88.0" y="72.0" width="7.0" height="8.5" rx="2" fill="#3d59a1"/>
+    <rect x="96.8" y="72.0" width="7.0" height="8.5" rx="2" fill="#2e3c64"/>
+    <rect x="105.6" y="72.0" width="7.0" height="8.5" rx="2" fill="#3d59a1"/>
+    <rect x="114.4" y="72.0" width="7.0" height="8.5" rx="2" fill="#2e3c64"/>
+    <rect x="123.2" y="72.0" width="7.0" height="8.5" rx="2" fill="#2e3c64"/>
+    <rect x="132.0" y="72.0" width="7.0" height="8.5" rx="2" fill="#3d59a1"/>
+    <rect x="140.8" y="72.0" width="7.0" height="8.5" rx="2" fill="#2e3c64"/>
+    <rect x="149.6" y="72.0" width="7.0" height="8.5" rx="2" fill="#2e3c64"/>
+    <rect x="158.4" y="72.0" width="7.0" height="8.5" rx="2" fill="#1f2335" fill-opacity="0.35"/>
+    <rect x="167.2" y="72.0" width="7.0" height="8.5" rx="2" fill="#2e3c64"/>
+    <rect x="176.0" y="72.0" width="7.0" height="8.5" rx="2" fill="#2e3c64"/>
+    <rect x="184.8" y="72.0" width="7.0" height="8.5" rx="2" fill="#2e3c64"/>
+    <rect x="193.6" y="72.0" width="7.0" height="8.5" rx="2" fill="#3d59a1"/>
+    <rect x="202.4" y="72.0" width="7.0" height="8.5" rx="2" fill="#2e3c64"/>
+    <text x="3.5" y="94.0" class="rhythm-lbl" text-anchor="middle">12a</text>
+    <text x="38.7" y="94.0" class="rhythm-lbl" text-anchor="middle">4a</text>
+    <text x="73.9" y="94.0" class="rhythm-lbl" text-anchor="middle">8a</text>
+    <text x="109.1" y="94.0" class="rhythm-lbl" text-anchor="middle">12p</text>
+    <text x="144.3" y="94.0" class="rhythm-lbl" text-anchor="middle">4p</text>
+    <text x="179.5" y="94.0" class="rhythm-lbl" text-anchor="middle">8p</text>
+    <text x="205.9" y="94.0" class="rhythm-lbl" text-anchor="middle">11p</text>
+  </g>
+  </svg>
+  <!-- Slot 6: radar (compact_col) -->
+  <svg x="296.0" y="518.0" width="272.0" height="180.0" viewBox="0 0 272.0 180.0" class="bento-slot bento-slot-6">
+    <defs>
+    <linearGradient id="b5_radar-divider-grad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#1a1b27" stop-opacity="0.0"/>
+      <stop offset="50%" stop-color="#3b4261" stop-opacity="0.7"/>
+      <stop offset="100%" stop-color="#1a1b27" stop-opacity="0.0"/>
+    </linearGradient>
+    <linearGradient id="b5_radar-poly-grad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#70a5fd" stop-opacity="0.55"/>
+      <stop offset="100%" stop-color="#7aa2f7" stop-opacity="0.2"/>
+    </linearGradient>
+    <filter id="b5_radar-glow" x="-20%" y="-20%" width="140%" height="140%">
+      <feGaussianBlur stdDeviation="2.2" result="blur"/>
+      <feMerge>
+        <feMergeNode in="blur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+  </defs>
+  <style>
+    .radar-title { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; font-weight: 700; font-size: 11px; letter-spacing: 0.5px; fill: #70a5fd; }
+    .radar-sub { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; font-weight: 500; font-size: 7.5px; letter-spacing: 0.35px; fill: #787c99; }
+    .radar-axis-lbl { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; font-weight: 700; font-size: 8px; }
+    .radar-archetype-txt { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; font-weight: 800; font-size: 10px; letter-spacing: 0.5px; fill: #c0caf5; }
+    .radar-domain-lbl { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; font-weight: 600; font-size: 8px; fill: #7982a9; }
+    .radar-domain-val { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; font-weight: 700; font-size: 8px; fill: #c0caf5; }
+    .radar-footnote { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; font-weight: 500; font-size: 8px; fill: #565f89; }
+  </style>
+  <rect width="272" height="180" rx="4.5" fill="#1a1b27" stroke="#24283b" stroke-width="0"/>
+  <!-- Header -->
+  <text x="136.0" y="24.0" text-anchor="middle" class="radar-title">DEVELOPER DNA</text>
+  <polygon points="136.0,92.5 146.9,100.4 142.8,113.3 129.2,113.3 125.1,100.4" fill="none" stroke="#24283b" stroke-width="0.8"/>
+  <polygon points="136.0,81.0 157.9,96.9 149.5,122.6 122.5,122.6 114.1,96.9" fill="rgba(31, 35, 53, 0.15)" stroke="#24283b" stroke-width="0.8"/>
+  <polygon points="136.0,69.5 168.8,93.3 156.3,131.9 115.7,131.9 103.2,93.3" fill="none" stroke="#24283b" stroke-width="0.8"/>
+  <polygon points="136.0,58.0 179.7,89.8 163.0,141.2 109.0,141.2 92.3,89.8" fill="rgba(31, 35, 53, 0.25)" stroke="#2e3c64" stroke-width="0.8"/>
+  <line x1="136.0" y1="104.0" x2="136.0" y2="58.0" stroke="#2e3c64" stroke-width="0.8" stroke-dasharray="2,2"/>
+  <line x1="136.0" y1="104.0" x2="179.7" y2="89.8" stroke="#2e3c64" stroke-width="0.8" stroke-dasharray="2,2"/>
+  <line x1="136.0" y1="104.0" x2="163.0" y2="141.2" stroke="#2e3c64" stroke-width="0.8" stroke-dasharray="2,2"/>
+  <line x1="136.0" y1="104.0" x2="109.0" y2="141.2" stroke="#2e3c64" stroke-width="0.8" stroke-dasharray="2,2"/>
+  <line x1="136.0" y1="104.0" x2="92.3" y2="89.8" stroke="#2e3c64" stroke-width="0.8" stroke-dasharray="2,2"/>
+  <!-- Data Polygon -->
+  <polygon points="136.0,92.1 150.4,99.3 147.1,119.3 132.3,109.1 120.9,99.1" fill="url(#b5_radar-poly-grad)" stroke="#70a5fd" stroke-width="1.8" filter="url(#b5_radar-glow)"/>
+  <circle cx="136.0" cy="92.1" r="2.8" fill="#70a5fd" stroke="#1a1b27" stroke-width="1"/>
+  <circle cx="150.4" cy="99.3" r="2.8" fill="#70a5fd" stroke="#1a1b27" stroke-width="1"/>
+  <circle cx="147.1" cy="119.3" r="2.8" fill="#70a5fd" stroke="#1a1b27" stroke-width="1"/>
+  <circle cx="132.3" cy="109.1" r="2.8" fill="#70a5fd" stroke="#1a1b27" stroke-width="1"/>
+  <circle cx="120.9" cy="99.1" r="2.8" fill="#70a5fd" stroke="#1a1b27" stroke-width="1"/>
+  <!-- Spoke Labels -->
+  <text x="136.0" y="49.0" class="radar-axis-lbl" text-anchor="middle" fill="#ec915c">Systems</text>
+  <text x="185.7" y="91.8" class="radar-axis-lbl" text-anchor="start" fill="#70a5fd">Backend</text>
+  <text x="167.0" y="153.2" class="radar-axis-lbl" text-anchor="start" fill="#7aa2f7">Frontend</text>
+  <text x="105.0" y="153.2" class="radar-axis-lbl" text-anchor="end" fill="#bb9af7">DevOps</text>
+  <text x="86.3" y="91.8" class="radar-axis-lbl" text-anchor="end" fill="#73daca">Data &amp; AI</text>
+  </svg>
+  <!-- Slot 7: velocity (compact_col) -->
+  <svg x="580.0" y="518.0" width="272.0" height="180.0" viewBox="0 0 272.0 180.0" class="bento-slot bento-slot-7">
+    <defs>
+    <linearGradient id="b6_vel-divider-grad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#3b4261" stop-opacity="0.0"/>
+      <stop offset="25%" stop-color="#3b4261" stop-opacity="0.7"/>
+      <stop offset="75%" stop-color="#3b4261" stop-opacity="0.7"/>
+      <stop offset="100%" stop-color="#3b4261" stop-opacity="0.0"/>
+    </linearGradient>
+    <linearGradient id="b6_vel-gauge-grad" x1="0%" y1="100%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#70a5fd"/>
+      <stop offset="100%" stop-color="#73daca"/>
+    </linearGradient>
+    <filter id="b6_vel-glow" x="-20%" y="-20%" width="140%" height="140%">
+      <feGaussianBlur stdDeviation="2.5" result="blur"/>
+      <feMerge>
+        <feMergeNode in="blur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+    <clipPath id="b6_vel-dist-clip">
+      <rect x="22" y="142" width="134" height="6" rx="3"/>
+    </clipPath>
+  </defs>
+  <style>
+    .vel-title { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; font-weight: 700; font-size: 11px; letter-spacing: 0.6px; fill: #70a5fd; }
+    .vel-sub { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; font-weight: 500; font-size: 7.5px; letter-spacing: 0.35px; fill: #787c99; }
+    .vel-badge-txt { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; font-weight: 800; font-size: 9px; letter-spacing: 0.4px; fill: #73daca; }
+    .vel-gauge-val { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; font-weight: 800; font-size: 17px; fill: #c0caf5; }
+    .vel-gauge-sub { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; font-weight: 700; font-size: 7.5px; letter-spacing: 0.7px; fill: #7982a9; }
+    .vel-kpi-lbl { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; font-weight: 700; font-size: 7.5px; letter-spacing: 0.5px; fill: #7aa2f7; }
+    .vel-kpi-val { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; font-weight: 800; font-size: 13.5px; fill: #c0caf5; }
+    .vel-kpi-sub { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; font-weight: 500; font-size: 7.5px; fill: #7982a9; }
+    .vel-rate-txt { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; font-weight: 800; font-size: 10px; fill: #73daca; }
+    .vel-legend-txt { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; font-weight: 500; font-size: 7px; fill: #565f89; }
+    @keyframes velFadeIn {
+      from { opacity: 0; transform: translateY(4px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    .vel-anim { animation: velFadeIn 0.5s ease-out forwards; }
+  </style>
+
+  <rect width="272" height="180" rx="4.5" fill="#1a1b27" stroke="none"/>
+  <!-- Header -->
+  <text x="136.0" y="24.0" text-anchor="middle" class="vel-title">PULL REQUEST VELOCITY</text>
+  <!-- Left Section: Turnaround Speedometer Gauge -->
+  <circle cx="136.0" cy="86.0" r="37.0" fill="none" stroke="#212337" stroke-width="5.5" stroke-linecap="round"
+          stroke-dasharray="142.07 232.48" transform="rotate(160 136.0 86.0)"/>
+  <circle cx="136.0" cy="86.0" r="37.0" fill="none" stroke="url(#b6_vel-gauge-grad)" stroke-width="5.5" stroke-linecap="round"
+          stroke-dasharray="102.29 232.48" transform="rotate(160 136.0 86.0)" filter="url(#b6_vel-glow)"/>
+  <text x="136.0" y="85.0" text-anchor="middle" class="vel-gauge-val">&lt; 1h</text>
+  <text x="136.0" y="97.5" text-anchor="middle" class="vel-gauge-sub">AVG MERGE</text>
+  <!-- Merge Rate & Distribution Bar -->
+  <text x="46.0" y="136.0" class="vel-kpi-lbl">MERGE RATE</text>
+  <text x="226.0" y="136.0" text-anchor="end" class="vel-rate-txt">83.3%</text>
+  <rect x="46.0" y="140.0" width="180.0" height="5.5" rx="2.75" fill="#212337"/>
+  <g clip-path="url(#b6_vel-dist-clip)">
+    <rect x="46.00" y="140.0" width="150.00" height="5.5" fill="#73daca"/>
+    <rect x="196.00" y="140.0" width="30.00" height="5.5" fill="#70a5fd"/>
+  </g>
+  <text x="136.0" y="159.0" text-anchor="middle" class="vel-legend-txt">15 merged · 3 open · 0 closed</text>
+  </svg>
+</svg>

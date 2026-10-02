@@ -23,11 +23,12 @@ pub fn renderRadarSVG(
 
     const width = opts.card_width;
     const height = opts.card_height;
+    const is_compact = width < 320;
 
     // Radar Chart Geometry
-    const xc: f64 = 120.0;
+    const xc: f64 = if (is_compact) @as(f64, @floatFromInt(width)) / 2.0 else 120.0;
     const yc: f64 = 104.0;
-    const max_r: f64 = 52.0;
+    const max_r: f64 = if (is_compact) 46.0 else 52.0;
 
     // Unit circle directions for 5 pentagon vertices (starting top, clockwise)
     // 0: Top (-90 deg)
@@ -106,13 +107,21 @@ pub fn renderRadarSVG(
 
     // Card Header
     if (!opts.hide_title) {
-        try w.print(
-            \\  <!-- Header -->
-            \\  <text x="14" y="24.0" class="radar-title">DEVELOPER DNA</text>
-            \\  <circle cx="125" cy="20.5" r="1.8" fill="{s}"/>
-            \\  <text x="135" y="23.5" class="radar-sub">5-AXIS POLYGLOT RADAR</text>
-            \\
-        , .{opts.theme.title_color});
+        if (is_compact) {
+            try w.print(
+                \\  <!-- Header -->
+                \\  <text x="{d:.1}" y="24.0" text-anchor="middle" class="radar-title">DEVELOPER DNA</text>
+                \\
+            , .{@as(f64, @floatFromInt(width)) / 2.0});
+        } else {
+            try w.print(
+                \\  <!-- Header -->
+                \\  <text x="14" y="24.0" class="radar-title">DEVELOPER DNA</text>
+                \\  <circle cx="125" cy="20.5" r="1.8" fill="{s}"/>
+                \\  <text x="135" y="23.5" class="radar-sub">5-AXIS POLYGLOT RADAR</text>
+                \\
+            , .{opts.theme.title_color});
+        }
     }
 
     // Concentric Pentagons (25%, 50%, 75%, 100%)
@@ -188,70 +197,73 @@ pub fn renderRadarSVG(
         xc + cos_vals[4] * max_r - 6.0, yc + sin_vals[4] * max_r + 2.0, // Data (top-left)
     });
 
-    // Glass Divider
-    try w.print(
-        \\  <!-- Glass Divider -->
-        \\  <line x1="246.0" y1="22" x2="246.0" y2="158.0" stroke="url(#radar-divider-grad)" stroke-width="1"/>
-        \\
-    , .{});
-
-    // Right Column: Archetype Pill & Domain Breakdown Bars
-    try w.print(
-        \\  <!-- Right Column: DNA Breakdown -->
-        \\  <g transform="translate(254, 0)">
-        \\    <!-- Archetype Badge Pill -->
-        \\    <g transform="translate(75, 34)">
-        \\      <rect x="-70" y="-12" width="140" height="24" rx="12" fill="#1f2335" stroke="{s}" stroke-opacity="0.45" stroke-width="1"/>
-        \\      <text x="0" y="4" text-anchor="middle" class="radar-archetype-txt">{s} {s}</text>
-        \\    </g>
-        \\
-    , .{
-        dna.archetype_color,
-        dna.archetype_icon,
-        dna.archetype,
-    });
-
-    // 5 Domain Breakdown Rows
-    const domain_names = [5][]const u8{ "Systems", "Backend", "Frontend", "DevOps", "Data &amp; AI" };
-    const domain_colors = [5][]const u8{ "#ec915c", "#70a5fd", "#7aa2f7", "#bb9af7", "#73daca" };
-    const bar_total_w: f64 = 142.0;
-
-    for (0..5) |i| {
-        const y_text: f64 = 56.0 + @as(f64, @floatFromInt(i)) * 18.0;
-        const y_bar: f64 = y_text + 4.0;
-        const pct_val = pcts[i];
-        const fill_w = if (pct_val > 0.0) @max(3.5, (bar_total_w * pct_val) / 100.0) else 0.0;
-
+    if (!is_compact) {
+        // Glass Divider
         try w.print(
-            \\    <text x="4" y="{d:.1}" class="radar-domain-lbl">{s}</text>
-            \\    <text x="146" y="{d:.1}" class="radar-domain-val" text-anchor="end">{d:.0}%</text>
-            \\    <rect x="4" y="{d:.1}" width="{d:.1}" height="3.5" rx="1.75" fill="#24283b"/>
+            \\  <!-- Glass Divider -->
+            \\  <line x1="246.0" y1="22" x2="246.0" y2="158.0" stroke="url(#radar-divider-grad)" stroke-width="1"/>
+            \\
+        , .{});
+
+        // Right Column: Archetype Pill & Domain Breakdown Bars
+        try w.print(
+            \\  <!-- Right Column: DNA Breakdown -->
+            \\  <g transform="translate(254, 0)">
+            \\    <!-- Archetype Badge Pill -->
+            \\    <g transform="translate(75, 34)">
+            \\      <rect x="-70" y="-12" width="140" height="24" rx="12" fill="#1f2335" stroke="{s}" stroke-opacity="0.45" stroke-width="1"/>
+            \\      <text x="0" y="4" text-anchor="middle" class="radar-archetype-txt">{s} {s}</text>
+            \\    </g>
             \\
         , .{
-            y_text,
-            domain_names[i],
-            y_text,
-            pct_val,
-            y_bar,
-            bar_total_w,
+            dna.archetype_color,
+            dna.archetype_icon,
+            dna.archetype,
         });
 
-        if (fill_w > 0.0) {
+        // 5 Domain Breakdown Rows
+        const domain_names = [5][]const u8{ "Systems", "Backend", "Frontend", "DevOps", "Data &amp; AI" };
+        const domain_colors = [5][]const u8{ "#ec915c", "#70a5fd", "#7aa2f7", "#bb9af7", "#73daca" };
+        const bar_total_w: f64 = 142.0;
+
+        for (0..5) |i| {
+            const y_text: f64 = 56.0 + @as(f64, @floatFromInt(i)) * 18.0;
+            const y_bar: f64 = y_text + 4.0;
+            const pct_val = pcts[i];
+            const fill_w = if (pct_val > 0.0) @max(3.5, (bar_total_w * pct_val) / 100.0) else 0.0;
+
             try w.print(
-                \\    <rect x="4" y="{d:.1}" width="{d:.1}" height="3.5" rx="1.75" fill="{s}"/>
+                \\    <text x="4" y="{d:.1}" class="radar-domain-lbl">{s}</text>
+                \\    <text x="146" y="{d:.1}" class="radar-domain-val" text-anchor="end">{d:.0}%</text>
+                \\    <rect x="4" y="{d:.1}" width="{d:.1}" height="3.5" rx="1.75" fill="#24283b"/>
                 \\
-            , .{ y_bar, fill_w, domain_colors[i] });
+            , .{
+                y_text,
+                domain_names[i],
+                y_text,
+                pct_val,
+                y_bar,
+                bar_total_w,
+            });
+
+            if (fill_w > 0.0) {
+                try w.print(
+                    \\    <rect x="4" y="{d:.1}" width="{d:.1}" height="3.5" rx="1.75" fill="{s}"/>
+                    \\
+                , .{ y_bar, fill_w, domain_colors[i] });
+            }
         }
+
+        // Languages Mapped Footnote
+        try w.print(
+            \\    <!-- Analyzed Languages Footnote -->
+            \\    <text x="75" y="156" text-anchor="middle" class="radar-footnote">{d} Languages Mapped</text>
+            \\  </g>
+            \\
+        , .{dna.total_languages});
     }
 
-    // Languages Mapped Footnote
-    try w.print(
-        \\    <!-- Analyzed Languages Footnote -->
-        \\    <text x="75" y="156" text-anchor="middle" class="radar-footnote">{d} Languages Mapped</text>
-        \\  </g>
-        \\</svg>
-        \\
-    , .{dna.total_languages});
+    try w.print("</svg>\n", .{});
 
     return try stream.toOwnedSlice();
 }

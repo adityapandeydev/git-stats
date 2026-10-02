@@ -11,6 +11,7 @@ pub const rhythm = @import("renderer/rhythm.zig");
 pub const radar = @import("renderer/radar.zig");
 pub const velocity = @import("renderer/velocity.zig");
 pub const milestones = @import("renderer/milestones.zig");
+pub const bento = @import("renderer/bento.zig");
 
 test "colors: official Linguist mapping and fallback" {
     try std.testing.expectEqualStrings("#ec915c", colors.getLanguageColor("Zig", null));
@@ -357,6 +358,99 @@ test "milestones: renderMilestonesSVG produces valid achievements showcase card"
     try std.testing.expect(std.mem.indexOf(u8, rendered, "REPO MASTER") != null);
     try std.testing.expect(std.mem.indexOf(u8, rendered, "STAR MAGNET") != null);
     try std.testing.expect(std.mem.indexOf(u8, rendered, "</svg>") != null);
+}
+
+test "bento: language card height bounds matrix (48 variations)" {
+    // 6 languages: rows = 3
+    const b6 = bento.getLanguageHeightBounds(6);
+    try std.testing.expectEqual(@as(u32, 192), b6.min);
+    try std.testing.expectEqual(@as(u32, 216), b6.opt);
+    try std.testing.expectEqual(@as(u32, 240), b6.max);
+
+    // 12 languages: rows = 6
+    const b12 = bento.getLanguageHeightBounds(12);
+    try std.testing.expectEqual(@as(u32, 294), b12.min);
+    try std.testing.expectEqual(@as(u32, 339), b12.opt);
+    try std.testing.expectEqual(@as(u32, 381), b12.max);
+
+    // 16 languages: rows = 8
+    const b16 = bento.getLanguageHeightBounds(16);
+    try std.testing.expectEqual(@as(u32, 362), b16.min);
+    try std.testing.expectEqual(@as(u32, 421), b16.opt);
+    try std.testing.expectEqual(@as(u32, 475), b16.max);
+}
+
+test "bento: compute layout geometries for N=1 to N=7" {
+    const allocator = std.testing.allocator;
+
+    // N = 1 (solo)
+    const cards1 = [_][]const u8{"streak"};
+    var l1 = try bento.computeBentoLayout(allocator, &cards1, "solo", 840.0, 12.0, null, null);
+    defer l1.deinit();
+    try std.testing.expectEqual(@as(usize, 1), l1.slots.len);
+    try std.testing.expectEqual(bento.SlotAspect.wide_hero, l1.slots[0].aspect);
+
+    // N = 2 (split-2x1)
+    const cards2 = [_][]const u8{ "streak", "stats" };
+    var l2 = try bento.computeBentoLayout(allocator, &cards2, "split-2x1", 840.0, 12.0, null, null);
+    defer l2.deinit();
+    try std.testing.expectEqual(@as(usize, 2), l2.slots.len);
+    try std.testing.expectEqual(bento.SlotAspect.standard, l2.slots[0].aspect);
+
+    // N = 3 (pillar-right-stack / profile)
+    const cards3 = [_][]const u8{ "streak", "stats", "languages" };
+    var l3 = try bento.computeBentoLayout(allocator, &cards3, "pillar-right-stack", 840.0, 8.0, null, null);
+    defer l3.deinit();
+    try std.testing.expectEqual(@as(usize, 3), l3.slots.len);
+    try std.testing.expectEqual(bento.SlotAspect.tall_pillar, l3.slots[2].aspect);
+    try std.testing.expectEqual(@as(f64, 368.0), l3.slots[2].h); // Harmonized height: 180 + 8 + 180 = 368
+
+    // N = 4 (matrix-2x2)
+    const cards4 = [_][]const u8{ "streak", "stats", "rhythm", "radar" };
+    var l4 = try bento.computeBentoLayout(allocator, &cards4, "matrix-2x2", 864.0, 12.0, null, null);
+    defer l4.deinit();
+    try std.testing.expectEqual(@as(usize, 4), l4.slots.len);
+
+    // N = 7 (master-dashboard)
+    const cards7 = [_][]const u8{ "milestones", "streak", "stats", "languages", "rhythm", "radar", "velocity" };
+    var l7 = try bento.computeBentoLayout(allocator, &cards7, "master-dashboard", 864.0, 12.0, null, null);
+    defer l7.deinit();
+    try std.testing.expectEqual(@as(usize, 7), l7.slots.len);
+    try std.testing.expectEqual(bento.SlotAspect.wide_hero, l7.slots[0].aspect); // Milestones top ribbon
+    try std.testing.expectEqual(bento.SlotAspect.tall_pillar, l7.slots[3].aspect); // Languages pillar
+    try std.testing.expectEqual(bento.SlotAspect.compact_col, l7.slots[4].aspect); // Rhythm
+    try std.testing.expectEqual(bento.SlotAspect.compact_col, l7.slots[5].aspect); // Radar
+    try std.testing.expectEqual(bento.SlotAspect.compact_col, l7.slots[6].aspect); // Velocity
+
+    // Mobile stack
+    var l_mob = try bento.computeBentoLayout(allocator, &cards3, "mobile-stack", 400.0, 10.0, null, null);
+    defer l_mob.deinit();
+    try std.testing.expectEqual(@as(usize, 3), l_mob.slots.len);
+    try std.testing.expect(l_mob.canvas_h > 500.0);
+}
+
+test "bento: composeBentoSVG produces isolated valid SVG" {
+    const allocator = std.testing.allocator;
+    const cards = [_][]const u8{ "streak", "stats" };
+    var layout = try bento.computeBentoLayout(allocator, &cards, "split-2x1", 840.0, 12.0, null, null);
+    defer layout.deinit();
+
+    const dummy_card_1 = "<svg width=\"414\" height=\"180\"><defs><linearGradient id=\"test-grad\"></linearGradient></defs><rect fill=\"url(#test-grad)\"/></svg>";
+    const dummy_card_2 = "<svg width=\"414\" height=\"180\"><defs><linearGradient id=\"test-grad\"></linearGradient></defs><rect fill=\"url(#test-grad)\"/></svg>";
+    const rendered = [_][]const u8{ dummy_card_1, dummy_card_2 };
+
+    const t = themes.getTheme("tokyonight");
+    const bento_svg = try bento.composeBentoSVG(allocator, &layout, &rendered, t, 4.5, false);
+    defer allocator.free(bento_svg);
+
+    // Verify master SVG
+    try std.testing.expect(std.mem.indexOf(u8, bento_svg, "<svg xmlns=\"http://www.w3.org/2000/svg\"") != null);
+    try std.testing.expect(std.mem.indexOf(u8, bento_svg, "width=\"840.0\"") != null);
+    // Verify namespacing: b0_ and b1_
+    try std.testing.expect(std.mem.indexOf(u8, bento_svg, "id=\"b0_test-grad\"") != null);
+    try std.testing.expect(std.mem.indexOf(u8, bento_svg, "id=\"b1_test-grad\"") != null);
+    try std.testing.expect(std.mem.indexOf(u8, bento_svg, "url(#b0_test-grad)") != null);
+    try std.testing.expect(std.mem.indexOf(u8, bento_svg, "url(#b1_test-grad)") != null);
 }
 
 

@@ -11,10 +11,14 @@ const rhythm_renderer = git_stats.rhythm;
 const radar_renderer = git_stats.radar;
 const velocity_renderer = git_stats.velocity;
 const milestones_renderer = git_stats.milestones;
+const bento_renderer = git_stats.bento;
 
 const CliConfig = struct {
     generate: bool = false,
-    card: []const u8 = "languages", // "languages", "streak", "stats", "rhythm", "radar", "velocity", or "milestones"
+    card: []const u8 = "languages", // "languages", "streak", "stats", "rhythm", "radar", "velocity", "milestones", or "bento"
+    bento: bool = false,
+    bento_layout: []const u8 = "auto",
+    cards: []const u8 = "",
     timeframe: []const u8 = "all-time", // "all-time" or "this-year"
     tz_offset_hours: f64 = 5.5,
     username: ?[]const u8 = null,
@@ -85,6 +89,18 @@ fn parseCliArgs(args: []const []const u8) CliConfig {
             cfg.card = "velocity";
         } else if (std.mem.eql(u8, arg, "--milestones") or std.mem.eql(u8, arg, "--trophies") or std.mem.eql(u8, arg, "--achievements")) {
             cfg.card = "milestones";
+        } else if (std.mem.eql(u8, arg, "--bento") or std.mem.eql(u8, arg, "--grid")) {
+            cfg.bento = true;
+            cfg.card = "bento";
+        } else if (std.mem.startsWith(u8, arg, "--bento-layout=")) {
+            cfg.bento_layout = arg["--bento-layout=".len..];
+        } else if (std.mem.startsWith(u8, arg, "--grid-layout=")) {
+            cfg.bento_layout = arg["--grid-layout=".len..];
+        } else if (std.mem.startsWith(u8, arg, "--cards=")) {
+            cfg.cards = arg["--cards=".len..];
+        } else if (std.mem.eql(u8, arg, "--cards") and i + 1 < args.len) {
+            i += 1;
+            cfg.cards = args[i];
         } else if (std.mem.startsWith(u8, arg, "--tz=")) {
             cfg.tz_offset_hours = std.fmt.parseFloat(f64, arg["--tz=".len..]) catch 5.5;
         } else if (std.mem.eql(u8, arg, "--tz") and i + 1 < args.len) {
@@ -190,6 +206,127 @@ fn parseCliArgs(args: []const []const u8) CliConfig {
     return cfg;
 }
 
+fn renderCardById(
+    arena: std.mem.Allocator,
+    client_ptr: *github_client.Client,
+    username: []const u8,
+    auth_token: []const u8,
+    card_id: []const u8,
+    slot_w: u32,
+    slot_h: u32,
+    active_theme: themes.Theme,
+    cli: CliConfig,
+    excluded_repos: []const []const u8,
+) ![]const u8 {
+    if (std.mem.eql(u8, card_id, "streak")) {
+        const streak_stats = try client_ptr.getStreakStats(username, auth_token);
+        return try streak_renderer.renderStreakSVG(arena, streak_stats, .{
+            .theme = active_theme,
+            .card_width = slot_w,
+            .card_height = slot_h,
+            .border_radius = cli.border_radius,
+            .hide_border = true,
+            .animate = cli.animate,
+            .show_sparkline = cli.show_sparkline,
+        });
+    } else if (std.mem.eql(u8, card_id, "stats")) {
+        const dev_stats = try client_ptr.getOverallStats(username, auth_token, cli.timeframe);
+        return try stats_renderer.renderStatsSVG(arena, dev_stats, .{
+            .theme = active_theme,
+            .card_width = slot_w,
+            .card_height = slot_h,
+            .border_radius = cli.border_radius,
+            .hide_border = true,
+            .hide_title = cli.hide_title,
+            .animate = cli.animate,
+        });
+    } else if (std.mem.eql(u8, card_id, "rhythm")) {
+        const commit_rhythm = try client_ptr.getCommitRhythm(username, auth_token, cli.tz_offset_hours);
+        return try rhythm_renderer.renderRhythmSVG(arena, commit_rhythm, .{
+            .theme = active_theme,
+            .card_width = slot_w,
+            .card_height = slot_h,
+            .border_radius = cli.border_radius,
+            .hide_border = true,
+            .hide_title = cli.hide_title,
+            .animate = cli.animate,
+        });
+    } else if (std.mem.eql(u8, card_id, "radar")) {
+        const dna_data = try client_ptr.getDeveloperDNA(username, auth_token, excluded_repos);
+        return try radar_renderer.renderRadarSVG(arena, dna_data, .{
+            .theme = active_theme,
+            .card_width = slot_w,
+            .card_height = slot_h,
+            .border_radius = cli.border_radius,
+            .hide_border = true,
+            .hide_title = cli.hide_title,
+            .animate = cli.animate,
+        });
+    } else if (std.mem.eql(u8, card_id, "velocity")) {
+        const vel_data = try client_ptr.getVelocityStats(username, auth_token);
+        return try velocity_renderer.renderVelocitySVG(arena, vel_data, .{
+            .theme = active_theme,
+            .card_width = slot_w,
+            .card_height = slot_h,
+            .border_radius = cli.border_radius,
+            .hide_border = true,
+            .hide_title = cli.hide_title,
+            .animate = cli.animate,
+        });
+    } else if (std.mem.eql(u8, card_id, "milestones") or std.mem.eql(u8, card_id, "trophies") or std.mem.eql(u8, card_id, "achievements")) {
+        const milestones_overview = try client_ptr.getMilestones(username, auth_token);
+        return try milestones_renderer.renderMilestonesSVG(arena, milestones_overview, .{
+            .theme = active_theme,
+            .card_width = slot_w,
+            .card_height = slot_h,
+            .border_radius = cli.border_radius,
+            .hide_border = true,
+            .hide_title = cli.hide_title,
+            .animate = cli.animate,
+        });
+    } else {
+        // Default: languages
+        const user_langs = try client_ptr.getUserLanguages(username, auth_token, excluded_repos);
+        var hidden_map = std.StringHashMap(void).init(arena);
+        if (cli.hide) |hide_str| {
+            var iter = std.mem.splitScalar(u8, hide_str, ',');
+            while (iter.next()) |item| {
+                const clean = std.mem.trim(u8, item, " \t\r\n");
+                if (clean.len > 0) {
+                    var lower_buf: [128]u8 = undefined;
+                    const lower_key = std.ascii.lowerString(&lower_buf, clean);
+                    try hidden_map.put(try arena.dupe(u8, lower_key), {});
+                }
+            }
+        }
+        var filtered_langs: std.ArrayList(git_stats.models.LanguageStat) = .empty;
+        for (user_langs.languages) |lang| {
+            var lower_buf: [128]u8 = undefined;
+            const lower_name = std.ascii.lowerString(&lower_buf, lang.name);
+            if (!hidden_map.contains(lower_name)) {
+                try filtered_langs.append(arena, lang);
+            }
+        }
+        const filtered_stats = git_stats.models.UserStats{
+            .username = user_langs.username,
+            .total_bytes = user_langs.total_bytes,
+            .languages = filtered_langs.items,
+        };
+        return try svg_renderer.renderSVG(arena, &filtered_stats, .{
+            .theme = active_theme,
+            .card_width = slot_w,
+            .card_height = slot_h,
+            .langs_count = cli.langs_count,
+            .columns = cli.columns,
+            .layout = cli.layout,
+            .border_radius = cli.border_radius,
+            .hide_border = true,
+            .hide_title = cli.hide_title,
+            .animate = cli.animate,
+        });
+    }
+}
+
 pub fn main(init: std.process.Init) !void {
     const arena = init.arena.allocator();
     const io = init.io;
@@ -270,6 +407,77 @@ pub fn main(init: std.process.Init) !void {
         null,
         cli.border_radius,
     );
+
+    // Check if generating Bento Grid
+    if (cli.bento or std.mem.eql(u8, cli.card, "bento") or std.mem.eql(u8, cli.card, "grid")) {
+        std.debug.print("Composing Universal Bento Grid for user '{s}'...\n", .{username});
+
+        var card_list: std.ArrayList([]const u8) = .empty;
+        defer card_list.deinit(arena);
+
+        if (cli.cards.len > 0) {
+            if (std.mem.eql(u8, cli.cards, "all")) {
+                const all_cards = [_][]const u8{ "milestones", "streak", "stats", "languages", "rhythm", "radar", "velocity" };
+                for (all_cards) |c| try card_list.append(arena, c);
+            } else {
+                var iter = std.mem.splitScalar(u8, cli.cards, ',');
+                while (iter.next()) |item| {
+                    const clean = std.mem.trim(u8, item, " \t\r\n");
+                    if (clean.len > 0) try card_list.append(arena, clean);
+                }
+            }
+        }
+
+        // Defaults if no cards specified
+        if (card_list.items.len == 0) {
+            const default_cards = [_][]const u8{ "streak", "stats", "languages" };
+            for (default_cards) |c| try card_list.append(arena, c);
+        }
+
+        const canvas_w: f64 = if (cli.card_width != 400)
+            @floatFromInt(cli.card_width)
+        else if (std.mem.eql(u8, cli.bento_layout, "mobile") or std.mem.eql(u8, cli.bento_layout, "mobile-stack"))
+            420.0
+        else
+            864.0;
+        var layout = try bento_renderer.computeBentoLayout(arena, card_list.items, cli.bento_layout, canvas_w, null, null, cli.langs_count);
+        defer layout.deinit();
+
+        std.debug.print("Bento Topology: {d} slots, template '{s}', canvas {d:.1}x{d:.1} px\n", .{
+            layout.slots.len, cli.bento_layout, layout.canvas_w, layout.canvas_h,
+        });
+
+        var rendered_cards = try arena.alloc([]const u8, layout.slots.len);
+        for (layout.slots, 0..) |slot, idx| {
+            std.debug.print("  Rendering Slot {d}: {s} ({s}) [{d:.1}x{d:.1} px]...\n", .{
+                idx + 1, slot.card_id, @tagName(slot.aspect), slot.w, slot.h,
+            });
+            rendered_cards[idx] = try renderCardById(
+                arena, &client, username, auth_token, slot.card_id,
+                @as(u32, @intFromFloat(slot.w)), @as(u32, @intFromFloat(slot.h)),
+                active_theme, cli, excluded_repos.items,
+            );
+        }
+
+        const svg_content = try bento_renderer.composeBentoSVG(
+            arena, &layout, rendered_cards, active_theme, cli.border_radius, cli.hide_border,
+        );
+
+        const out_file = if (std.mem.eql(u8, cli.output, "languages.svg")) "bento.svg" else cli.output;
+
+        if (std.fs.path.dirname(out_file)) |dir| {
+            if (dir.len > 0 and !std.mem.eql(u8, dir, ".")) {
+                cwd.createDirPath(io, dir) catch {};
+            }
+        }
+
+        try cwd.writeFile(io, .{ .sub_path = out_file, .data = svg_content });
+
+        std.debug.print("✅ Successfully generated Bento Grid '{s}' for '{s}' ({d:.1}x{d:.1} px, {d} cards)\n", .{
+            out_file, username, layout.canvas_w, layout.canvas_h, layout.slots.len,
+        });
+        return;
+    }
 
     // Check if generating streak card
     if (std.mem.eql(u8, cli.card, "streak")) {

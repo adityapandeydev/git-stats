@@ -10,7 +10,57 @@ GitStats delivers fully customizable, automated vector SVG cards for your GitHub
 
 ---
 
-## Cards & Layouts
+## 🌟 Universal Bento Grid Engine (Flagship)
+
+Compose **ANY $N$ cards ($1 \le N \le 7$)** into responsive, unified, sub-pixel balanced Bento Grid dashboards with automated layout topology detection, XML namespacing isolation, and seamless mobile responsiveness.
+
+<div align="center">
+  <img src="generated/bento.svg" width="864" alt="GitStats Flagship Bento Grid (Streak + Stats + Languages)" />
+</div>
+
+<br/>
+
+### 📱 Responsive `<picture>` Profile Embedding
+Embed both Desktop and Mobile Bento Grids into your GitHub Profile README (`username/username/README.md`) with automatic viewport switching:
+
+```html
+<picture>
+  <!-- Mobile screens: Clean linear stack -->
+  <source media="(max-width: 650px)" srcset="https://raw.githubusercontent.com/YOUR_USERNAME/git-stats/main/generated/bento-mobile.svg" />
+  <!-- Desktop screens: Harmonized multi-column Bento Grid -->
+  <img src="https://raw.githubusercontent.com/YOUR_USERNAME/git-stats/main/generated/bento.svg" alt="GitStats Bento Grid" width="100%" />
+</picture>
+```
+
+<details>
+<summary><b>4-Card Balanced Matrix & 7-Card Master Dashboard Previews (Click to expand)</b></summary>
+<br/>
+
+#### 4-Card 2×2 Balanced Matrix (`matrix-2x2`)
+<div align="center">
+  <img src="preview/bento/matrix.svg" width="864" alt="4-Card Matrix Layout" />
+</div>
+
+```bash
+./zig-out/bin/git_stats --bento --bento-layout="matrix-2x2" --cards="streak,stats,rhythm,radar" --output="preview/bento/matrix.svg"
+```
+
+<br/>
+
+#### 7-Card Master Engineering Dashboard (`master-dashboard`)
+<div align="center">
+  <img src="preview/bento/master.svg" width="864" alt="7-Card Master Dashboard" />
+</div>
+
+```bash
+./zig-out/bin/git_stats --bento --bento-layout="master-dashboard" --cards="all" --output="preview/bento/master.svg"
+```
+
+</details>
+
+---
+
+## Cards & Standalone Layouts
 
 ### 1. Most Used Languages
 Display top languages in multi-column grids or circular charts with language exclusion and automatic percentage recalculation.
@@ -204,13 +254,16 @@ zig build -Doptimize=ReleaseFast
 
 | Flag | Default | Description |
 | :--- | :---: | :--- |
-| `--generate` | `false` | Generate top languages card |
-| `--streak` | `false` | Generate streak statistics card |
-| `--stats` | `false` | Generate developer craft & consistency rating card |
-| `--rhythm` | `false` | Generate 24h × 7d circadian commit punchcard card |
-| `--radar` | `false` | Generate 5-axis developer DNA polyglot radar card |
-| `--velocity` | `false` | Generate PR turnaround velocity & shipping impact card |
-| `--milestones` | `false` | Generate career milestones & achievements trophy card |
+| `--bento`, `--grid` | `false` | Compose multiple cards into a unified Bento Grid dashboard |
+| `--bento-layout` | `auto` | Bento layout template: `auto`, `pillar-right-stack`, `matrix-2x2`, `master-dashboard`, `mobile-stack`, `split-2x1`, `stack-1x2`, `hero-top-split`, `bento-hero-4matrix`, etc. |
+| `--cards` | `streak,stats,languages` | Comma-separated card IDs to compose (e.g. `streak,stats,languages`, `radar,velocity`, or `all`) |
+| `--generate` | `false` | Generate standalone top languages card |
+| `--streak` | `false` | Generate standalone streak statistics card |
+| `--stats` | `false` | Generate standalone developer craft & consistency rating card |
+| `--rhythm` | `false` | Generate standalone 24h × 7d circadian commit punchcard card |
+| `--radar` | `false` | Generate standalone 5-axis developer DNA polyglot radar card |
+| `--velocity` | `false` | Generate standalone PR turnaround velocity & shipping impact card |
+| `--milestones` | `false` | Generate standalone career milestones & achievements trophy card |
 | `--username` | `adityapandeydev` | Target GitHub username |
 | `--theme` | `tokyonight` | Theme preset (`tokyonight`, `github_dark`, `catppuccin`, `dracula`, `nord`, etc.) |
 | `--layout` | `standard` | Card layout: `standard`, `donut`, `compact` |

@@ -98,41 +98,53 @@ pub fn renderRhythmSVG(
         \\
     , .{ width, height, opts.border_radius, opts.theme.bg_color, stroke_attr });
 
+    const w_f = @as(f64, @floatFromInt(width));
+    const is_compact = width < 320;
+
     // Header
     const header_y: f64 = 25.0;
     if (!opts.hide_title) {
-        try w.print(
-            \\  <!-- Header -->
-            \\  <text x="22" y="{d:.1}" class="rhythm-title">COMMIT RHYTHM</text>
-            \\  <circle cx="152" cy="{d:.1}" r="2.5" fill="{s}"/>
-            \\  <text x="160" y="{d:.1}" class="rhythm-sub">24H × 7D MATRIX</text>
-            \\
-        , .{
-            header_y,
-            header_y - 3.5,
-            rhythm.persona_color,
-            header_y - 0.5,
-        });
+        if (is_compact) {
+            try w.print(
+                \\  <!-- Header -->
+                \\  <text x="{d:.1}" y="{d:.1}" text-anchor="middle" class="rhythm-title">COMMIT RHYTHM</text>
+                \\
+            , .{ w_f / 2.0, header_y });
+        } else {
+            try w.print(
+                \\  <!-- Header -->
+                \\  <text x="22" y="{d:.1}" class="rhythm-title">COMMIT RHYTHM</text>
+                \\  <circle cx="152" cy="{d:.1}" r="2.5" fill="{s}"/>
+                \\  <text x="160" y="{d:.1}" class="rhythm-sub">24H × 7D MATRIX</text>
+                \\
+            , .{
+                header_y,
+                header_y - 3.5,
+                rhythm.persona_color,
+                header_y - 0.5,
+            });
+        }
     }
 
     // Day Labels on the Left
     const day_names = [_][]const u8{ "Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun" };
     const matrix_start_y: f64 = if (opts.hide_title) 28.0 else 50.0;
     const row_step: f64 = 12.0;
+    const label_x: f64 = if (is_compact) 26.0 else 34.0;
 
     for (day_names, 0..) |day, d_idx| {
         const y = matrix_start_y + @as(f64, @floatFromInt(d_idx)) * row_step + 8.0;
         try w.print(
-            \\  <text x="34" y="{d:.1}" class="rhythm-lbl" text-anchor="end">{s}</text>
+            \\  <text x="{d:.1}" y="{d:.1}" class="rhythm-lbl" text-anchor="end">{s}</text>
             \\
-        , .{ y, day });
+        , .{ label_x, y, day });
     }
 
     // Matrix Cells (24 columns x 7 rows)
-    const col_step: f64 = 10.0;
-    const cell_w: f64 = 8.0;
+    const col_step: f64 = if (is_compact) 8.8 else 10.0;
+    const cell_w: f64 = if (is_compact) 7.0 else 8.0;
     const cell_h: f64 = 8.5;
-    const matrix_start_x: f64 = 42.0;
+    const matrix_start_x: f64 = if (is_compact) 32.0 else 42.0;
 
     const peak_cnt = @max(1, rhythm.peak_count);
     const peak_f: f64 = @floatFromInt(peak_cnt);
@@ -190,67 +202,77 @@ pub fn renderRhythmSVG(
     // Bottom Hour Labels
     const hour_lbl_y = 7.0 * row_step + 10.0;
     try w.print(
-        \\    <text x="0" y="{d:.1}" class="rhythm-lbl" text-anchor="middle">12a</text>
-        \\    <text x="40" y="{d:.1}" class="rhythm-lbl" text-anchor="middle">4a</text>
-        \\    <text x="80" y="{d:.1}" class="rhythm-lbl" text-anchor="middle">8a</text>
-        \\    <text x="120" y="{d:.1}" class="rhythm-lbl" text-anchor="middle">12p</text>
-        \\    <text x="160" y="{d:.1}" class="rhythm-lbl" text-anchor="middle">4p</text>
-        \\    <text x="200" y="{d:.1}" class="rhythm-lbl" text-anchor="middle">8p</text>
-        \\    <text x="230" y="{d:.1}" class="rhythm-lbl" text-anchor="middle">11p</text>
-        \\  </g>
-        \\
-    , .{ hour_lbl_y, hour_lbl_y, hour_lbl_y, hour_lbl_y, hour_lbl_y, hour_lbl_y, hour_lbl_y });
-
-    // Vertical Divider Line
-    const div_x: f64 = 290.0;
-    try w.print(
-        \\  <!-- Glass Divider -->
-        \\  <line x1="{d:.1}" y1="22" x2="{d:.1}" y2="{d:.1}" stroke="url(#rhythm-divider-grad)" stroke-width="1"/>
-        \\
-    , .{ div_x, div_x, h_f - 22.0 });
-
-    // Right Column: Persona & Analytics
-    try w.print(
-        \\  <!-- Right Column: Analytics & Persona -->
-        \\  <g transform="translate(298, 0)">
-        \\    <!-- Persona Badge Pill -->
-        \\    <g transform="translate(59, 38)">
-        \\      <rect x="-48" y="-12" width="96" height="24" rx="12" fill="#1f2335" stroke="{s}" stroke-opacity="0.4" stroke-width="1"/>
-        \\      <text x="0" y="4" text-anchor="middle" class="rhythm-persona-txt">{s} {s}</text>
-        \\    </g>
-        \\
-        \\    <!-- Peak Window KPI -->
-        \\    <g transform="translate(5, 72)">
-        \\      <text x="0" y="0" class="rhythm-kpi-lbl">PEAK WINDOW</text>
-        \\      <text x="0" y="15" class="rhythm-kpi-val">{s}</text>
-        \\    </g>
-        \\
-        \\    <!-- Circadian Split Bar -->
-        \\    <g transform="translate(5, 108)">
-        \\      <text x="0" y="0" class="rhythm-kpi-lbl">CIRCADIAN SPLIT</text>
-        \\      <rect x="0" y="6" width="108" height="6" rx="3" fill="#24283b"/>
-        \\      <rect x="0" y="6" width="{d:.1}" height="6" rx="3" fill="url(#rhythm-day-grad)"/>
-        \\      <rect x="{d:.1}" y="6" width="{d:.1}" height="6" rx="3" fill="url(#rhythm-night-grad)"/>
-        \\      <text x="0" y="23" class="rhythm-stat-txt">☀️ {d}% Day</text>
-        \\      <text x="108" y="23" class="rhythm-stat-txt" text-anchor="end">🌙 {d}% Night</text>
-        \\    </g>
-        \\
-        \\    <!-- Analyzed Commits Footnote -->
-        \\    <text x="59" y="156" text-anchor="middle" class="rhythm-count-txt">{d} Commits Mapped</text>
+        \\    <text x="{d:.1}" y="{d:.1}" class="rhythm-lbl" text-anchor="middle">12a</text>
+        \\    <text x="{d:.1}" y="{d:.1}" class="rhythm-lbl" text-anchor="middle">4a</text>
+        \\    <text x="{d:.1}" y="{d:.1}" class="rhythm-lbl" text-anchor="middle">8a</text>
+        \\    <text x="{d:.1}" y="{d:.1}" class="rhythm-lbl" text-anchor="middle">12p</text>
+        \\    <text x="{d:.1}" y="{d:.1}" class="rhythm-lbl" text-anchor="middle">4p</text>
+        \\    <text x="{d:.1}" y="{d:.1}" class="rhythm-lbl" text-anchor="middle">8p</text>
+        \\    <text x="{d:.1}" y="{d:.1}" class="rhythm-lbl" text-anchor="middle">11p</text>
         \\  </g>
         \\
     , .{
-        rhythm.persona_color,
-        rhythm.persona_icon,
-        rhythm.persona_title,
-        rhythm.peak_window_str,
-        day_bar_w,
-        day_bar_w,
-        night_bar_w,
-        day_pct,
-        night_pct,
-        total_commits,
+        0.0 * col_step + (cell_w / 2.0), hour_lbl_y,
+        4.0 * col_step + (cell_w / 2.0), hour_lbl_y,
+        8.0 * col_step + (cell_w / 2.0), hour_lbl_y,
+        12.0 * col_step + (cell_w / 2.0), hour_lbl_y,
+        16.0 * col_step + (cell_w / 2.0), hour_lbl_y,
+        20.0 * col_step + (cell_w / 2.0), hour_lbl_y,
+        23.0 * col_step + (cell_w / 2.0), hour_lbl_y,
     });
+
+    if (!is_compact) {
+        // Vertical Divider Line
+        const div_x: f64 = 290.0;
+        try w.print(
+            \\  <!-- Glass Divider -->
+            \\  <line x1="{d:.1}" y1="22" x2="{d:.1}" y2="{d:.1}" stroke="url(#rhythm-divider-grad)" stroke-width="1"/>
+            \\
+        , .{ div_x, div_x, h_f - 22.0 });
+
+        // Right Column: Persona & Analytics
+        try w.print(
+            \\  <!-- Right Column: Analytics & Persona -->
+            \\  <g transform="translate(298, 0)">
+            \\    <!-- Persona Badge Pill -->
+            \\    <g transform="translate(59, 38)">
+            \\      <rect x="-48" y="-12" width="96" height="24" rx="12" fill="#1f2335" stroke="{s}" stroke-opacity="0.4" stroke-width="1"/>
+            \\      <text x="0" y="4" text-anchor="middle" class="rhythm-persona-txt">{s} {s}</text>
+            \\    </g>
+            \\
+            \\    <!-- Peak Window KPI -->
+            \\    <g transform="translate(5, 72)">
+            \\      <text x="0" y="0" class="rhythm-kpi-lbl">PEAK WINDOW</text>
+            \\      <text x="0" y="15" class="rhythm-kpi-val">{s}</text>
+            \\    </g>
+            \\
+            \\    <!-- Circadian Split Bar -->
+            \\    <g transform="translate(5, 108)">
+            \\      <text x="0" y="0" class="rhythm-kpi-lbl">CIRCADIAN SPLIT</text>
+            \\      <rect x="0" y="6" width="108" height="6" rx="3" fill="#24283b"/>
+            \\      <rect x="0" y="6" width="{d:.1}" height="6" rx="3" fill="url(#rhythm-day-grad)"/>
+            \\      <rect x="{d:.1}" y="6" width="{d:.1}" height="6" rx="3" fill="url(#rhythm-night-grad)"/>
+            \\      <text x="0" y="23" class="rhythm-stat-txt">☀️ {d}% Day</text>
+            \\      <text x="108" y="23" class="rhythm-stat-txt" text-anchor="end">🌙 {d}% Night</text>
+            \\    </g>
+            \\
+            \\    <!-- Analyzed Commits Footnote -->
+            \\    <text x="59" y="156" text-anchor="middle" class="rhythm-count-txt">{d} Commits Mapped</text>
+            \\  </g>
+            \\
+        , .{
+            rhythm.persona_color,
+            rhythm.persona_icon,
+            rhythm.persona_title,
+            rhythm.peak_window_str,
+            day_bar_w,
+            day_bar_w,
+            night_bar_w,
+            day_pct,
+            night_pct,
+            total_commits,
+        });
+    }
 
     try w.print("</svg>\n", .{});
     return try stream.toOwnedSlice();
