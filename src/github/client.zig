@@ -1466,6 +1466,247 @@ pub const Client = struct {
         };
         return stats_ptr;
     }
+
+    pub fn getMilestones(
+        self: *Client,
+        username: []const u8,
+        token: []const u8,
+    ) !*models.MilestonesOverview {
+        const clean_user = std.mem.trim(u8, username, " \t\r\n");
+        if (clean_user.len == 0 or std.ascii.eqlIgnoreCase(clean_user, "demo")) {
+            return self.getDemoMilestones();
+        }
+
+        var auth_token = cleanToken(token);
+        if (auth_token.len == 0) {
+            auth_token = self.global_token;
+        }
+
+        return self.fetchMilestonesGraphQL(clean_user, auth_token) catch |err| {
+            std.debug.print("⚠️ Failed to fetch live milestones: {}. Falling back to demo data.\n", .{err});
+            return self.getDemoMilestones();
+        };
+    }
+
+    pub fn getDemoMilestones(self: *Client) !*models.MilestonesOverview {
+        const m1 = try models.evaluateStreakMilestone(self.allocator, 184);
+        const m2 = try models.evaluatePolyglotMilestone(self.allocator, 14);
+        const m3 = try models.evaluateContribsMilestone(self.allocator, 2480);
+        const m4 = try models.evaluatePRMilestone(self.allocator, 28);
+        const m5 = try models.evaluateRepoMilestone(self.allocator, 22);
+        const m6 = try models.evaluateStarMilestone(self.allocator, 65);
+
+        const total_pts = m1.tier.points() + m2.tier.points() + m3.tier.points() +
+            m4.tier.points() + m5.tier.points() + m6.tier.points();
+        const master = models.calculateMasterMilestoneTier(total_pts);
+
+        const ptr = try self.allocator.create(models.MilestonesOverview);
+        ptr.* = .{
+            .username = try self.allocator.dupe(u8, "demo"),
+            .master_title = master.title,
+            .master_icon = master.icon,
+            .master_color = master.color,
+            .master_score = total_pts,
+            .unlocked_count = 6,
+            .total_count = 6,
+            .items = [6]models.MilestoneItem{ m1, m2, m3, m4, m5, m6 },
+        };
+        return ptr;
+    }
+
+    pub fn fetchMilestonesGraphQL(
+        self: *Client,
+        username: []const u8,
+        token: []const u8,
+    ) !*models.MilestonesOverview {
+        const query_str =
+            \\query($login: String!) {
+            \\  user(login: $login) {
+            \\    repositories(first: 100, ownerAffiliations: OWNER, isFork: false) {
+            \\      totalCount
+            \\      nodes {
+            \\        stargazerCount
+            \\        languages(first: 10, orderBy: {field: SIZE, direction: DESC}) {
+            \\          nodes {
+            \\            name
+            \\          }
+            \\        }
+            \\      }
+            \\    }
+            \\    contributionsCollection {
+            \\      totalCommitContributions
+            \\      restrictedContributionsCount
+            \\      contributionCalendar {
+            \\        totalContributions
+            \\        weeks {
+            \\          contributionDays {
+            \\            date
+            \\            contributionCount
+            \\          }
+            \\        }
+            \\      }
+            \\    }
+            \\    mergedPRs: pullRequests(states: MERGED) {
+            \\      totalCount
+            \\    }
+            \\  }
+            \\}
+        ;
+
+        const Payload = struct {
+            query: []const u8,
+            variables: struct { login: []const u8 },
+        };
+        const payload_obj = Payload{
+            .query = query_str,
+            .variables = .{ .login = username },
+        };
+        const payload = try std.json.Stringify.valueAlloc(self.allocator, payload_obj, .{});
+        defer self.allocator.free(payload);
+
+        const body = try self.executeGraphQL(payload, token);
+        defer self.allocator.free(body);
+
+        const parsed = try std.json.parseFromSlice(std.json.Value, self.allocator, body, .{});
+        defer parsed.deinit();
+
+        const data_val = parsed.value.object.get("data") orelse return error.NoData;
+        const user_val = data_val.object.get("user") orelse return error.UserNotFound;
+
+        var total_repos: u64 = 0;
+        var total_stars: u64 = 0;
+        var lang_map = std.StringHashMap(void).init(self.allocator);
+        defer lang_map.deinit();
+
+        if (user_val.object.get("repositories")) |repos_val| {
+            if (repos_val.object.get("totalCount")) |tc| {
+                total_repos = @as(u64, @intCast(@max(0, tc.integer)));
+            }
+            if (repos_val.object.get("nodes")) |nodes| {
+                for (nodes.array.items) |node| {
+                    if (node.object.get("stargazerCount")) |sc| {
+                        total_stars += @as(u64, @intCast(@max(0, sc.integer)));
+                    }
+                    if (node.object.get("languages")) |langs| {
+                        if (langs.object.get("nodes")) |lang_nodes| {
+                            for (lang_nodes.array.items) |l_node| {
+                                if (l_node.object.get("name")) |name_val| {
+                                    if (name_val == .string) {
+                                        try lang_map.put(name_val.string, {});
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        var effective_streak: u32 = 0;
+        var total_contribs: u64 = 0;
+
+        // Multi-year streak and total contributions from getStreakStats (matches streak card 100%)
+        if (self.getStreakStats(username, token)) |s_stats| {
+            effective_streak = @max(s_stats.current_streak, s_stats.longest_streak);
+            total_contribs = s_stats.total_contributions;
+        } else |_| {}
+
+        // Fallback to 1-year calendar if getStreakStats was unavailable
+        if (effective_streak == 0 or total_contribs == 0) {
+            var fallback_contribs: u64 = 0;
+            var longest_streak: u32 = 0;
+            var current_streak: u32 = 0;
+
+            if (user_val.object.get("contributionsCollection")) |cc| {
+                if (cc.object.get("restrictedContributionsCount")) |rc| {
+                    fallback_contribs += @as(u64, @intCast(@max(0, rc.integer)));
+                }
+                if (cc.object.get("contributionCalendar")) |cal| {
+                    if (cal.object.get("totalContributions")) |tc| {
+                        fallback_contribs += @as(u64, @intCast(@max(0, tc.integer)));
+                    }
+                    if (cal.object.get("weeks")) |weeks| {
+                        var day_counts: std.ArrayList(u32) = .empty;
+                        defer day_counts.deinit(self.allocator);
+
+                        for (weeks.array.items) |w| {
+                            if (w.object.get("contributionDays")) |cdays| {
+                                for (cdays.array.items) |d| {
+                                    if (d.object.get("contributionCount")) |cnt| {
+                                        const c = @as(u32, @intCast(@max(0, cnt.integer)));
+                                        try day_counts.append(self.allocator, c);
+                                    }
+                                }
+                            }
+                        }
+
+                        var run_streak: u32 = 0;
+                        for (day_counts.items) |c| {
+                            if (c > 0) {
+                                run_streak += 1;
+                                if (run_streak > longest_streak) longest_streak = run_streak;
+                            } else {
+                                run_streak = 0;
+                            }
+                        }
+
+                        var day_idx = day_counts.items.len;
+                        if (day_idx > 0 and day_counts.items[day_idx - 1] == 0) {
+                            day_idx -= 1;
+                        }
+                        while (day_idx > 0) {
+                            day_idx -= 1;
+                            if (day_counts.items[day_idx] > 0) {
+                                current_streak += 1;
+                            } else {
+                                break;
+                            }
+                        }
+                    }
+                }
+            }
+
+            if (effective_streak == 0) {
+                effective_streak = @max(current_streak, longest_streak);
+            }
+            if (total_contribs == 0) {
+                total_contribs = fallback_contribs;
+            }
+        }
+
+        var merged_prs: u64 = 0;
+        if (user_val.object.get("mergedPRs")) |m| {
+            if (m.object.get("totalCount")) |tc| {
+                merged_prs = @as(u64, @intCast(@max(0, tc.integer)));
+            }
+        }
+
+        const languages_count = lang_map.count();
+
+        const m1 = try models.evaluateStreakMilestone(self.allocator, effective_streak);
+        const m2 = try models.evaluatePolyglotMilestone(self.allocator, languages_count);
+        const m3 = try models.evaluateContribsMilestone(self.allocator, total_contribs);
+        const m4 = try models.evaluatePRMilestone(self.allocator, merged_prs);
+        const m5 = try models.evaluateRepoMilestone(self.allocator, total_repos);
+        const m6 = try models.evaluateStarMilestone(self.allocator, total_stars);
+
+        const total_pts = m1.tier.points() + m2.tier.points() + m3.tier.points() +
+            m4.tier.points() + m5.tier.points() + m6.tier.points();
+        const master = models.calculateMasterMilestoneTier(total_pts);
+
+        const ptr = try self.allocator.create(models.MilestonesOverview);
+        ptr.* = .{
+            .username = try self.allocator.dupe(u8, username),
+            .master_title = master.title,
+            .master_icon = master.icon,
+            .master_color = master.color,
+            .master_score = total_pts,
+            .unlocked_count = 6,
+            .total_count = 6,
+            .items = [6]models.MilestoneItem{ m1, m2, m3, m4, m5, m6 },
+        };
+        return ptr;
+    }
 };
 
 pub fn parseIsoToEpochSeconds(ts: []const u8) ?i64 {

@@ -10,6 +10,7 @@ pub const stats = @import("renderer/stats.zig");
 pub const rhythm = @import("renderer/rhythm.zig");
 pub const radar = @import("renderer/radar.zig");
 pub const velocity = @import("renderer/velocity.zig");
+pub const milestones = @import("renderer/milestones.zig");
 
 test "colors: official Linguist mapping and fallback" {
     try std.testing.expectEqualStrings("#ec915c", colors.getLanguageColor("Zig", null));
@@ -307,6 +308,57 @@ test "velocity: renderVelocitySVG produces valid PR velocity & cadence card" {
     try std.testing.expect(std.mem.indexOf(u8, rendered, "VELOCITY INDEX") != null);
     try std.testing.expect(std.mem.indexOf(u8, rendered, "</svg>") != null);
 }
+
+test "milestones: renderMilestonesSVG produces valid achievements showcase card" {
+    const allocator = std.testing.allocator;
+
+    const m1 = try models.evaluateStreakMilestone(allocator, 184);
+    defer allocator.free(m1.value_str);
+    const m2 = try models.evaluatePolyglotMilestone(allocator, 14);
+    defer allocator.free(m2.value_str);
+    const m3 = try models.evaluateContribsMilestone(allocator, 2480);
+    defer allocator.free(m3.value_str);
+    const m4 = try models.evaluatePRMilestone(allocator, 28);
+    defer allocator.free(m4.value_str);
+    const m5 = try models.evaluateRepoMilestone(allocator, 22);
+    defer allocator.free(m5.value_str);
+    const m6 = try models.evaluateStarMilestone(allocator, 65);
+    defer allocator.free(m6.value_str);
+
+    const overview = models.MilestonesOverview{
+        .username = "testuser",
+        .master_title = "Diamond Architect",
+        .master_icon = "💎",
+        .master_color = "#70a5fd",
+        .master_score = 22,
+        .unlocked_count = 6,
+        .total_count = 6,
+        .items = [6]models.MilestoneItem{ m1, m2, m3, m4, m5, m6 },
+    };
+
+    const t = themes.getTheme("tokyonight");
+    const rendered = try milestones.renderMilestonesSVG(allocator, &overview, .{
+        .theme = t,
+        .card_width = 424,
+        .card_height = 180,
+        .border_radius = 4.5,
+    });
+    defer allocator.free(rendered);
+
+    try std.testing.expect(std.mem.indexOf(u8, rendered, "<svg xmlns=\"http://www.w3.org/2000/svg\"") != null);
+    try std.testing.expect(std.mem.indexOf(u8, rendered, "width=\"424\" height=\"180\"") != null);
+    try std.testing.expect(std.mem.indexOf(u8, rendered, "CAREER MILESTONES") != null);
+    try std.testing.expect(std.mem.indexOf(u8, rendered, "ACHIEVEMENTS &amp; TROPHIES") != null);
+    try std.testing.expect(std.mem.indexOf(u8, rendered, "Diamond Architect") != null);
+    try std.testing.expect(std.mem.indexOf(u8, rendered, "STREAK RUNNER") != null);
+    try std.testing.expect(std.mem.indexOf(u8, rendered, "POLYGLOT") != null);
+    try std.testing.expect(std.mem.indexOf(u8, rendered, "CODE TITAN") != null);
+    try std.testing.expect(std.mem.indexOf(u8, rendered, "PR SPECIALIST") != null);
+    try std.testing.expect(std.mem.indexOf(u8, rendered, "REPO MASTER") != null);
+    try std.testing.expect(std.mem.indexOf(u8, rendered, "STAR MAGNET") != null);
+    try std.testing.expect(std.mem.indexOf(u8, rendered, "</svg>") != null);
+}
+
 
 
 

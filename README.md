@@ -78,6 +78,15 @@ A high-velocity delivery metrics card measuring PR merge turnaround time, merge 
 
 ---
 
+### 7. Career Milestones & Achievements Card
+A trophy and achievement showcase honoring developer longevity, polyglot fluency, contribution milestones, PR throughput, repository architecture, and open-source impact. Features a 3×2 glassmorphic badge matrix with glowing tier halos, dynamic rank tiers (Bronze, Silver, Gold, Platinum, Diamond), and an overall Master Tier crown badge (Mythic Grandmaster, Diamond Architect, Platinum Veteran).
+
+<div align="center">
+  <img src="preview/milestones/standard.svg" width="424" alt="Career Milestones and Achievements Card" />
+</div>
+
+---
+
 
 ## Quick Setup
 
@@ -181,6 +190,14 @@ zig build -Doptimize=ReleaseFast
   --card-width=424 \
   --card-height=180 \
   --output="generated/velocity.svg"
+
+# 7. Generate Career Milestones & Achievements Card
+./zig-out/bin/git_stats --milestones \
+  --username="YOUR_USERNAME" \
+  --theme="tokyonight" \
+  --card-width=424 \
+  --card-height=180 \
+  --output="generated/milestones.svg"
 ```
 
 ### CLI Flags
@@ -193,6 +210,7 @@ zig build -Doptimize=ReleaseFast
 | `--rhythm` | `false` | Generate 24h × 7d circadian commit punchcard card |
 | `--radar` | `false` | Generate 5-axis developer DNA polyglot radar card |
 | `--velocity` | `false` | Generate PR turnaround velocity & shipping impact card |
+| `--milestones` | `false` | Generate career milestones & achievements trophy card |
 | `--username` | `adityapandeydev` | Target GitHub username |
 | `--theme` | `tokyonight` | Theme preset (`tokyonight`, `github_dark`, `catppuccin`, `dracula`, `nord`, etc.) |
 | `--layout` | `standard` | Card layout: `standard`, `donut`, `compact` |
@@ -228,4 +246,4 @@ zig build -Doptimize=ReleaseFast
 
 ## License
 
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+This project is licensed under the MIT [LICENSE](Licence)

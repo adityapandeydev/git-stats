@@ -95,6 +95,15 @@ jobs:
             --border-radius=4.5 \
             --output="generated/velocity.svg"
 
+          # 8. Generate Career Milestones & Achievements Card
+          ./zig-out/bin/git_stats --milestones \
+            --username="${{ github.repository_owner }}" \
+            --theme="tokyonight" \
+            --card-width=424 \
+            --card-height=180 \
+            --border-radius=4.5 \
+            --output="generated/milestones.svg"
+
 
       - name: Commit and Push Updated Cards
         run: |

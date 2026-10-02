@@ -491,4 +491,268 @@ pub fn calculateVelocityTier(score: u32) VelocityTier {
     }
 }
 
+/// Milestone tiers from Bronze up to Diamond.
+pub const MilestoneTier = enum {
+    bronze,
+    silver,
+    gold,
+    platinum,
+    diamond,
+
+    pub fn name(self: MilestoneTier) []const u8 {
+        return switch (self) {
+            .bronze => "BRONZE",
+            .silver => "SILVER",
+            .gold => "GOLD",
+            .platinum => "PLATINUM",
+            .diamond => "DIAMOND",
+        };
+    }
+
+    pub fn color(self: MilestoneTier) []const u8 {
+        return switch (self) {
+            .bronze => "#ff9e64",
+            .silver => "#c0caf5",
+            .gold => "#e0af68",
+            .platinum => "#70a5fd",
+            .diamond => "#bb9af7",
+        };
+    }
+
+    pub fn points(self: MilestoneTier) u32 {
+        return switch (self) {
+            .bronze => 1,
+            .silver => 2,
+            .gold => 3,
+            .platinum => 4,
+            .diamond => 5,
+        };
+    }
+};
+
+pub const MilestoneItem = struct {
+    id: []const u8,
+    title: []const u8,
+    icon: []const u8,
+    tier: MilestoneTier,
+    tier_label: []const u8,
+    tier_color: []const u8,
+    value_str: []const u8,
+    target_str: []const u8,
+};
+
+pub const MilestonesOverview = struct {
+    username: []const u8,
+    master_title: []const u8,
+    master_icon: []const u8,
+    master_color: []const u8,
+    master_score: u32,
+    unlocked_count: u32,
+    total_count: u32,
+    items: [6]MilestoneItem,
+};
+
+pub fn evaluateStreakMilestone(allocator: std.mem.Allocator, streak: u32) !MilestoneItem {
+    var tier: MilestoneTier = .bronze;
+    var target: []const u8 = "Next: 14d";
+    if (streak >= 365) {
+        tier = .diamond;
+        target = "Max Tier";
+    } else if (streak >= 100) {
+        tier = .platinum;
+        target = "Next: 365d";
+    } else if (streak >= 30) {
+        tier = .gold;
+        target = "Next: 100d";
+    } else if (streak >= 14) {
+        tier = .silver;
+        target = "Next: 30d";
+    }
+    const val_str = try std.fmt.allocPrint(allocator, "{d} Days", .{streak});
+    return MilestoneItem{
+        .id = "streak",
+        .title = "STREAK RUNNER",
+        .icon = "🔥",
+        .tier = tier,
+        .tier_label = tier.name(),
+        .tier_color = tier.color(),
+        .value_str = val_str,
+        .target_str = target,
+    };
+}
+
+pub fn evaluatePolyglotMilestone(allocator: std.mem.Allocator, lang_count: usize) !MilestoneItem {
+    var tier: MilestoneTier = .bronze;
+    var target: []const u8 = "Next: 4";
+    if (lang_count >= 18) {
+        tier = .diamond;
+        target = "Max Tier";
+    } else if (lang_count >= 10) {
+        tier = .platinum;
+        target = "Next: 18";
+    } else if (lang_count >= 6) {
+        tier = .gold;
+        target = "Next: 10";
+    } else if (lang_count >= 3) {
+        tier = .silver;
+        target = "Next: 6";
+    }
+    const val_str = if (lang_count == 1)
+        try allocator.dupe(u8, "1 Stack")
+    else
+        try std.fmt.allocPrint(allocator, "{d} Stacks", .{lang_count});
+    return MilestoneItem{
+        .id = "polyglot",
+        .title = "POLYGLOT",
+        .icon = "🌐",
+        .tier = tier,
+        .tier_label = tier.name(),
+        .tier_color = tier.color(),
+        .value_str = val_str,
+        .target_str = target,
+    };
+}
+
+pub fn evaluateContribsMilestone(allocator: std.mem.Allocator, contribs: u64) !MilestoneItem {
+    var tier: MilestoneTier = .bronze;
+    var target: []const u8 = "Next: 300";
+    if (contribs >= 5000) {
+        tier = .diamond;
+        target = "Max Tier";
+    } else if (contribs >= 2000) {
+        tier = .platinum;
+        target = "Next: 5k";
+    } else if (contribs >= 750) {
+        tier = .gold;
+        target = "Next: 2k";
+    } else if (contribs >= 250) {
+        tier = .silver;
+        target = "Next: 750";
+    }
+    const val_str = if (contribs >= 1000)
+        try std.fmt.allocPrint(allocator, "{d:.1}k Contribs", .{@as(f64, @floatFromInt(contribs)) / 1000.0})
+    else
+        try std.fmt.allocPrint(allocator, "{d} Contribs", .{contribs});
+    return MilestoneItem{
+        .id = "contribs",
+        .title = "CODE TITAN",
+        .icon = "⚡",
+        .tier = tier,
+        .tier_label = tier.name(),
+        .tier_color = tier.color(),
+        .value_str = val_str,
+        .target_str = target,
+    };
+}
+
+pub fn evaluatePRMilestone(allocator: std.mem.Allocator, prs: u64) !MilestoneItem {
+    var tier: MilestoneTier = .bronze;
+    var target: []const u8 = "Next: 5";
+    if (prs >= 40) {
+        tier = .diamond;
+        target = "Max Tier";
+    } else if (prs >= 20) {
+        tier = .platinum;
+        target = "Next: 40";
+    } else if (prs >= 8) {
+        tier = .gold;
+        target = "Next: 20";
+    } else if (prs >= 3) {
+        tier = .silver;
+        target = "Next: 8";
+    }
+    const val_str = try std.fmt.allocPrint(allocator, "{d} Merged", .{prs});
+    return MilestoneItem{
+        .id = "pr",
+        .title = "PR SPECIALIST",
+        .icon = "🔀",
+        .tier = tier,
+        .tier_label = tier.name(),
+        .tier_color = tier.color(),
+        .value_str = val_str,
+        .target_str = target,
+    };
+}
+
+pub fn evaluateRepoMilestone(allocator: std.mem.Allocator, repos: u64) !MilestoneItem {
+    var tier: MilestoneTier = .bronze;
+    var target: []const u8 = "Next: 5";
+    if (repos >= 30) {
+        tier = .diamond;
+        target = "Max Tier";
+    } else if (repos >= 15) {
+        tier = .platinum;
+        target = "Next: 30";
+    } else if (repos >= 8) {
+        tier = .gold;
+        target = "Next: 15";
+    } else if (repos >= 4) {
+        tier = .silver;
+        target = "Next: 8";
+    }
+    const val_str = if (repos == 1)
+        try allocator.dupe(u8, "1 Repo")
+    else
+        try std.fmt.allocPrint(allocator, "{d} Repos", .{repos});
+    return MilestoneItem{
+        .id = "repos",
+        .title = "REPO MASTER",
+        .icon = "📦",
+        .tier = tier,
+        .tier_label = tier.name(),
+        .tier_color = tier.color(),
+        .value_str = val_str,
+        .target_str = target,
+    };
+}
+
+pub fn evaluateStarMilestone(allocator: std.mem.Allocator, stars: u64) !MilestoneItem {
+    var tier: MilestoneTier = .bronze;
+    var target: []const u8 = "Next: 5";
+    if (stars >= 100) {
+        tier = .diamond;
+        target = "Max Tier";
+    } else if (stars >= 30) {
+        tier = .platinum;
+        target = "Next: 100";
+    } else if (stars >= 10) {
+        tier = .gold;
+        target = "Next: 30";
+    } else if (stars >= 3) {
+        tier = .silver;
+        target = "Next: 10";
+    }
+    const val_str = if (stars == 1)
+        try allocator.dupe(u8, "1 Star")
+    else
+        try std.fmt.allocPrint(allocator, "{d} Stars", .{stars});
+    return MilestoneItem{
+        .id = "stars",
+        .title = "STAR MAGNET",
+        .icon = "⭐",
+        .tier = tier,
+        .tier_label = tier.name(),
+        .tier_color = tier.color(),
+        .value_str = val_str,
+        .target_str = target,
+    };
+}
+
+pub fn calculateMasterMilestoneTier(total_points: u32) struct { title: []const u8, icon: []const u8, color: []const u8 } {
+    if (total_points >= 24) {
+        return .{ .title = "Mythic Grandmaster", .icon = "👑", .color = "#bb9af7" };
+    } else if (total_points >= 19) {
+        return .{ .title = "Diamond Architect", .icon = "💎", .color = "#70a5fd" };
+    } else if (total_points >= 14) {
+        return .{ .title = "Platinum Veteran", .icon = "🏆", .color = "#73daca" };
+    } else if (total_points >= 10) {
+        return .{ .title = "Gold Craftsman", .icon = "🌟", .color = "#e0af68" };
+    } else if (total_points >= 6) {
+        return .{ .title = "Silver Contributor", .icon = "⚡", .color = "#c0caf5" };
+    } else {
+        return .{ .title = "Rising Talent", .icon = "🌱", .color = "#9aa5ce" };
+    }
+}
+
+
 
