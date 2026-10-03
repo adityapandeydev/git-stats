@@ -26,3 +26,8 @@ preview.html
 # Generated user cards (only generated on CI for deployment, never tracked locally)
 generated/*.svg
 /*.svg
+
+# Frontend
+frontend/node_modules/
+frontend/dist/
+.github/workflows/deploy-pages.yml
