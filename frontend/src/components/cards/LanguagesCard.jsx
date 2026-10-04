@@ -49,6 +49,29 @@ export default function LanguagesCard({
   const actualHeight = height ? Math.max(height, computedHeight) : computedHeight
   const barWidth = width - 50 // 350 for 400 width
 
+  // Compute dynamic spacing based on actual height
+  const paddingY = 28
+  const barBottom = 62
+  const standardRowStep = 34
+  
+  let listStartY = barBottom + standardRowStep
+  let rowHeight = standardRowStep
+  
+  if (actualHeight > computedHeight) {
+    const targetLastRowY = actualHeight - paddingY
+    const availMiddle = targetLastRowY - barBottom
+    const intervals = rows - 1
+    
+    if (intervals === 0) {
+      listStartY = barBottom + Math.floor(availMiddle / 2)
+    } else {
+      const unitSpacing = Math.floor(availMiddle / (intervals + 1))
+      const remainder = availMiddle - (unitSpacing * (intervals + 1))
+      rowHeight = unitSpacing
+      listStartY = barBottom + unitSpacing + remainder
+    }
+  }
+
   // Compute segment positions along the bar
   let currentOffset = 25.0
   const barSegments = languages.map((lang) => {
@@ -123,16 +146,18 @@ export default function LanguagesCard({
         const colIdx = isLeftCol ? 0 : 1
         const rowIdx = isLeftCol ? idx : idx - rows
 
-        const dotX = colIdx === 0 ? 30.0 : 205.0
-        const nameX = colIdx === 0 ? 41.0 : 216.0
+        const itemX = colIdx === 0 ? 25.0 : 200.0
+        const textY = listStartY + (rowIdx * rowHeight)
+        const dotY = textY - 4.5
+
+        const dotX = itemX + 5.0
+        const nameX = itemX + 16.0
         const pctX = colIdx === 0 ? 185.0 : 360.0
-        const itemY = 91.5 + rowIdx * 34
-        const textY = 96.0 + rowIdx * 34
         const delay = 100 + idx * 40
 
         return (
           <g key={idx} className="animate-item" style={{ animationDelay: `${delay}ms` }}>
-            <circle cx={dotX} cy={itemY} r="4.5" fill={lang.color} />
+            <circle cx={dotX} cy={dotY} r="4.5" fill={lang.color} />
             <text x={nameX} y={textY} className="lang-name">{lang.name}</text>
             <text x={pctX} y={textY} textAnchor="end" className="lang-pct">
               {lang.normalizedPct.toFixed(2)}%
