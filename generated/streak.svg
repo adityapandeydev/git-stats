@@ -68,7 +68,7 @@
   <line x1="273.5" y1="22.0" x2="273.5" y2="130.0" stroke="url(#divider-grad)" stroke-width="1"/>
   <!-- Left Column: Total Contributions -->
   <g transform="translate(93.3, 0.0)">
-    <text x="0" y="60" text-anchor="middle" class="stat-val" font-size="24" fill="#70a5fd">2056</text>
+    <text x="0" y="60" text-anchor="middle" class="stat-val" font-size="24" fill="#70a5fd">2058</text>
     <text x="0" y="82" text-anchor="middle" class="stat-lbl" font-size="12" fill="#a9b1d6">Total Contributions</text>
     <text x="0" y="103" text-anchor="middle" class="stat-sub" font-size="10.5" fill="#565f89">Oct 7, 2022 - Present</text>
   </g>
@@ -88,7 +88,7 @@
   </g>
 
   <!-- Current Streak Count -->
-  <text x="212.0" y="76.0" text-anchor="middle" class="stat-val" font-size="28" fill="url(#flame-grad)" filter="url(#subtle-glow)">666</text>
+  <text x="212.0" y="76.0" text-anchor="middle" class="stat-val" font-size="28" fill="url(#flame-grad)" filter="url(#subtle-glow)">667</text>
 
   <!-- Streak Pill Badge -->
   <g transform="translate(212.0, 86.0)">
@@ -97,18 +97,18 @@
   </g>
 
   <!-- Range Subtitle -->
-  <text x="212.0" y="118.0" text-anchor="middle" class="stat-sub" font-size="10.5" fill="#787c99">Dec 8, 2024 - Oct 4</text>
+  <text x="212.0" y="118.0" text-anchor="middle" class="stat-sub" font-size="10.5" fill="#787c99">Dec 8, 2024 - Oct 5</text>
   <!-- Right Column: Longest Streak -->
   <g transform="translate(330.7, 0.0)">
-    <text x="0" y="60" text-anchor="middle" class="stat-val" font-size="24" fill="#70a5fd">666</text>
+    <text x="0" y="60" text-anchor="middle" class="stat-val" font-size="24" fill="#70a5fd">667</text>
     <text x="0" y="82" text-anchor="middle" class="stat-lbl" font-size="12" fill="#a9b1d6">Longest Streak</text>
-    <text x="0" y="103" text-anchor="middle" class="stat-sub" font-size="10.5" fill="#565f89">Dec 8, 2024 - Oct 4</text>
+    <text x="0" y="103" text-anchor="middle" class="stat-sub" font-size="10.5" fill="#565f89">Dec 8, 2024 - Oct 5</text>
   </g>
   <!-- 14-Day Activity Sparkline -->
   <text x="28.0" y="136.0" class="spark-lbl" font-size="8.5" letter-spacing="0.8" fill="#565f89">14-DAY ACTIVITY MOMENTUM</text>
-  <text x="396.0" y="136.0" text-anchor="end" class="spark-lbl" font-size="8.5" letter-spacing="0.5" fill="#bb9af7">85 COMMITS</text>
-  <path d="M 28.00 142.00 C 39.32 142.00, 44.98 165.11, 56.31 165.11 C 67.63 165.11, 73.29 165.11, 84.62 165.11 C 95.94 165.11, 101.60 165.11, 112.92 165.11 C 124.25 165.11, 129.91 162.44, 141.23 162.44 C 152.55 162.44, 158.22 165.11, 169.54 165.11 C 180.86 165.11, 186.52 163.33, 197.85 163.33 C 209.17 163.33, 214.83 148.22, 226.15 148.22 C 237.48 148.22, 243.14 161.56, 254.46 161.56 C 265.78 161.56, 271.45 153.56, 282.77 153.56 C 294.09 153.56, 299.75 160.67, 311.08 160.67 C 322.40 160.67, 328.06 165.11, 339.38 165.11 C 350.71 165.11, 356.37 165.11, 367.69 165.11 C 379.02 165.11, 384.68 166.00, 396.00 166.00 L 396.00 170.00 L 28.00 170.00 Z" fill="url(#sparkline-fill)"/>
-  <path d="M 28.00 142.00 C 39.32 142.00, 44.98 165.11, 56.31 165.11 C 67.63 165.11, 73.29 165.11, 84.62 165.11 C 95.94 165.11, 101.60 165.11, 112.92 165.11 C 124.25 165.11, 129.91 162.44, 141.23 162.44 C 152.55 162.44, 158.22 165.11, 169.54 165.11 C 180.86 165.11, 186.52 163.33, 197.85 163.33 C 209.17 163.33, 214.83 148.22, 226.15 148.22 C 237.48 148.22, 243.14 161.56, 254.46 161.56 C 265.78 161.56, 271.45 153.56, 282.77 153.56 C 294.09 153.56, 299.75 160.67, 311.08 160.67 C 322.40 160.67, 328.06 165.11, 339.38 165.11 C 350.71 165.11, 356.37 165.11, 367.69 165.11 C 379.02 165.11, 384.68 166.00, 396.00 166.00" fill="none" stroke="url(#sparkline-grad)" stroke-width="2" stroke-linecap="round"/>
+  <text x="396.0" y="136.0" text-anchor="end" class="spark-lbl" font-size="8.5" letter-spacing="0.5" fill="#bb9af7">87 COMMITS</text>
+  <path d="M 28.00 142.00 C 39.32 142.00, 44.98 165.11, 56.31 165.11 C 67.63 165.11, 73.29 165.11, 84.62 165.11 C 95.94 165.11, 101.60 165.11, 112.92 165.11 C 124.25 165.11, 129.91 162.44, 141.23 162.44 C 152.55 162.44, 158.22 165.11, 169.54 165.11 C 180.86 165.11, 186.52 163.33, 197.85 163.33 C 209.17 163.33, 214.83 148.22, 226.15 148.22 C 237.48 148.22, 243.14 161.56, 254.46 161.56 C 265.78 161.56, 271.45 153.56, 282.77 153.56 C 294.09 153.56, 299.75 160.67, 311.08 160.67 C 322.40 160.67, 328.06 165.11, 339.38 165.11 C 350.71 165.11, 356.37 165.11, 367.69 165.11 C 379.02 165.11, 384.68 164.22, 396.00 164.22 L 396.00 170.00 L 28.00 170.00 Z" fill="url(#sparkline-fill)"/>
+  <path d="M 28.00 142.00 C 39.32 142.00, 44.98 165.11, 56.31 165.11 C 67.63 165.11, 73.29 165.11, 84.62 165.11 C 95.94 165.11, 101.60 165.11, 112.92 165.11 C 124.25 165.11, 129.91 162.44, 141.23 162.44 C 152.55 162.44, 158.22 165.11, 169.54 165.11 C 180.86 165.11, 186.52 163.33, 197.85 163.33 C 209.17 163.33, 214.83 148.22, 226.15 148.22 C 237.48 148.22, 243.14 161.56, 254.46 161.56 C 265.78 161.56, 271.45 153.56, 282.77 153.56 C 294.09 153.56, 299.75 160.67, 311.08 160.67 C 322.40 160.67, 328.06 165.11, 339.38 165.11 C 350.71 165.11, 356.37 165.11, 367.69 165.11 C 379.02 165.11, 384.68 164.22, 396.00 164.22" fill="none" stroke="url(#sparkline-grad)" stroke-width="2" stroke-linecap="round"/>
   <circle cx="28.00" cy="142.00" r="1.8" fill="#70a5fd" opacity="0.6"/>
   <circle cx="56.31" cy="165.11" r="1.8" fill="#70a5fd" opacity="0.6"/>
   <circle cx="84.62" cy="165.11" r="1.8" fill="#70a5fd" opacity="0.6"/>
@@ -123,6 +123,6 @@
   <circle cx="339.38" cy="165.11" r="1.8" fill="#70a5fd" opacity="0.6"/>
   <circle cx="367.69" cy="165.11" r="1.8" fill="#70a5fd" opacity="0.6"/>
   <!-- Today Active Dot -->
-  <circle cx="396.00" cy="166.00" r="3.2" fill="#bb9af7" filter="url(#subtle-glow)"/>
-  <circle cx="396.00" cy="166.00" r="1.5" fill="#ffffff"/>
+  <circle cx="396.00" cy="164.22" r="3.2" fill="#bb9af7" filter="url(#subtle-glow)"/>
+  <circle cx="396.00" cy="164.22" r="1.5" fill="#ffffff"/>
 </svg>
