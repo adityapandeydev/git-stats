@@ -38,6 +38,8 @@ const CliConfig = struct {
     hide_border: bool = false,
     animate: bool = true,
     show_sparkline: bool = true,
+    svg_icons: bool = false,
+    strict_data: bool = false,
     title_color: ?[]const u8 = null,
     text_color: ?[]const u8 = null,
     bg_color: ?[]const u8 = null,
@@ -196,6 +198,10 @@ fn parseCliArgs(args: []const []const u8) CliConfig {
             cfg.bg_color = arg["--bg-color=".len..];
         } else if (std.mem.startsWith(u8, arg, "--border-color=")) {
             cfg.border_color = arg["--border-color=".len..];
+        } else if (std.mem.eql(u8, arg, "--svg-icons")) {
+            cfg.svg_icons = true;
+        } else if (std.mem.eql(u8, arg, "--strict-data")) {
+            cfg.strict_data = true;
         } else if (std.mem.eql(u8, arg, "--hide-sparkline") or std.mem.eql(u8, arg, "--show-sparkline=false")) {
             cfg.show_sparkline = false;
         } else if (std.mem.eql(u8, arg, "--show-sparkline=true") or std.mem.eql(u8, arg, "--show-sparkline")) {
@@ -395,6 +401,7 @@ pub fn main(init: std.process.Init) !void {
     }
 
     var client = github_client.Client.init(arena, io, auth_token);
+    client.strict_data = cli.strict_data;
 
     // Apply theme
     const base_theme = themes.getTheme(cli.theme);
@@ -471,7 +478,7 @@ pub fn main(init: std.process.Init) !void {
             }
         }
 
-        try cwd.writeFile(io, .{ .sub_path = out_file, .data = svg_content });
+        try cwd.writeFile(io, .{ .sub_path = out_file, .data = if (cli.svg_icons) try @import("renderer/icons.zig").replace(arena, svg_content, active_theme.title_color) else svg_content });
 
         std.debug.print("✅ Successfully generated Bento Grid '{s}' for '{s}' ({d:.1}x{d:.1} px, {d} cards)\n", .{
             out_file, username, layout.canvas_w, layout.canvas_h, layout.slots.len,
@@ -524,7 +531,7 @@ pub fn main(init: std.process.Init) !void {
             }
         }
 
-        try cwd.writeFile(io, .{ .sub_path = out_file, .data = svg_content });
+        try cwd.writeFile(io, .{ .sub_path = out_file, .data = if (cli.svg_icons) try @import("renderer/icons.zig").replace(arena, svg_content, active_theme.title_color) else svg_content });
 
         std.debug.print("✅ Successfully generated streak card '{s}' for '{s}' ({d}x{d} px)\n", .{
             out_file,
@@ -578,7 +585,7 @@ pub fn main(init: std.process.Init) !void {
             }
         }
 
-        try cwd.writeFile(io, .{ .sub_path = out_file, .data = svg_content });
+        try cwd.writeFile(io, .{ .sub_path = out_file, .data = if (cli.svg_icons) try @import("renderer/icons.zig").replace(arena, svg_content, active_theme.title_color) else svg_content });
 
         std.debug.print("✅ Successfully generated developer stats card '{s}' for '{s}' ({d}x{d} px)\n", .{
             out_file,
@@ -630,7 +637,7 @@ pub fn main(init: std.process.Init) !void {
             }
         }
 
-        try cwd.writeFile(io, .{ .sub_path = out_file, .data = svg_content });
+        try cwd.writeFile(io, .{ .sub_path = out_file, .data = if (cli.svg_icons) try @import("renderer/icons.zig").replace(arena, svg_content, active_theme.title_color) else svg_content });
 
         std.debug.print("✅ Successfully generated commit rhythm card '{s}' for '{s}' ({d}x{d} px)\n", .{
             out_file,
@@ -678,7 +685,7 @@ pub fn main(init: std.process.Init) !void {
             }
         }
 
-        try cwd.writeFile(io, .{ .sub_path = out_file, .data = svg_content });
+        try cwd.writeFile(io, .{ .sub_path = out_file, .data = if (cli.svg_icons) try @import("renderer/icons.zig").replace(arena, svg_content, active_theme.title_color) else svg_content });
 
         std.debug.print("✅ Successfully generated developer DNA radar card '{s}' for '{s}' ({d}x{d} px)\n", .{
             out_file,
@@ -725,7 +732,7 @@ pub fn main(init: std.process.Init) !void {
             }
         }
 
-        try cwd.writeFile(io, .{ .sub_path = out_file, .data = svg_content });
+        try cwd.writeFile(io, .{ .sub_path = out_file, .data = if (cli.svg_icons) try @import("renderer/icons.zig").replace(arena, svg_content, active_theme.title_color) else svg_content });
 
         std.debug.print("✅ Successfully generated PR velocity & impact card '{s}' for '{s}' ({d}x{d} px)\n", .{
             out_file,
@@ -772,7 +779,7 @@ pub fn main(init: std.process.Init) !void {
             }
         }
 
-        try cwd.writeFile(io, .{ .sub_path = out_file, .data = svg_content });
+        try cwd.writeFile(io, .{ .sub_path = out_file, .data = if (cli.svg_icons) try @import("renderer/icons.zig").replace(arena, svg_content, active_theme.title_color) else svg_content });
 
         std.debug.print("✅ Successfully generated career milestones card '{s}' for '{s}' ({d}x{d} px)\n", .{
             out_file,
@@ -857,7 +864,7 @@ pub fn main(init: std.process.Init) !void {
         }
     }
 
-    try cwd.writeFile(io, .{ .sub_path = cli.output, .data = svg_content });
+    try cwd.writeFile(io, .{ .sub_path = cli.output, .data = if (cli.svg_icons) try @import("renderer/icons.zig").replace(arena, svg_content, active_theme.title_color) else svg_content });
 
     const display_count = @min(visible_langs.items.len, cli.langs_count);
     std.debug.print("✅ Successfully generated '{s}' for '{s}' ({d} languages)\n", .{

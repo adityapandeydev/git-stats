@@ -33,6 +33,8 @@ pub const Client = struct {
     allocator: std.mem.Allocator,
     io: std.Io,
     global_token: []const u8,
+    // Opt-in for Studio exports. Preserve legacy production fallback behavior.
+    strict_data: bool = false,
 
     pub fn init(allocator: std.mem.Allocator, io: std.Io, global_token: []const u8) Client {
         return .{
@@ -407,6 +409,11 @@ pub const Client = struct {
         const years_raw = u.contributionsCollection.contributionYears;
 
         if (years_raw.len == 0) {
+            if (self.strict_data) {
+                const empty = try self.allocator.create(models.StreakStats);
+                empty.* = .{ .username = try self.allocator.dupe(u8, username), .total_contributions = 0, .first_contribution_date = "No activity", .latest_contribution_date = "No activity", .current_streak = 0, .current_streak_start = "No activity", .current_streak_end = "No activity", .is_streak_active = false, .longest_streak = 0, .longest_streak_start = "No activity", .longest_streak_end = "No activity" };
+                return empty;
+            }
             return try self.getDemoStreakStats();
         }
 
@@ -471,7 +478,9 @@ pub const Client = struct {
         defer parsed_cal.deinit();
 
         const data_val = parsed_cal.value.object.get("data") orelse return error.NoData;
+        if (data_val != .object) return error.NoData;
         const user_val = data_val.object.get("user") orelse return error.UserNotFound;
+        if (user_val != .object) return error.UserNotFound;
 
         var all_days: std.ArrayList(models.ContributionDay) = .empty;
         defer all_days.deinit(self.allocator);
@@ -792,7 +801,9 @@ pub const Client = struct {
         defer parsed.deinit();
 
         const data_val = parsed.value.object.get("data") orelse return error.NoData;
+        if (data_val != .object) return error.NoData;
         const user_val = data_val.object.get("user") orelse return error.UserNotFound;
+        if (user_val != .object) return error.UserNotFound;
 
         const name_val = user_val.object.get("name");
         const resolved_name = if (name_val != null and name_val.? == .string and name_val.?.string.len > 0)
@@ -1073,7 +1084,9 @@ pub const Client = struct {
         defer parsed.deinit();
 
         const data_val = parsed.value.object.get("data") orelse return error.NoData;
+        if (data_val != .object) return error.NoData;
         const user_val = data_val.object.get("user") orelse return error.UserNotFound;
+        if (user_val != .object) return error.UserNotFound;
         const repos_val = user_val.object.get("repositories") orelse return error.NoRepositories;
         const nodes_val = repos_val.object.get("nodes") orelse return error.NoNodes;
 
@@ -1160,7 +1173,7 @@ pub const Client = struct {
         }
 
         // If no commits found in parsed repos, provide fallback
-        if (total_commits == 0) {
+        if (total_commits == 0 and !self.strict_data) {
             return self.getDemoCommitRhythm();
         }
 
@@ -1196,10 +1209,10 @@ pub const Client = struct {
             .peak_hour = peak_hour,
             .peak_day = peak_day,
             .peak_count = peak_count,
-            .persona_title = try self.allocator.dupe(u8, persona.title),
+            .persona_title = try self.allocator.dupe(u8, if (self.strict_data and total_commits == 0) "No commit activity" else persona.title),
             .persona_icon = try self.allocator.dupe(u8, persona.icon),
             .persona_color = try self.allocator.dupe(u8, persona.color),
-            .peak_window_str = window_str,
+            .peak_window_str = if (self.strict_data and total_commits == 0) "No activity" else window_str,
         };
 
         return r_ptr;
@@ -1258,6 +1271,7 @@ pub const Client = struct {
         }
 
         return self.fetchVelocityStatsGraphQL(clean_user, auth_token) catch |err| {
+            if (self.strict_data) return err;
             std.debug.print("⚠️ Failed to fetch live velocity stats: {}. Falling back to demo data.\n", .{err});
             return self.getDemoVelocityStats();
         };
@@ -1339,7 +1353,9 @@ pub const Client = struct {
         defer parsed.deinit();
 
         const data_val = parsed.value.object.get("data") orelse return error.NoData;
+        if (data_val != .object) return error.NoData;
         const user_val = data_val.object.get("user") orelse return error.UserNotFound;
+        if (user_val != .object) return error.UserNotFound;
 
         var total_prs: u64 = 0;
         var merged_prs: u64 = 0;
@@ -1413,7 +1429,9 @@ pub const Client = struct {
         else
             24.0;
 
-        const turnaround_str = if (avg_hours < 1.0)
+        const turnaround_str = if (self.strict_data and turnaround_count == 0)
+            try self.allocator.dupe(u8, "N/A")
+        else if (avg_hours < 1.0)
             try self.allocator.dupe(u8, "< 1h")
         else if (avg_hours < 24.0)
             try std.fmt.allocPrint(self.allocator, "{d:.1}h", .{avg_hours})
@@ -1442,9 +1460,10 @@ pub const Client = struct {
             s_speed = 14.0;
         }
         const s_volume = @min(15.0, (@as(f64, @floatFromInt(merged_prs)) / 25.0) * 15.0);
+        if (self.strict_data and turnaround_count == 0) s_speed = 0.0;
         const s_review = @min(15.0, (@as(f64, @floatFromInt(reviews_completed)) / 15.0) * 15.0);
 
-        const total_score = @as(u32, @intFromFloat(@min(100.0, @max(10.0, s_merge + s_speed + s_volume + s_review))));
+        const total_score = @as(u32, @intFromFloat(@min(100.0, @max(if (self.strict_data) @as(f64, 0.0) else @as(f64, 10.0), s_merge + s_speed + s_volume + s_review))));
         const tier = models.calculateVelocityTier(total_score);
 
         const stats_ptr = try self.allocator.create(models.VelocityStats);
@@ -1483,6 +1502,7 @@ pub const Client = struct {
         }
 
         return self.fetchMilestonesGraphQL(clean_user, auth_token) catch |err| {
+            if (self.strict_data) return err;
             std.debug.print("⚠️ Failed to fetch live milestones: {}. Falling back to demo data.\n", .{err});
             return self.getDemoMilestones();
         };
@@ -1571,7 +1591,9 @@ pub const Client = struct {
         defer parsed.deinit();
 
         const data_val = parsed.value.object.get("data") orelse return error.NoData;
+        if (data_val != .object) return error.NoData;
         const user_val = data_val.object.get("user") orelse return error.UserNotFound;
+        if (user_val != .object) return error.UserNotFound;
 
         var total_repos: u64 = 0;
         var total_stars: u64 = 0;
@@ -1609,7 +1631,9 @@ pub const Client = struct {
         if (self.getStreakStats(username, token)) |s_stats| {
             effective_streak = @max(s_stats.current_streak, s_stats.longest_streak);
             total_contribs = s_stats.total_contributions;
-        } else |_| {}
+        } else |err| {
+            if (self.strict_data) return err;
+        }
 
         // Fallback to 1-year calendar if getStreakStats was unavailable
         if (effective_streak == 0 or total_contribs == 0) {

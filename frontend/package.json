@@ -4,9 +4,13 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
+    "engine": "node scripts/build-engine.js",
+    "prebuild": "npm run engine",
+    "test": "node --test tests/*.test.js",
     "dev": "vite",
     "build": "vite build",
-    "lint": "oxlint",
+    "lint": "oxlint src scripts tests vite.config.js",
+    "test:parity": "node scripts/check-parity.js",
     "preview": "vite preview"
   },
   "dependencies": {

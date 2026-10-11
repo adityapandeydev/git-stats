@@ -59,7 +59,7 @@ export function generateWorkflowYaml(username, cards, theme = 'tokyonight', hide
   const commands = cards.map(card => {
     const def = getCardDef(card.id)
     if (!def || !Number.isInteger(card.width) || !Number.isInteger(card.height) || card.width < 300 || card.width > 1200 || card.height < 124 || card.height > 1500) throw new Error('Invalid card dimensions.')
-    const args = [def.flag, `--username=${quote(destination.username)}`, `--theme=${quote(theme)}`, `--card-width=${card.width}`, `--card-height=${card.height}`, '--border-radius=4.5']
+    const args = [def.flag, `--username=${quote(destination.username)}`, `--theme=${quote(theme)}`, `--card-width=${card.width}`, `--card-height=${card.height}`, '--border-radius=4.5', '--svg-icons', '--strict-data']
     if (card.id === 'languages') {
       args.push(`--langs-count=${Math.min(16, Math.max(6, card.langsCount || 12))}`, '--layout=standard', '--columns=2')
       if (card.hide || hideLangs) args.push(`--hide=${quote(card.hide || hideLangs)}`)
