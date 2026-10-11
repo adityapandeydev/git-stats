@@ -6,7 +6,15 @@
 [![Zig Version](https://img.shields.io/badge/Zig-0.16.0-orange.svg)](https://ziglang.org/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 
-GitStats delivers fully customizable, automated vector SVG cards for your GitHub profile with zero third-party service dependencies, zero rate limits, and zero downtime. Display **6 to 16 languages** with auto-recalculated percentages, track active contribution streaks with a 14-day momentum sparkline, compute your developer craft rating, and map your 24/7 circadian commit habits.
+GitStats delivers fully customizable, automated vector SVG cards for your GitHub profile without a hosted rendering service. GitHub API rate limits and Actions availability still apply. Display **6 to 16 languages** with auto-recalculated percentages, track active contribution streaks with a 14-day momentum sparkline, compute your developer craft rating, and map your 24/7 circadian commit habits.
+
+## GitStats Studio
+
+The static studio in `frontend/` provides an interactive layout canvas, per-card settings, eight native themes, and README/workflow exports. Its WebAssembly engine compiles the same Zig SVG renderers used by the CLI. Sample data is explicitly labelled; a GitHub read token enables authenticated previews. Tokens stay in tab memory.
+
+Studio-generated workflows opt into two additive CLI flags: `--svg-icons` replaces decorative emoji glyphs with Lucide SVG paths, and `--strict-data` propagates fetch failures and preserves empty activity instead of using demonstration fallbacks. They also use `--animate=false` to match the static preview. Existing CLI defaults and existing production workflows remain unchanged.
+
+See [Studio setup, data limits, testing, and deployment](frontend/README.md). A Pages workflow template is provided in [frontend/deploy-pages.example.yml](frontend/deploy-pages.example.yml).
 
 ---
 
