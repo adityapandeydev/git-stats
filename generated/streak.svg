@@ -1,128 +1,40 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 424 180" width="424" height="180">
-  <defs>
-    <filter id="core-glow" x="-50%" y="-50%" width="200%" height="200%">
-      <feGaussianBlur in="SourceGraphic" stdDeviation="4" result="blur1"/>
-      <feGaussianBlur in="SourceGraphic" stdDeviation="8" result="blur2"/>
-      <feMerge>
-        <feMergeNode in="blur2"/>
-        <feMergeNode in="blur1"/>
-        <feMergeNode in="SourceGraphic"/>
-      </feMerge>
-    </filter>
-    <filter id="subtle-glow" x="-30%" y="-30%" width="160%" height="160%">
-      <feGaussianBlur in="SourceGraphic" stdDeviation="2.5" result="blur"/>
-      <feMerge>
-        <feMergeNode in="blur"/>
-        <feMergeNode in="SourceGraphic"/>
-      </feMerge>
-    </filter>
-    <linearGradient id="flame-grad" x1="0%" y1="100%" x2="0%" y2="0%">
-      <stop offset="0%" stop-color="#ff9e64"/>
-      <stop offset="50%" stop-color="#f7768e"/>
-      <stop offset="100%" stop-color="#bb9af7"/>
-    </linearGradient>
-    <radialGradient id="energy-aura" cx="50%" cy="50%" r="50%">
-      <stop offset="0%" stop-color="#bb9af7" stop-opacity="0.35"/>
-      <stop offset="60%" stop-color="#f7768e" stop-opacity="0.08"/>
-      <stop offset="100%" stop-color="#1a1b27" stop-opacity="0.0"/>
-    </radialGradient>
-    <linearGradient id="divider-grad" x1="0%" y1="0%" x2="0%" y2="100%">
-      <stop offset="0%" stop-color="#70a5fd" stop-opacity="0.0"/>
-      <stop offset="50%" stop-color="#70a5fd" stop-opacity="0.35"/>
-      <stop offset="100%" stop-color="#70a5fd" stop-opacity="0.0"/>
-    </linearGradient>
-    <linearGradient id="sparkline-grad" x1="0%" y1="0%" x2="100%" y2="0%">
-      <stop offset="0%" stop-color="#70a5fd"/>
-      <stop offset="50%" stop-color="#bb9af7"/>
-      <stop offset="100%" stop-color="#f7768e"/>
-    </linearGradient>
-    <linearGradient id="sparkline-fill" x1="0%" y1="0%" x2="0%" y2="100%">
-      <stop offset="0%" stop-color="#bb9af7" stop-opacity="0.22"/>
-      <stop offset="100%" stop-color="#1a1b27" stop-opacity="0.0"/>
-    </linearGradient>
-  </defs>
-  <style>
-    @keyframes flamePulse {
-      0%, 100% { transform: scale(1.0); }
-      50% { transform: scale(1.08); }
-    }
-    @keyframes auraPulse {
-      0%, 100% { transform: scale(1.0); opacity: 0.8; }
-      50% { transform: scale(1.15); opacity: 1.0; }
-    }
-    @keyframes ringSpin {
-      from { stroke-dashoffset: 0; }
-      to { stroke-dashoffset: 48; }
-    }
-    @keyframes cardFadeIn {
-      from { opacity: 0; transform: translateY(4px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-    .stat-val { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; font-weight: 800; }
-    .stat-lbl { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; font-weight: 600; }
-    .stat-sub { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; font-weight: 400; }
-    .spark-lbl { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; font-weight: 700; }
-  </style>
-  <rect width="424" height="180" rx="4.5" fill="#1a1b27" stroke="#24283b" stroke-width="1"/>
-  <line x1="150.5" y1="22.0" x2="150.5" y2="130.0" stroke="url(#divider-grad)" stroke-width="1"/>
-  <line x1="273.5" y1="22.0" x2="273.5" y2="130.0" stroke="url(#divider-grad)" stroke-width="1"/>
-  <!-- Left Column: Total Contributions -->
-  <g transform="translate(93.3, 0.0)">
-    <text x="0" y="60" text-anchor="middle" class="stat-val" font-size="24" fill="#70a5fd">2051</text>
-    <text x="0" y="82" text-anchor="middle" class="stat-lbl" font-size="12" fill="#a9b1d6">Total Contributions</text>
-    <text x="0" y="103" text-anchor="middle" class="stat-sub" font-size="10.5" fill="#565f89">Oct 7, 2022 - Present</text>
-  </g>
-  <!-- Center Column: Glowing Energy Core -->
-  <g transform="translate(212.0, 33.0)">
-    <!-- Radial Aura -->
-    <circle cx="0" cy="0" r="30" fill="url(#energy-aura)" style="animation: auraPulse 3.5s ease-in-out infinite; transform-origin: 0px 0px;"/>
-    <!-- Orbit Ring -->
-    <circle cx="0" cy="0" r="21" fill="none" stroke="url(#flame-grad)" stroke-width="1.3" stroke-dasharray="5 3.5" opacity="0.65" style="animation: ringSpin 12s linear infinite;"/>
-    <!-- Vector Flame Core -->
-    <g style="animation: flamePulse 2.8s ease-in-out infinite; transform-origin: 0px 0px;">
-      <!-- Flame Silhouette -->
-      <path d="M 0 -12 C 1.2 -7.5 3.5 -4.5 6 -2.5 C 8 -1 9.5 1.5 9.5 4.5 C 9.5 9.5 5 13.5 0 13.5 C -5 13.5 -9.5 9.5 -9.5 4.5 C -9.5 1 -7 -2 -4.5 -4 C -4 -1 -2 1.5 -0.5 1.5 C -0.5 1.5 0.5 -1 0.5 -3.5 C 0.5 -6 -0.5 -8.5 0 -12 Z" fill="url(#flame-grad)" filter="url(#core-glow)"/>
-      <!-- Inner Flame Highlight -->
-      <path d="M 0 -3.5 C 1 -1.5 2.5 0.5 2.5 3 C 2.5 5 1.2 6.5 0 6.5 C -1.2 6.5 -2.5 5 -2.5 3 C -2.5 1 -1 -0.5 0 -3.5 Z" fill="#ffffff" opacity="0.9"/>
-    </g>
-  </g>
-
-  <!-- Current Streak Count -->
-  <text x="212.0" y="76.0" text-anchor="middle" class="stat-val" font-size="28" fill="url(#flame-grad)" filter="url(#subtle-glow)">664</text>
-
-  <!-- Streak Pill Badge -->
-  <g transform="translate(212.0, 86.0)">
-    <rect x="-60" y="0" width="120" height="17" rx="8.5" fill="#bb9af7" fill-opacity="0.16" stroke="url(#flame-grad)" stroke-width="1"/>
-    <text x="0" y="11.5" text-anchor="middle" class="stat-lbl" font-size="8.8" letter-spacing="0.8" fill="#ffffff">⚡ MYTHIC STREAK</text>
-  </g>
-
-  <!-- Range Subtitle -->
-  <text x="212.0" y="118.0" text-anchor="middle" class="stat-sub" font-size="10.5" fill="#787c99">Dec 8, 2024 - Oct 2</text>
-  <!-- Right Column: Longest Streak -->
-  <g transform="translate(330.7, 0.0)">
-    <text x="0" y="60" text-anchor="middle" class="stat-val" font-size="24" fill="#70a5fd">664</text>
-    <text x="0" y="82" text-anchor="middle" class="stat-lbl" font-size="12" fill="#a9b1d6">Longest Streak</text>
-    <text x="0" y="103" text-anchor="middle" class="stat-sub" font-size="10.5" fill="#565f89">Dec 8, 2024 - Oct 2</text>
-  </g>
-  <!-- 14-Day Activity Sparkline -->
-  <text x="28.0" y="136.0" class="spark-lbl" font-size="8.5" letter-spacing="0.8" fill="#565f89">14-DAY ACTIVITY MOMENTUM</text>
-  <text x="396.0" y="136.0" text-anchor="end" class="spark-lbl" font-size="8.5" letter-spacing="0.5" fill="#bb9af7">113 COMMITS</text>
-  <path d="M 28.00 147.33 C 39.32 147.33, 44.98 162.44, 56.31 162.44 C 67.63 162.44, 73.29 158.89, 84.62 158.89 C 95.94 158.89, 101.60 142.00, 112.92 142.00 C 124.25 142.00, 129.91 165.11, 141.23 165.11 C 152.55 165.11, 158.22 165.11, 169.54 165.11 C 180.86 165.11, 186.52 165.11, 197.85 165.11 C 209.17 165.11, 214.83 162.44, 226.15 162.44 C 237.48 162.44, 243.14 165.11, 254.46 165.11 C 265.78 165.11, 271.45 163.33, 282.77 163.33 C 294.09 163.33, 299.75 148.22, 311.08 148.22 C 322.40 148.22, 328.06 161.56, 339.38 161.56 C 350.71 161.56, 356.37 153.56, 367.69 153.56 C 379.02 153.56, 384.68 163.33, 396.00 163.33 L 396.00 170.00 L 28.00 170.00 Z" fill="url(#sparkline-fill)"/>
-  <path d="M 28.00 147.33 C 39.32 147.33, 44.98 162.44, 56.31 162.44 C 67.63 162.44, 73.29 158.89, 84.62 158.89 C 95.94 158.89, 101.60 142.00, 112.92 142.00 C 124.25 142.00, 129.91 165.11, 141.23 165.11 C 152.55 165.11, 158.22 165.11, 169.54 165.11 C 180.86 165.11, 186.52 165.11, 197.85 165.11 C 209.17 165.11, 214.83 162.44, 226.15 162.44 C 237.48 162.44, 243.14 165.11, 254.46 165.11 C 265.78 165.11, 271.45 163.33, 282.77 163.33 C 294.09 163.33, 299.75 148.22, 311.08 148.22 C 322.40 148.22, 328.06 161.56, 339.38 161.56 C 350.71 161.56, 356.37 153.56, 367.69 153.56 C 379.02 153.56, 384.68 163.33, 396.00 163.33" fill="none" stroke="url(#sparkline-grad)" stroke-width="2" stroke-linecap="round"/>
-  <circle cx="28.00" cy="147.33" r="1.8" fill="#70a5fd" opacity="0.6"/>
-  <circle cx="56.31" cy="162.44" r="1.8" fill="#70a5fd" opacity="0.6"/>
-  <circle cx="84.62" cy="158.89" r="1.8" fill="#70a5fd" opacity="0.6"/>
-  <circle cx="112.92" cy="142.00" r="1.8" fill="#70a5fd" opacity="0.6"/>
-  <circle cx="141.23" cy="165.11" r="1.8" fill="#70a5fd" opacity="0.6"/>
-  <circle cx="169.54" cy="165.11" r="1.8" fill="#70a5fd" opacity="0.6"/>
-  <circle cx="197.85" cy="165.11" r="1.8" fill="#70a5fd" opacity="0.6"/>
-  <circle cx="226.15" cy="162.44" r="1.8" fill="#70a5fd" opacity="0.6"/>
-  <circle cx="254.46" cy="165.11" r="1.8" fill="#70a5fd" opacity="0.6"/>
-  <circle cx="282.77" cy="163.33" r="1.8" fill="#70a5fd" opacity="0.6"/>
-  <circle cx="311.08" cy="148.22" r="1.8" fill="#70a5fd" opacity="0.6"/>
-  <circle cx="339.38" cy="161.56" r="1.8" fill="#70a5fd" opacity="0.6"/>
-  <circle cx="367.69" cy="153.56" r="1.8" fill="#70a5fd" opacity="0.6"/>
+<svg xmlns="http://www.w3.org/2000/svg" width="424" height="180" viewBox="0 0 424 180" role="img" aria-label="GitHub contribution streak">
+<defs><linearGradient id="bg" x2="1" y2="1"><stop stop-color="#1a1b27"/><stop offset="1" stop-color="#1a1b27"/></linearGradient><linearGradient id="sparkline-grad"><stop stop-color="#70a5fd"/><stop offset="1" stop-color="#bb9af7"/></linearGradient><linearGradient id="sparkline-fill" x2="0" y2="1"><stop stop-color="#bb9af7" stop-opacity=".16"/><stop offset="1" stop-color="#bb9af7" stop-opacity="0"/></linearGradient><radialGradient id="aura"><stop stop-color="#bb9af7" stop-opacity=".12"/><stop offset="1" stop-color="#bb9af7" stop-opacity="0"/></radialGradient><filter id="subtle-glow"><feGaussianBlur stdDeviation="1.2"/></filter></defs>
+<rect width="424" height="180" rx="4.5" fill="url(#bg)" stroke="#24283b"/>
+<g transform="translate(0.00 0.00) scale(1.0000)">
+<ellipse cx="64" cy="52" rx="76" ry="51" fill="url(#aura)"/>
+<style>@keyframes streak-flame { 50% { opacity:.55; } } @media(prefers-reduced-motion:reduce) { g { animation:none!important; } }</style>
+<g font-family="-apple-system,BlinkMacSystemFont,Segoe UI,Arial,sans-serif">
+<text x="18" y="22" fill="#7982a9" font-size="8" font-weight="600" letter-spacing="1.1">CURRENT STREAK</text>
+<text x="17" y="68" fill="#bb9af7" font-size="36" font-weight="750" letter-spacing="-2">673</text><text x="82.8" y="66" fill="#7982a9" font-size="11">days</text>
+<g transform="translate(108 37) scale(.85)" style="animation: streak-flame 2.8s ease-in-out infinite;transform-box:fill-box;transform-origin:center" fill="none" stroke="#bb9af7" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3q1 4 4 6.5t3 5.5a1 1 0 0 1-14 0 5 5 0 0 1 1-3 1 1 0 0 0 5 0c0-2-1.5-3-1.5-5q0-2 2.5-4"/></g>
+<rect x="18" y="79" width="115" height="17" rx="8.5" fill="#bb9af7" fill-opacity=".08" stroke="#bb9af7" stroke-opacity=".3"/>
+<circle cx="28" cy="87.5" r="2" fill="#bb9af7"/><text x="37" y="90.5" fill="#bb9af7" font-size="7.7" font-weight="650" letter-spacing=".65">MYTHIC STREAK</text>
+<path d="M149 18V96" stroke="#24283b"/>
+<text x="165" y="28" fill="#c0caf5" font-size="11">Total Contributions</text><text x="405" y="29" text-anchor="end" fill="#c0caf5" font-size="20" font-weight="700">2071</text>
+<text x="165" y="45" fill="#7982a9" font-size="9">Oct 7, 2022 – Present</text>
+<path d="M165 55H405" stroke="#24283b"/>
+<text x="165" y="76" fill="#c0caf5" font-size="11">Longest Streak</text><text x="405" y="77" text-anchor="end" fill="#c0caf5" font-size="20" font-weight="700">673</text>
+<text x="165" y="93" fill="#7982a9" font-size="9">Dec 8, 2024 – Oct 11</text>
+<path d="M18 105H406" stroke="#24283b"/><text x="18" y="119" fill="#7982a9" font-size="8" letter-spacing=".7">CURRENT</text><text x="405" y="119" text-anchor="end" fill="#7982a9" font-size="9">Dec 8, 2024 – Oct 11</text>  <!-- 14-Day Activity Sparkline -->
+  <text x="18.0" y="138.0" class="spark-lbl" font-size="7.5" letter-spacing="0.8" fill="#7982a9">14-DAY MOMENTUM</text>
+  <text x="406.0" y="138.0" text-anchor="end" class="spark-lbl" font-size="7.5" letter-spacing="0.5" fill="#bb9af7">65 COMMITS</text>
+  <path d="M 18.00 165.70 C 29.94 165.70, 35.91 147.00, 47.85 147.00 C 59.78 147.00, 65.75 163.50, 77.69 163.50 C 89.63 163.50, 95.60 153.60, 107.54 153.60 C 119.48 153.60, 125.45 162.40, 137.38 162.40 C 149.32 162.40, 155.29 167.90, 167.23 167.90 C 179.17 167.90, 185.14 167.90, 197.08 167.90 C 209.02 167.90, 214.98 166.80, 226.92 166.80 C 238.86 166.80, 244.83 167.90, 256.77 167.90 C 268.71 167.90, 274.68 167.90, 286.62 167.90 C 298.55 167.90, 304.52 167.90, 316.46 167.90 C 328.40 167.90, 334.37 167.90, 346.31 167.90 C 358.25 167.90, 364.22 167.90, 376.15 167.90 C 388.09 167.90, 394.06 160.20, 406.00 160.20 L 406.00 173.00 L 18.00 173.00 Z" fill="url(#sparkline-fill)"/>
+  <path d="M 18.00 165.70 C 29.94 165.70, 35.91 147.00, 47.85 147.00 C 59.78 147.00, 65.75 163.50, 77.69 163.50 C 89.63 163.50, 95.60 153.60, 107.54 153.60 C 119.48 153.60, 125.45 162.40, 137.38 162.40 C 149.32 162.40, 155.29 167.90, 167.23 167.90 C 179.17 167.90, 185.14 167.90, 197.08 167.90 C 209.02 167.90, 214.98 166.80, 226.92 166.80 C 238.86 166.80, 244.83 167.90, 256.77 167.90 C 268.71 167.90, 274.68 167.90, 286.62 167.90 C 298.55 167.90, 304.52 167.90, 316.46 167.90 C 328.40 167.90, 334.37 167.90, 346.31 167.90 C 358.25 167.90, 364.22 167.90, 376.15 167.90 C 388.09 167.90, 394.06 160.20, 406.00 160.20" fill="none" stroke="url(#sparkline-grad)" stroke-width="2" stroke-linecap="round"/>
+  <circle cx="18.00" cy="165.70" r="1.8" fill="#70a5fd" opacity="0.6"/>
+  <circle cx="47.85" cy="147.00" r="1.8" fill="#70a5fd" opacity="0.6"/>
+  <circle cx="77.69" cy="163.50" r="1.8" fill="#70a5fd" opacity="0.6"/>
+  <circle cx="107.54" cy="153.60" r="1.8" fill="#70a5fd" opacity="0.6"/>
+  <circle cx="137.38" cy="162.40" r="1.8" fill="#70a5fd" opacity="0.6"/>
+  <circle cx="167.23" cy="167.90" r="1.8" fill="#70a5fd" opacity="0.6"/>
+  <circle cx="197.08" cy="167.90" r="1.8" fill="#70a5fd" opacity="0.6"/>
+  <circle cx="226.92" cy="166.80" r="1.8" fill="#70a5fd" opacity="0.6"/>
+  <circle cx="256.77" cy="167.90" r="1.8" fill="#70a5fd" opacity="0.6"/>
+  <circle cx="286.62" cy="167.90" r="1.8" fill="#70a5fd" opacity="0.6"/>
+  <circle cx="316.46" cy="167.90" r="1.8" fill="#70a5fd" opacity="0.6"/>
+  <circle cx="346.31" cy="167.90" r="1.8" fill="#70a5fd" opacity="0.6"/>
+  <circle cx="376.15" cy="167.90" r="1.8" fill="#70a5fd" opacity="0.6"/>
   <!-- Today Active Dot -->
-  <circle cx="396.00" cy="163.33" r="3.2" fill="#bb9af7" filter="url(#subtle-glow)"/>
-  <circle cx="396.00" cy="163.33" r="1.5" fill="#ffffff"/>
-</svg>
+  <circle cx="406.00" cy="160.20" r="3.2" fill="#bb9af7" filter="url(#subtle-glow)"/>
+  <circle cx="406.00" cy="160.20" r="1.5" fill="#ffffff"/>
+</g></g></svg>
