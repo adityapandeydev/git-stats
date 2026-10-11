@@ -58,3 +58,9 @@ zig build test
 ```
 
 Parity checks compare native and browser SVG output byte-for-byte for all seven cards in all eight themes. API deployment tests use mocked requests and never write to GitHub. Browser checks cover drag handles, quick controls, exports, repeated modal opening, and responsive panels. Real authenticated GitHub data and a production write should be verified with your own token and disposable fork before deployment.
+
+### Card corners and streak layout
+
+Every card has a **Corner radius** control in Card settings. The default remains **4.5 px**, matching existing CLI workflows. Set `0` for square corners; custom values persist in your draft and export as `--border-radius=<value>`.
+
+The streak card uses a dedicated current-streak column, stacked contribution and longest-streak metrics, single-line date ranges, and an optional 14-day momentum chart. Empty accounts display clear activity labels. The Studio and CLI share this renderer.

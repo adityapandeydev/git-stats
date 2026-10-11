@@ -34,3 +34,10 @@ test('unsafe targets and empty workflows are rejected', () => {
   assert.throws(() => generateWorkflowYaml('octocat', [card('languages', 400, { hide: '${{ secrets.GH_TOKEN }}' })]))
   assert.match(getGitHubWebEditUrl('octocat', {}, false), /\/new\/main\?filename=/)
 })
+
+test('workflow exports per-card radius and preserves legacy defaults', () => {
+  const yaml = generateWorkflowYaml('octocat', [card('streak', 424, { borderRadius: 0 }), card('stats', 424, { borderRadius: 16 }), card('radar')])
+  assert.match(yaml, /--border-radius=0 /)
+  assert.match(yaml, /--border-radius=16 /)
+  assert.match(yaml, /--border-radius=4.5 /)
+})

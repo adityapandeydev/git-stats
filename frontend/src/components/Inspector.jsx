@@ -1,6 +1,6 @@
 import { ArrowUpRight, ChevronDown, SlidersHorizontal, Trash2 } from 'lucide-react'
 import { THEMES } from '../constants/themes'
-import { computeLanguagesHeight, getCardDef } from '../constants/cards'
+import { computeLanguagesHeight, getCardDef, cardRadius } from '../constants/cards'
 import { CARD_ICONS } from '../constants/icons'
 
 export default function Inspector({ card, themeId, onTheme, onUpdate, onRemove, target, onTarget, username }) {
@@ -14,6 +14,7 @@ export default function Inspector({ card, themeId, onTheme, onUpdate, onRemove, 
     <div className="panel-heading"><span>CARD SETTINGS</span><span className="small-label">{card ? '01 SELECTED' : 'NONE'}</span></div>
     {!card ? <p className="panel-caption">Select a card on the canvas to adjust its details.</p> : <div className="card-settings">
       <div className="selected-card-heading"><span className="selected-icon"><Icon size={19} /></span><div><h2>{def.name}</h2><p>{card.width} × {card.height} px</p></div></div>
+      <label className="field-label" htmlFor="card-radius">Corner radius <span>default 4.5 px</span></label><div className="input-unit"><input id="card-radius" type="number" min="0" max={Math.min(card.width, card.height) / 2} step="0.5" value={cardRadius(card)} onChange={e => { if (e.target.value === '') return; const n = Number(e.target.value); if (Number.isFinite(n)) onUpdate(card.id, 'borderRadius', Math.min(Math.min(card.width, card.height) / 2, Math.max(0, n))) }} /><span>px</span></div>
       <label className="field-label">Width</label>
       {def.isHeroCapable ? <div className="segmented width-switch"><button className={card.width < 700 ? 'active' : ''} onClick={() => onUpdate(card.id, 'width', 424)}>Standard <small>424</small></button><button className={card.width >= 700 ? 'active' : ''} onClick={() => onUpdate(card.id, 'width', 840)}>Hero <small>840</small></button></div> : <div className="read-only-value">{card.width} px <span>Native card width</span></div>}
       {card.id === 'languages' && <>

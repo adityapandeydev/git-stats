@@ -40,7 +40,7 @@ pub fn renderSVG(allocator: std.mem.Allocator, stats: *const models.UserStats, o
     if (options.card_width == 0) options.card_width = 400;
     if (options.langs_count < 6) options.langs_count = 6;
     if (options.langs_count > 16) options.langs_count = 16;
-    if (options.border_radius <= 0) {
+    if (!std.math.isFinite(options.border_radius) or options.border_radius < 0) {
         options.border_radius = options.theme.border_radius;
         if (options.border_radius <= 0) options.border_radius = 4.5;
     }

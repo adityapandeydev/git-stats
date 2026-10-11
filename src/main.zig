@@ -209,6 +209,7 @@ fn parseCliArgs(args: []const []const u8) CliConfig {
         }
     }
 
+    if (!std.math.isFinite(cfg.border_radius) or cfg.border_radius < 0) cfg.border_radius = 4.5;
     return cfg;
 }
 

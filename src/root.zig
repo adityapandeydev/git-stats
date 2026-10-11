@@ -122,7 +122,7 @@ test "streak: renderStreakSVG produces valid reimagined card with sparkline and 
     try std.testing.expect(std.mem.indexOf(u8, rendered, "2026") != null);
     try std.testing.expect(std.mem.indexOf(u8, rendered, "551") != null);
     try std.testing.expect(std.mem.indexOf(u8, rendered, "Longest Streak") != null);
-    try std.testing.expect(std.mem.indexOf(u8, rendered, "14-DAY ACTIVITY MOMENTUM") != null);
+    try std.testing.expect(std.mem.indexOf(u8, rendered, "14-DAY MOMENTUM") != null);
     try std.testing.expect(std.mem.indexOf(u8, rendered, "96 COMMITS") != null);
     try std.testing.expect(std.mem.indexOf(u8, rendered, "</svg>") != null);
 
@@ -136,7 +136,7 @@ test "streak: renderStreakSVG produces valid reimagined card with sparkline and 
     });
     defer allocator.free(rendered_no_spark);
 
-    try std.testing.expect(std.mem.indexOf(u8, rendered_no_spark, "14-DAY ACTIVITY MOMENTUM") == null);
+    try std.testing.expect(std.mem.indexOf(u8, rendered_no_spark, "14-DAY MOMENTUM") == null);
     try std.testing.expect(std.mem.indexOf(u8, rendered_no_spark, "96 COMMITS") == null);
     try std.testing.expect(std.mem.indexOf(u8, rendered_no_spark, "Total Contributions") != null);
     try std.testing.expect(std.mem.indexOf(u8, rendered_no_spark, "</svg>") != null);

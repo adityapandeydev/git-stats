@@ -67,257 +67,118 @@ pub fn getFlameTier(streak: u32) FlameTier {
     }
 }
 
-pub fn renderStreakSVG(
-    allocator: std.mem.Allocator,
-    stats: *const models.StreakStats,
-    opts: StreakRenderOptions,
-) ![]const u8 {
+pub fn renderStreakSVG(allocator: std.mem.Allocator, stats: *const models.StreakStats, opts: StreakRenderOptions) ![]const u8 {
     var stream = std.Io.Writer.Allocating.init(allocator);
     defer stream.deinit();
     const w = &stream.writer;
-
     const width = opts.card_width;
     const height = opts.card_height;
+    const w_f: f64 = @floatFromInt(width);
+    const h_f: f64 = @floatFromInt(height);
+    const content_height: f64 = if (opts.show_sparkline) 180 else 124;
+    // Scale the complete composition uniformly for compact/custom dimensions.
+    const scale = @min(w_f / 424.0, h_f / content_height);
     const tier = getFlameTier(stats.current_streak);
-
-    const w_f = @as(f64, @floatFromInt(width));
-    const h_f = @as(f64, @floatFromInt(height));
-
-    // Column positions
-    const col1_x = w_f * 0.22;
-    const col2_x = w_f * 0.50;
-    const col3_x = w_f * 0.78;
-
-    const div1_x = w_f * 0.355;
-    const div2_x = w_f * 0.645;
-
-    // SVG Header
+    const badge = tier.badge_label[(std.mem.indexOfScalar(u8, tier.badge_label, ' ') orelse 0) + 1 ..];
+    const digits = std.fmt.count("{d}", .{stats.current_streak});
+    const count_size: u32 = if (digits <= 2) 45 else if (digits == 3) 36 else if (digits == 4) 28 else if (digits <= 6) 18 else 12;
+    const days_x = 18.0 + @as(f64, @floatFromInt(digits * count_size)) * 0.60;
+    const metric_size: u32 = if (stats.total_contributions >= 1000000 or stats.longest_streak >= 1000000) 14 else 20;
+    const total_range = try dateRange(allocator, stats.first_contribution_date, stats.latest_contribution_date, stats.total_contributions == 0);
+    defer allocator.free(total_range);
+    const longest_range = try dateRange(allocator, stats.longest_streak_start, stats.longest_streak_end, stats.longest_streak == 0);
+    defer allocator.free(longest_range);
+    const current_range = if (stats.current_streak == 0) try allocator.dupe(u8, "No active streak") else try dateRange(allocator, stats.current_streak_start, stats.current_streak_end, false);
+    defer allocator.free(current_range);
     try w.print(
-        \\<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 {d} {d}" width="{d}" height="{d}">
-        \\  <defs>
-        \\    <filter id="core-glow" x="-50%" y="-50%" width="200%" height="200%">
-        \\      <feGaussianBlur in="SourceGraphic" stdDeviation="4" result="blur1"/>
-        \\      <feGaussianBlur in="SourceGraphic" stdDeviation="8" result="blur2"/>
-        \\      <feMerge>
-        \\        <feMergeNode in="blur2"/>
-        \\        <feMergeNode in="blur1"/>
-        \\        <feMergeNode in="SourceGraphic"/>
-        \\      </feMerge>
-        \\    </filter>
-        \\    <filter id="subtle-glow" x="-30%" y="-30%" width="160%" height="160%">
-        \\      <feGaussianBlur in="SourceGraphic" stdDeviation="2.5" result="blur"/>
-        \\      <feMerge>
-        \\        <feMergeNode in="blur"/>
-        \\        <feMergeNode in="SourceGraphic"/>
-        \\      </feMerge>
-        \\    </filter>
-        \\
-    , .{ width, height, width, height });
-
-    // Flame Tier Gradient
-    if (tier.tertiary_color) |tertiary| {
-        try w.print(
-            \\    <linearGradient id="flame-grad" x1="0%" y1="100%" x2="0%" y2="0%">
-            \\      <stop offset="0%" stop-color="{s}"/>
-            \\      <stop offset="50%" stop-color="{s}"/>
-            \\      <stop offset="100%" stop-color="{s}"/>
-            \\    </linearGradient>
-            \\
-        , .{ tertiary, tier.secondary_color, tier.primary_color });
-    } else {
-        try w.print(
-            \\    <linearGradient id="flame-grad" x1="0%" y1="100%" x2="0%" y2="0%">
-            \\      <stop offset="0%" stop-color="{s}"/>
-            \\      <stop offset="100%" stop-color="{s}"/>
-            \\    </linearGradient>
-            \\
-        , .{ tier.secondary_color, tier.primary_color });
-    }
-
-    // Energy Aura Gradient
-    try w.print(
-        \\    <radialGradient id="energy-aura" cx="50%" cy="50%" r="50%">
-        \\      <stop offset="0%" stop-color="{s}" stop-opacity="{s}"/>
-        \\      <stop offset="60%" stop-color="{s}" stop-opacity="0.08"/>
-        \\      <stop offset="100%" stop-color="{s}" stop-opacity="0.0"/>
-        \\    </radialGradient>
-        \\    <linearGradient id="divider-grad" x1="0%" y1="0%" x2="0%" y2="100%">
-        \\      <stop offset="0%" stop-color="{s}" stop-opacity="0.0"/>
-        \\      <stop offset="50%" stop-color="{s}" stop-opacity="0.35"/>
-        \\      <stop offset="100%" stop-color="{s}" stop-opacity="0.0"/>
-        \\    </linearGradient>
-        \\    <linearGradient id="sparkline-grad" x1="0%" y1="0%" x2="100%" y2="0%">
-        \\      <stop offset="0%" stop-color="#70a5fd"/>
-        \\      <stop offset="50%" stop-color="{s}"/>
-        \\      <stop offset="100%" stop-color="{s}"/>
-        \\    </linearGradient>
-        \\    <linearGradient id="sparkline-fill" x1="0%" y1="0%" x2="0%" y2="100%">
-        \\      <stop offset="0%" stop-color="{s}" stop-opacity="0.22"/>
-        \\      <stop offset="100%" stop-color="{s}" stop-opacity="0.0"/>
-        \\    </linearGradient>
-        \\  </defs>
-        \\
+        \\<svg xmlns="http://www.w3.org/2000/svg" width="{d}" height="{d}" viewBox="0 0 {d} {d}" role="img" aria-label="GitHub contribution streak">
+        \\<defs><linearGradient id="bg" x2="1" y2="1"><stop stop-color="{s}"/><stop offset="1" stop-color="{s}"/></linearGradient><linearGradient id="sparkline-grad"><stop stop-color="{s}"/><stop offset="1" stop-color="{s}"/></linearGradient><linearGradient id="sparkline-fill" x2="0" y2="1"><stop stop-color="{s}" stop-opacity=".16"/><stop offset="1" stop-color="{s}" stop-opacity="0"/></linearGradient><radialGradient id="aura"><stop stop-color="{s}" stop-opacity=".12"/><stop offset="1" stop-color="{s}" stop-opacity="0"/></radialGradient><filter id="subtle-glow"><feGaussianBlur stdDeviation="1.2"/></filter></defs>
+        \\<rect width="{d}" height="{d}" rx="{d:.1}" fill="url(#bg)" stroke="{s}"/>
+        \\<g transform="translate({d:.2} {d:.2}) scale({d:.4})">
+        \\<ellipse cx="64" cy="52" rx="76" ry="51" fill="url(#aura)"/>
+        \\<style>@keyframes streak-flame {{ 50% {{ opacity:.55; }} }} @media(prefers-reduced-motion:reduce) {{ g {{ animation:none!important; }} }}</style>
+        \\<g font-family="-apple-system,BlinkMacSystemFont,Segoe UI,Arial,sans-serif">
+        \\<text x="18" y="22" fill="{s}" font-size="8" font-weight="600" letter-spacing="1.1">CURRENT STREAK</text>
+        \\<text x="17" y="68" fill="{s}" font-size="{d}" font-weight="750" letter-spacing="-2">{d}</text>
     , .{
-        tier.primary_color,
-        tier.aura_opacity,
-        tier.secondary_color,
+        width,
+        height,
+        width,
+        height,
+        opts.theme.bg_color,
         opts.theme.bg_color,
         opts.theme.title_color,
-        opts.theme.title_color,
-        opts.theme.title_color,
         tier.primary_color,
-        tier.secondary_color,
         tier.primary_color,
-        opts.theme.bg_color,
-    });
-
-    // Stylesheet & Keyframes
-    try w.print(
-        \\  <style>
-        \\    @keyframes flamePulse {{
-        \\      0%, 100% {{ transform: scale(1.0); }}
-        \\      50% {{ transform: scale(1.08); }}
-        \\    }}
-        \\    @keyframes auraPulse {{
-        \\      0%, 100% {{ transform: scale(1.0); opacity: 0.8; }}
-        \\      50% {{ transform: scale(1.15); opacity: 1.0; }}
-        \\    }}
-        \\    @keyframes ringSpin {{
-        \\      from {{ stroke-dashoffset: 0; }}
-        \\      to {{ stroke-dashoffset: 48; }}
-        \\    }}
-        \\    @keyframes cardFadeIn {{
-        \\      from {{ opacity: 0; transform: translateY(4px); }}
-        \\      to {{ opacity: 1; transform: translateY(0); }}
-        \\    }}
-        \\    .stat-val {{ font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; font-weight: 800; }}
-        \\    .stat-lbl {{ font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; font-weight: 600; }}
-        \\    .stat-sub {{ font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; font-weight: 400; }}
-        \\    .spark-lbl {{ font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; font-weight: 700; }}
-        \\  </style>
-        \\
-    , .{});
-
-    // Card Background
-    const stroke_attr = if (opts.hide_border)
-        "stroke=\"none\""
-    else
-        "stroke=\"#24283b\" stroke-width=\"1\"";
-
-    try w.print(
-        \\  <rect width="{d}" height="{d}" rx="{d:.1}" fill="{s}" {s}/>
-        \\
-    , .{ width, height, opts.border_radius, opts.theme.bg_color, stroke_attr });
-
-    // Vertical alignment shift when sparkline is hidden to keep card perfectly balanced
-    const y_shift: f64 = if (!opts.show_sparkline) 12.0 else 0.0;
-
-    // Glass Divider Lines
-    const div_top = 22.0 + y_shift;
-    const div_bot = if (!opts.show_sparkline) @min(h_f - 22.0, 142.0) else @min(h_f - 48.0, 130.0);
-    try w.print(
-        \\  <line x1="{d:.1}" y1="{d:.1}" x2="{d:.1}" y2="{d:.1}" stroke="url(#divider-grad)" stroke-width="1"/>
-        \\  <line x1="{d:.1}" y1="{d:.1}" x2="{d:.1}" y2="{d:.1}" stroke="url(#divider-grad)" stroke-width="1"/>
-        \\
-    , .{ div1_x, div_top, div1_x, div_bot, div2_x, div_top, div2_x, div_bot });
-
-    // --- LEFT COLUMN: Total Contributions ---
-    try w.print(
-        \\  <!-- Left Column: Total Contributions -->
-        \\  <g transform="translate({d:.1}, {d:.1})">
-        \\    <text x="0" y="60" text-anchor="middle" class="stat-val" font-size="24" fill="{s}">{d}</text>
-        \\    <text x="0" y="82" text-anchor="middle" class="stat-lbl" font-size="12" fill="#a9b1d6">Total Contributions</text>
-        \\    <text x="0" y="101" text-anchor="middle" class="stat-sub" font-size="9.5" fill="#787c99">{s}<tspan x="0" dy="12">{s}</tspan></text>
-        \\  </g>
-        \\
-    , .{
-        col1_x,
-        y_shift,
-        opts.theme.title_color,
-        stats.total_contributions,
-        stats.first_contribution_date,
-        stats.latest_contribution_date,
-    });
-
-    // --- CENTER COLUMN: Energy Core & Current Streak ---
-    const flame_cy = 28.0 + y_shift;
-    const anim_flame = if (opts.animate) "style=\"animation: flamePulse 2.8s ease-in-out infinite; transform-origin: 0px 0px;\"" else "";
-    const anim_aura = if (opts.animate) "style=\"animation: auraPulse 3.5s ease-in-out infinite; transform-origin: 0px 0px;\"" else "";
-    const anim_ring = if (opts.animate) "style=\"animation: ringSpin 12s linear infinite;\"" else "";
-
-    try w.print(
-        \\  <!-- Center Column: Glowing Energy Core -->
-        \\  <g transform="translate({d:.1}, {d:.1})">
-        \\    <!-- Radial Aura -->
-        \\    <circle cx="0" cy="0" r="30" fill="url(#energy-aura)" {s}/>
-        \\    <!-- Orbit Ring -->
-        \\    <circle cx="0" cy="0" r="21" fill="none" stroke="url(#flame-grad)" stroke-width="1.3" stroke-dasharray="5 3.5" opacity="0.65" {s}/>
-        \\    <!-- Vector Flame Core -->
-        \\    <g {s}>
-        \\      <!-- Flame Silhouette -->
-        \\      <path d="M 0 -12 C 1.2 -7.5 3.5 -4.5 6 -2.5 C 8 -1 9.5 1.5 9.5 4.5 C 9.5 9.5 5 13.5 0 13.5 C -5 13.5 -9.5 9.5 -9.5 4.5 C -9.5 1 -7 -2 -4.5 -4 C -4 -1 -2 1.5 -0.5 1.5 C -0.5 1.5 0.5 -1 0.5 -3.5 C 0.5 -6 -0.5 -8.5 0 -12 Z" fill="url(#flame-grad)" filter="url(#core-glow)"/>
-        \\      <!-- Inner Flame Highlight -->
-        \\      <path d="M 0 -3.5 C 1 -1.5 2.5 0.5 2.5 3 C 2.5 5 1.2 6.5 0 6.5 C -1.2 6.5 -2.5 5 -2.5 3 C -2.5 1 -1 -0.5 0 -3.5 Z" fill="#ffffff" opacity="0.9"/>
-        \\    </g>
-        \\  </g>
-        \\
-        \\  <!-- Current Streak Count -->
-        \\  <text x="{d:.1}" y="{d:.1}" text-anchor="middle" class="stat-val" font-size="28" fill="url(#flame-grad)" filter="url(#subtle-glow)">{d}</text>
-        \\
-        \\  <!-- Streak Pill Badge -->
-        \\  <g transform="translate({d:.1}, {d:.1})">
-        \\    <rect x="-60" y="0" width="120" height="17" rx="8.5" fill="{s}" fill-opacity="0.16" stroke="url(#flame-grad)" stroke-width="1"/>
-        \\    <text x="0" y="11.5" text-anchor="middle" class="stat-lbl" font-size="8.8" letter-spacing="0.8" fill="#ffffff">{s}</text>
-        \\  </g>
-        \\
-        \\  <!-- Range Subtitle -->
-        \\  <text x="{d:.1}" y="{d:.1}" text-anchor="middle" class="stat-sub" font-size="9.5" fill="#787c99">{s}<tspan x="{d:.1}" dy="12">{s}</tspan></text>
-        \\
-    , .{
-        col2_x,
-        flame_cy,
-        anim_aura,
-        anim_ring,
-        anim_flame,
-        col2_x,
-        78.0 + y_shift,
+        tier.primary_color,
+        tier.primary_color,
+        tier.primary_color,
+        width,
+        height,
+        opts.border_radius,
+        if (opts.hide_border) "none" else opts.theme.border_color,
+        (w_f - 424.0 * scale) / 2.0,
+        (h_f - content_height * scale) / 2.0,
+        scale,
+        opts.theme.muted_color,
+        tier.primary_color,
+        count_size,
         stats.current_streak,
-        col2_x,
-        90.0 + y_shift,
-        tier.primary_color,
-        tier.badge_label,
-        col2_x,
-        118.0 + y_shift,
-        if (stats.current_streak == 0) "No active streak" else stats.current_streak_start,
-        col2_x,
-        if (stats.current_streak == 0) "" else stats.current_streak_end,
     });
-
-    // --- RIGHT COLUMN: Longest Streak ---
     try w.print(
-        \\  <!-- Right Column: Longest Streak -->
-        \\  <g transform="translate({d:.1}, {d:.1})">
-        \\    <text x="0" y="60" text-anchor="middle" class="stat-val" font-size="24" fill="{s}">{d}</text>
-        \\    <text x="0" y="82" text-anchor="middle" class="stat-lbl" font-size="12" fill="#a9b1d6">Longest Streak</text>
-        \\    <text x="0" y="101" text-anchor="middle" class="stat-sub" font-size="9.5" fill="#787c99">{s}<tspan x="0" dy="12">{s}</tspan></text>
-        \\  </g>
-        \\
+        \\<text x="{d:.1}" y="66" fill="{s}" font-size="11">{s}</text>
+        \\<g transform="translate(108 37) scale(.85)" {s} fill="none" stroke="{s}" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3q1 4 4 6.5t3 5.5a1 1 0 0 1-14 0 5 5 0 0 1 1-3 1 1 0 0 0 5 0c0-2-1.5-3-1.5-5q0-2 2.5-4"/></g>
+        \\<rect x="18" y="79" width="115" height="17" rx="8.5" fill="{s}" fill-opacity=".08" stroke="{s}" stroke-opacity=".3"/>
+        \\<circle cx="28" cy="87.5" r="2" fill="{s}"/><text x="37" y="90.5" fill="{s}" font-size="7.7" font-weight="650" letter-spacing=".65">{s}</text>
+        \\<path d="M149 18V96" stroke="{s}"/>
+        \\<text x="165" y="28" fill="{s}" font-size="11">Total Contributions</text><text x="405" y="29" text-anchor="end" fill="{s}" font-size="{d}" font-weight="700">{d}</text>
+        \\<text x="165" y="45" fill="{s}" font-size="9">{s}</text>
+        \\<path d="M165 55H405" stroke="{s}"/>
+        \\<text x="165" y="76" fill="{s}" font-size="11">Longest Streak</text><text x="405" y="77" text-anchor="end" fill="{s}" font-size="{d}" font-weight="700">{d}</text>
+        \\<text x="165" y="93" fill="{s}" font-size="9">{s}</text>
+        \\<path d="M18 105H406" stroke="{s}"/>
     , .{
-        col3_x,
-        y_shift,
-        opts.theme.title_color,
+        days_x,
+        opts.theme.muted_color,
+        if (stats.current_streak == 1) "day" else "days",
+        if (opts.animate) "style=\"animation: streak-flame 2.8s ease-in-out infinite;transform-box:fill-box;transform-origin:center\"" else "",
+        tier.primary_color,
+        tier.primary_color,
+        tier.primary_color,
+        tier.primary_color,
+        tier.primary_color,
+        badge,
+        opts.theme.border_color,
+        opts.theme.text_color,
+        opts.theme.text_color,
+        metric_size,
+        stats.total_contributions,
+        opts.theme.muted_color,
+        total_range,
+        opts.theme.border_color,
+        opts.theme.text_color,
+        opts.theme.text_color,
+        metric_size,
         stats.longest_streak,
-        stats.longest_streak_start,
-        stats.longest_streak_end,
+        opts.theme.muted_color,
+        longest_range,
+        opts.theme.border_color,
+    });
+    try w.print(
+        \\<text x="18" y="119" fill="{s}" font-size="8" letter-spacing=".7">CURRENT</text><text x="405" y="119" text-anchor="end" fill="{s}" font-size="9">{s}</text>
+    , .{
+        opts.theme.muted_color,
+        opts.theme.muted_color,
+        current_range,
     });
 
-    // --- 14-DAY ACTIVITY MOMENTUM SPARKLINE ---
+    // --- 14-DAY MOMENTUM SPARKLINE ---
     if (opts.show_sparkline) {
-        const spark_x_start = 28.0;
-        const spark_x_end = w_f - 28.0;
+        const spark_x_start = 18.0;
+        const spark_x_end = 406.0;
         const spark_width = spark_x_end - spark_x_start;
-        const spark_base_y = h_f - 14.0;
-        const spark_max_h = 24.0;
+        const spark_base_y = 169.0;
+        const spark_max_h = 22.0;
 
         const max_c = @max(stats.max_14_day_count, 1);
 
@@ -335,14 +196,15 @@ pub fn renderStreakSVG(
         // Header label above sparkline
         try w.print(
             \\  <!-- 14-Day Activity Sparkline -->
-            \\  <text x="{d:.1}" y="{d:.1}" class="spark-lbl" font-size="8.5" letter-spacing="0.8" fill="#565f89">14-DAY ACTIVITY MOMENTUM</text>
-            \\  <text x="{d:.1}" y="{d:.1}" text-anchor="end" class="spark-lbl" font-size="8.5" letter-spacing="0.5" fill="{s}">{d} COMMITS</text>
+            \\  <text x="{d:.1}" y="{d:.1}" class="spark-lbl" font-size="7.5" letter-spacing="0.8" fill="{s}">14-DAY MOMENTUM</text>
+            \\  <text x="{d:.1}" y="{d:.1}" text-anchor="end" class="spark-lbl" font-size="7.5" letter-spacing="0.5" fill="{s}">{d} COMMITS</text>
             \\
         , .{
             spark_x_start,
-            spark_base_y - spark_max_h - 6.0,
+            spark_base_y - spark_max_h - 9.0,
+            opts.theme.muted_color,
             spark_x_end,
-            spark_base_y - spark_max_h - 6.0,
+            spark_base_y - spark_max_h - 9.0,
             tier.primary_color,
             stats.total_14_day_count,
         });
@@ -398,7 +260,23 @@ pub fn renderStreakSVG(
         , .{ pt_x[13], pt_y[13], tier.primary_color, pt_x[13], pt_y[13] });
     }
 
-    try w.print("</svg>\n", .{});
+    try w.writeAll("</g></g></svg>\n");
+    return stream.toOwnedSlice();
+}
 
-    return try stream.toOwnedSlice();
+// API dates are plain text. Escape them before writing into XML; empty accounts
+// must not display synthetic ranges such as "None – None".
+fn dateRange(a: std.mem.Allocator, start: []const u8, end: []const u8, empty: bool) ![]u8 {
+    if (empty) return a.dupe(u8, "No activity yet");
+    var out = std.Io.Writer.Allocating.init(a);
+    defer out.deinit();
+    for ([_][]const u8{ start, " – ", end }) |part| {
+        for (part) |c| switch (c) {
+            '&' => try out.writer.writeAll("&amp;"),
+            '<' => try out.writer.writeAll("&lt;"),
+            '>' => try out.writer.writeAll("&gt;"),
+            else => try out.writer.writeByte(c),
+        };
+    }
+    return out.toOwnedSlice();
 }

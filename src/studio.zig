@@ -21,6 +21,7 @@ pub const Request = struct {
     username: []const u8 = "demo",
     width: u32 = 424,
     height: u32 = 180,
+    border_radius: f64 = 4.5,
     count: usize = 12,
     sparkline: bool = true,
     timeframe: []const u8 = "all-time",
@@ -56,22 +57,23 @@ pub fn render(a: std.mem.Allocator, r: Request) ![]const u8 {
     const theme = themes.getTheme(r.theme);
     const width = std.math.clamp(r.width, 300, 1200);
     const height = std.math.clamp(r.height, 124, 1500);
+    const radius = if (std.math.isFinite(r.border_radius)) @max(0, r.border_radius) else 4.5;
     if (std.mem.eql(u8, r.card, "languages")) {
         const data = models.UserStats{ .username = r.username, .total_bytes = 0, .languages = r.languages };
-        return @import("renderer/svg.zig").renderSVG(a, &data, .{ .theme = theme, .card_width = width, .card_height = height, .langs_count = r.count, .columns = 2, .animate = false });
+        return @import("renderer/svg.zig").renderSVG(a, &data, .{ .theme = theme, .card_width = width, .card_height = height, .border_radius = radius, .langs_count = r.count, .columns = 2, .animate = false });
     }
     if (std.mem.eql(u8, r.card, "stats")) {
         const m = r.metrics;
         const data = models.OverallStats{ .username = r.username, .name = r.username, .timeframe = r.timeframe, .total_commits = m.commits, .total_prs = m.total_prs, .merged_prs = m.merged_prs, .total_issues = 0, .closed_issues = m.closed_issues, .total_stars = m.stars, .contributed_repos = m.contributed_repos, .rating = models.calculateDeveloperRating(m.commits, m.total_prs, m.merged_prs, m.closed_issues, m.stars, m.contributed_repos) };
-        return @import("renderer/stats.zig").renderStatsSVG(a, &data, .{ .theme = theme, .card_width = width, .card_height = height, .animate = false });
+        return @import("renderer/stats.zig").renderStatsSVG(a, &data, .{ .theme = theme, .card_width = width, .card_height = height, .border_radius = radius, .animate = false });
     }
     if (std.mem.eql(u8, r.card, "streak")) {
         const data = r.streak orelse return error.MissingData;
-        return @import("renderer/streak.zig").renderStreakSVG(a, &data, .{ .theme = theme, .card_width = width, .card_height = height, .show_sparkline = r.sparkline, .animate = false });
+        return @import("renderer/streak.zig").renderStreakSVG(a, &data, .{ .theme = theme, .card_width = width, .card_height = height, .border_radius = radius, .show_sparkline = r.sparkline, .animate = false });
     }
     if (std.mem.eql(u8, r.card, "radar")) {
         const data = models.calculateDeveloperDNA(r.username, r.languages);
-        return @import("renderer/radar.zig").renderRadarSVG(a, &data, .{ .theme = theme, .card_width = width, .card_height = height, .animate = false });
+        return @import("renderer/radar.zig").renderRadarSVG(a, &data, .{ .theme = theme, .card_width = width, .card_height = height, .border_radius = radius, .animate = false });
     }
     if (std.mem.eql(u8, r.card, "rhythm")) {
         var data = r.rhythm orelse return error.MissingData;
@@ -79,12 +81,12 @@ pub fn render(a: std.mem.Allocator, r: Request) ![]const u8 {
         data.persona_title = if (data.total_commits == 0) "No commit activity" else persona.title;
         data.persona_icon = persona.icon;
         data.persona_color = persona.color;
-        return @import("renderer/rhythm.zig").renderRhythmSVG(a, &data, .{ .theme = theme, .card_width = width, .card_height = height, .animate = false });
+        return @import("renderer/rhythm.zig").renderRhythmSVG(a, &data, .{ .theme = theme, .card_width = width, .card_height = height, .border_radius = radius, .animate = false });
     }
     if (std.mem.eql(u8, r.card, "velocity")) {
         var data = r.velocity orelse return error.MissingData;
         data.tier = models.calculateVelocityTier(data.velocity_score);
-        return @import("renderer/velocity.zig").renderVelocitySVG(a, &data, .{ .theme = theme, .card_width = width, .card_height = height, .animate = false });
+        return @import("renderer/velocity.zig").renderVelocitySVG(a, &data, .{ .theme = theme, .card_width = width, .card_height = height, .border_radius = radius, .animate = false });
     }
     if (std.mem.eql(u8, r.card, "milestones")) {
         const s = r.streak orelse return error.MissingData;
@@ -101,7 +103,7 @@ pub fn render(a: std.mem.Allocator, r: Request) ![]const u8 {
         for (items) |item| score += item.tier.points();
         const master = models.calculateMasterMilestoneTier(score);
         const data = models.MilestonesOverview{ .username = r.username, .master_title = master.title, .master_icon = master.icon, .master_color = master.color, .master_score = score, .unlocked_count = 6, .total_count = 6, .items = items };
-        return @import("renderer/milestones.zig").renderMilestonesSVG(a, &data, .{ .theme = theme, .card_width = width, .card_height = height, .animate = false });
+        return @import("renderer/milestones.zig").renderMilestonesSVG(a, &data, .{ .theme = theme, .card_width = width, .card_height = height, .border_radius = radius, .animate = false });
     }
     return error.UnknownCard;
 }

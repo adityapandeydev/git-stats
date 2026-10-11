@@ -43,9 +43,23 @@ test('sparkline and theme settings reach the native renderer', () => {
   assert.doesNotMatch(render('streak', { sparkline: false }), /14-DAY MOMENTUM/)
 })
 
-test('streak dates have separate lines and an inactive streak has a clear label', () => {
+test('streak keeps complete ranges on one line and handles inactive accounts', () => {
   const svg = render('streak')
-  assert.match(svg, /<tspan x="0" dy="12">/)
-  assert.doesNotMatch(svg, /Oct 16, 2025 - Oct 11, 2026/)
+  assert.doesNotMatch(svg, /<tspan/)
+  assert.match(svg, /Oct 16, 2025 – Oct 11, 2026/)
   assert.match(render('streak', { streak: { ...DEMO_DATA.streak, current_streak: 0 } }), /No active streak/)
+})
+test('every card respects the default, custom, and square corner radius', () => {
+  for (const card of ['languages', 'streak', 'stats', 'rhythm', 'radar', 'velocity', 'milestones']) {
+    for (const radius of [4.5, 0, 16]) {
+      const svg = render(card, { border_radius: radius })
+      assert.match(svg, new RegExp(`<rect[^>]*rx="${radius.toFixed(1)}"`), `${card}: ${radius}`)
+    }
+  }
+})
+test('large streak counts and compact dimensions remain finite', () => {
+  const streak = { ...DEMO_DATA.streak, current_streak: 4294967295, longest_streak: 4294967295 }
+  const svg = render('streak', { streak, width: 300, height: 124 })
+  assert.doesNotMatch(svg, /NaN|Infinity/)
+  assert.match(svg, /4294967295/)
 })

@@ -7,7 +7,7 @@ import Inspector from './components/Inspector'
 import ExportDeck from './components/ExportDeck'
 import DeployModal from './components/DeployModal'
 import Dialog from './components/Dialog'
-import { DEFAULT_ACTIVE_CARDS, createCard, computeLanguagesHeight, getCardDef } from './constants/cards'
+import { DEFAULT_ACTIVE_CARDS, createCard, computeLanguagesHeight, getCardDef, cardRadius } from './constants/cards'
 import { THEMES } from './constants/themes'
 import { generateProfileHtml, generateWorkflowYaml } from './services/compiler'
 import { fetchUserData } from './services/githubApi'
@@ -18,7 +18,7 @@ const defaults = { version: 1, username: 'octocat', themeId: 'tokyonight', activ
 function restoreCard(card) {
   const def = getCardDef(card.id)
   const count = Math.min(16, Math.max(6, Math.round(Number(card.langsCount) || 12)))
-  return { ...createCard(card.id),
+  return { ...createCard(card.id), borderRadius: cardRadius(card),
     width: def.isHeroCapable ? card.width >= 700 ? 840 : 424 : def.defaultWidth,
     height: Math.max(card.id === 'languages' ? computeLanguagesHeight(count) : 180, card.height),
     langsCount: count, hide: typeof card.hide === 'string' ? card.hide : '', excludeRepos: typeof card.excludeRepos === 'string' ? card.excludeRepos : '',

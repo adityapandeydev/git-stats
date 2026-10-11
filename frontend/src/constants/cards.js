@@ -108,3 +108,8 @@ export function createCard(id) {
   const def = getCardDef(id)
   return { id, width: def.defaultWidth, height: def.defaultHeight, ...(def.supportsCount ? { langsCount: 12, hide: '', excludeRepos: '' } : {}), ...(def.supportsSparkline ? { sparkline: true } : {}), ...(def.supportsTimeframe ? { timeframe: 'all-time' } : {}), ...(id === 'rhythm' ? { timezone: 5.5 } : {}) }
 }
+
+// Shared default with the native CLI. Zero is a valid square-corner choice.
+export function cardRadius(card) {
+  return typeof card.borderRadius === 'number' && Number.isFinite(card.borderRadius) && card.borderRadius >= 0 ? card.borderRadius : 4.5
+}

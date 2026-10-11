@@ -1,4 +1,4 @@
-import { getCardDef } from '../constants/cards.js'
+import { getCardDef, cardRadius } from '../constants/cards.js'
 import { THEMES } from '../constants/themes.js'
 
 export function validateTarget(username, target = {}) {
@@ -59,7 +59,7 @@ export function generateWorkflowYaml(username, cards, theme = 'tokyonight', hide
   const commands = cards.map(card => {
     const def = getCardDef(card.id)
     if (!def || !Number.isInteger(card.width) || !Number.isInteger(card.height) || card.width < 300 || card.width > 1200 || card.height < 124 || card.height > 1500) throw new Error('Invalid card dimensions.')
-    const args = [def.flag, `--username=${quote(destination.username)}`, `--theme=${quote(theme)}`, `--card-width=${card.width}`, `--card-height=${card.height}`, '--border-radius=4.5', '--animate=false', '--svg-icons', '--strict-data']
+    const args = [def.flag, `--username=${quote(destination.username)}`, `--theme=${quote(theme)}`, `--card-width=${card.width}`, `--card-height=${card.height}`, `--border-radius=${cardRadius(card)}`, '--animate=false', '--svg-icons', '--strict-data']
     if (card.id === 'languages') {
       for (const value of [card.hide, hideLangs, card.excludeRepos]) if (value && (/[\r\n]/.test(value) || value.includes('${{'))) throw new Error('Language and repository filters must be a single comma-separated line.')
       args.push(`--langs-count=${Math.min(16, Math.max(6, card.langsCount || 12))}`, '--layout=standard', '--columns=2')
