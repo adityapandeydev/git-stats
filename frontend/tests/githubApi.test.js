@@ -71,5 +71,10 @@ test('sync creates missing files and refuses read-only destinations before writi
 
 test('language aggregation rejects invalid colors, negative bytes, and missing names', () => {
   const result = aggregateLanguages([{ languages: { edges: [{ size: 20, node: { name: 'Zig', color: 'url(evil)' } }, { size: -1, node: { name: 'Rust' } }, { size: 5, node: {} }] } }])
-  assert.deepEqual(result, [{ name: 'Zig', size: 20, percentage: 0, color: '#7aa2f7' }])
+  assert.deepEqual(result, [{ name: 'Zig', size: 20, percentage: 0, color: '#ec915c' }])
+})
+
+test('public language colors come from GitHub Linguist, including languages absent from the native aliases', () => {
+  const result = aggregateLanguages([{ languages: { edges: ['Jupyter Notebook', 'Haskell', 'Shell', 'QML', 'Unknown'].map(name => ({ size: 1, node: { name } })) } }])
+  assert.deepEqual(result.map(l => l.color), ['#DA5B0B', '#5e5086', '#89e051', '#44a51c', '#586069'])
 })

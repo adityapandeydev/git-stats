@@ -1,9 +1,10 @@
 import { validateTarget } from './compiler.js'
 import { calculateStreak, calculateRhythm, calculateVelocity } from './analytics.js'
+import { LANGUAGE_COLORS, DEFAULT_LANGUAGE_COLOR } from '../constants/languageColors.js'
 
 const api = 'https://api.github.com'
 const path = '.github/workflows/generate-stats.yml'
-const safeColor = value => /^#[\da-f]{6}$/i.test(value || '') ? value : '#7aa2f7'
+const safeColor = (value, name) => /^#[\da-f]{6}$/i.test(value || '') ? value : LANGUAGE_COLORS[name.toLowerCase()] || DEFAULT_LANGUAGE_COLOR
 
 async function request(url, { token = '', signal, ...options } = {}) {
   const response = await fetch(url, { ...options, signal, headers: { Accept: 'application/vnd.github+json', 'X-GitHub-Api-Version': '2022-11-28', ...(token ? { Authorization: `Bearer ${token}` } : {}), ...options.headers } })
@@ -29,7 +30,7 @@ export function aggregateLanguages(repositories) {
   for (const repo of repositories) {
     for (const { size, node } of repo.languages?.edges || []) {
       if (!node?.name || !Number.isFinite(size) || size < 0) continue
-      const current = map.get(node.name) || { name: node.name, color: safeColor(node.color), size: 0, percentage: 0 }
+      const current = map.get(node.name) || { name: node.name, color: safeColor(node.color, node.name), size: 0, percentage: 0 }
       current.size += size; map.set(node.name, current)
     }
   }
@@ -65,7 +66,7 @@ async function fetchFreshUserData(username, token, signal) {
     for (let i = 0; i < sampled.length; i += 4) {
       const batch = await Promise.all(sampled.slice(i, i + 4).map(async repo => {
         const data = await request(`${api}/repos/${encoded}/${encodeURIComponent(repo.name)}/languages`, { signal })
-        return { name: repo.name, languages: { edges: Object.entries(data).map(([name, size]) => ({ size, node: { name, color: languageColors[name] } })) } }
+        return { name: repo.name, languages: { edges: Object.entries(data).map(([name, size]) => ({ size, node: { name, color: LANGUAGE_COLORS[name.toLowerCase()] } })) } }
       }))
       languages.push(...batch)
     }
@@ -112,7 +113,6 @@ async function fetchFreshUserData(username, token, signal) {
     notes: ['Matches native query limits: languages up to 100 repositories; rhythm up to 20 repositories × 100 commits; PR turnaround and churn from the latest 30 PRs. Results depend on token visibility.', 'Stats “this year” follows the native engine’s default contribution collection (the last 12 months). Tier percentiles are engine labels, not measured global rankings.'] }
 }
 
-const languageColors = { Zig: '#ec915c', Rust: '#dea584', Go: '#00ADD8', JavaScript: '#f1e05a', TypeScript: '#3178c6', Python: '#3572a5', HTML: '#e34c26', CSS: '#563d7c', Shell: '#89e051', C: '#555555', 'C++': '#f34b7d', Java: '#b07219', Ruby: '#701516', Swift: '#F05138', Kotlin: '#A97BFF' }
 
 export async function inspectRepository(username, token, target = {}, signal) {
   const destination = validateTarget(username, target)

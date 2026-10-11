@@ -9,11 +9,14 @@ Install Zig **0.16.0** and Node **22.12+** (or Node 24). From PowerShell:
 ```powershell
 cd frontend
 npm ci
-npm run engine
 npm run dev
 ```
 
-`npm run build` rebuilds the WebAssembly engine before Vite produces `dist/`. Run `npm run engine` after changing a Zig renderer during development. The engine has no operating system, network, or WASI imports; GitHub data fetching stays in browser JavaScript. SVGs are isolated in image elements.
+`npm run dev` uses the checked-in `public/engine.wasm`; Zig compilation is unnecessary for ordinary React/CSS edits. Run `npm run engine` after changing a Zig renderer during development. `npm run build` rebuilds the WebAssembly engine before Vite produces `dist/`. The engine has no operating system, network, or WASI imports; GitHub data fetching stays in browser JavaScript. SVGs are isolated in image elements.
+
+The flow is: GitHub API → JavaScript data preparation → native Zig renderer running as WebAssembly in the browser → SVG preview. Exporting creates CLI commands for GitHub Actions, which compiles a separate native executable to generate the published SVG files. Browsers and visitors to the deployed studio do not need Zig installed.
+
+**Connect GitHub** in the top bar opens the read-token form. Authentication currently uses a personal access token, with no OAuth sign-in flow. Preview tokens are separate from deployment tokens and Actions secrets. Public language colors come from the bundled GitHub Linguist snapshot in `src/constants/linguist-colors.json`; builds need no network request to retrieve the palette.
 
 ## Preview data
 

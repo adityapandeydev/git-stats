@@ -110,7 +110,7 @@ export default function App() {
   const sourceLabel = loading ? 'Loading GitHub' : data?.source === 'demo' ? 'Sample data' : data?.source === 'authenticated' ? 'Connected to GitHub' : data?.source === 'public' ? 'Public data · limited' : 'Data unavailable'
 
   return <div className="studio-shell">
-    <Navbar username={username} onUsername={value => { update({ username: value }); if (live) { setData(null); setError(''); setLoading(true) } }} onLoad={() => { setData(null); setError(''); setLoading(true); setLive(true); setRefresh(n => n + 1) }} loading={loading} onExport={() => setExportOpen(true)} onDeploy={() => setDeployOpen(true)} canExport={!compiled.error} />
+    <Navbar username={username} onUsername={value => { update({ username: value }); if (live) { setData(null); setError(''); setLoading(true) } }} onLoad={() => { setData(null); setError(''); setLoading(true); setLive(true); setRefresh(n => n + 1) }} loading={loading} onExport={() => setExportOpen(true)} onDeploy={() => setDeployOpen(true)} canExport={!compiled.error} connected={Boolean(token)} onConnect={() => { setTokenDraft(token); setConnectOpen(true) }} />
     <div className="workspace-heading">
       <div><div className="eyebrow">PROFILE WORKSPACE <span>/</span> 01</div><h1>Make your work visible<span>.</span></h1><p>A profile that looks like you. Built with your data.</p></div>
       <div className="heading-meta"><span className="save-state"><Check size={13} />{saved ? 'Draft saved on this device' : 'Draft in memory only'}</span><a href="https://github.com/adityapandeydev/git-stats" target="_blank" rel="noreferrer">View engine <ArrowUpRight size={13} /></a></div>
@@ -143,3 +143,4 @@ export default function App() {
     </Dialog>}
   </div>
 }
+
