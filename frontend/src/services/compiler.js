@@ -9,7 +9,7 @@ export function validateTarget(username, target = {}) {
   if (!/^[a-z\d](?:[a-z\d-]{0,37}[a-z\d])?$/i.test(user)) throw new Error('Enter a valid GitHub username.')
   if (!/^[a-z\d](?:[a-z\d-]{0,37}[a-z\d])?$/i.test(owner)) throw new Error('Enter a valid repository owner.')
   if (!/^[\w.-]+$/.test(repo) || repo === '.' || repo === '..') throw new Error('Enter a valid repository name.')
-  if (!branch || /[\s~^:?*\[\\]|\.\.|@\{|\/\/|^[/.]|[/.]$/.test(branch)) throw new Error('Enter a valid branch name.')
+  if (!branch || !/^[a-z\d_./-]+$/i.test(branch) || /\.\.|\/\/|^[/.]|[/.]$/.test(branch)) throw new Error('Use a branch name with letters, numbers, underscores, slashes, dots, or hyphens.')
   return { username: user, owner, repo, branch }
 }
 
@@ -59,8 +59,9 @@ export function generateWorkflowYaml(username, cards, theme = 'tokyonight', hide
   const commands = cards.map(card => {
     const def = getCardDef(card.id)
     if (!def || !Number.isInteger(card.width) || !Number.isInteger(card.height) || card.width < 300 || card.width > 1200 || card.height < 124 || card.height > 1500) throw new Error('Invalid card dimensions.')
-    const args = [def.flag, `--username=${quote(destination.username)}`, `--theme=${quote(theme)}`, `--card-width=${card.width}`, `--card-height=${card.height}`, '--border-radius=4.5', '--svg-icons', '--strict-data']
+    const args = [def.flag, `--username=${quote(destination.username)}`, `--theme=${quote(theme)}`, `--card-width=${card.width}`, `--card-height=${card.height}`, '--border-radius=4.5', '--animate=false', '--svg-icons', '--strict-data']
     if (card.id === 'languages') {
+      for (const value of [card.hide, hideLangs, card.excludeRepos]) if (value && (/[\r\n]/.test(value) || value.includes('${{'))) throw new Error('Language and repository filters must be a single comma-separated line.')
       args.push(`--langs-count=${Math.min(16, Math.max(6, card.langsCount || 12))}`, '--layout=standard', '--columns=2')
       if (card.hide || hideLangs) args.push(`--hide=${quote(card.hide || hideLangs)}`)
       if (card.excludeRepos) args.push(`--exclude-repo=${quote(card.excludeRepos)}`)

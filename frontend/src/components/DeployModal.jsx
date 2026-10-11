@@ -1,181 +1,36 @@
-import React, { useState } from 'react'
-import { X, GitFork, KeyRound, ExternalLink, CheckCircle2, AlertCircle, Loader2, ShieldCheck } from 'lucide-react'
-import { syncWorkflowToFork } from '../services/githubApi'
+import { useState } from 'react'
+import { AlertCircle, ArrowUpRight, Check, Copy, ExternalLink, GitFork, KeyRound, LoaderCircle, X } from 'lucide-react'
+import Dialog from './Dialog'
 import { getGitHubWebEditUrl } from '../services/compiler'
+import { inspectRepository, syncWorkflowToFork } from '../services/githubApi'
 
-export default function DeployModal({
-  isOpen,
-  onClose,
-  username,
-  yamlContent,
-}) {
-  if (!isOpen) return null
-
-  const [pat, setPat] = useState(() => sessionStorage.getItem('gitstats_temp_pat') || '')
-  const [syncStatus, setSyncStatus] = useState('idle') // 'idle' | 'syncing' | 'success' | 'error'
-  const [errorMessage, setErrorMessage] = useState('')
-
-  const handleSync = async () => {
-    if (!username.trim()) {
-      setErrorMessage('Please provide your GitHub username.')
-      setSyncStatus('error')
-      return
-    }
-    if (!pat.trim()) {
-      setErrorMessage('Please enter your Personal Access Token (PAT).')
-      setSyncStatus('error')
-      return
-    }
-
-    try {
-      setSyncStatus('syncing')
-      setErrorMessage('')
-      // Store temporarily in session
-      sessionStorage.setItem('gitstats_temp_pat', pat.trim())
-
-      await syncWorkflowToFork({
-        username: username.trim(),
-        pat: pat.trim(),
-        yamlContent,
-      })
-
-      setSyncStatus('success')
-    } catch (err) {
-      setSyncStatus('error')
-      setErrorMessage(err.message || 'Failed to sync workflow.')
-    }
+export default function DeployModal({ username, yamlContent, error, target, onTarget, onClose }) {
+  const [method, setMethod] = useState('editor'), [pat, setPat] = useState(''), [busy, setBusy] = useState(false), [status, setStatus] = useState(null), [copied, setCopied] = useState(false), [fileExists, setFileExists] = useState(true)
+  let editUrl = ''
+  try { editUrl = getGitHubWebEditUrl(username, target, fileExists) } catch { /* Compiler presents validation errors. */ }
+  const copy = async () => {
+    try { await navigator.clipboard.writeText(yamlContent); setCopied(true) }
+    catch { setStatus({ error: 'Clipboard unavailable. Use Export to download the workflow.' }) }
   }
-
-  const webEditUrl = getGitHubWebEditUrl(username)
-
-  return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md animate-fade-in">
-      <div className="glass-panel w-full max-w-xl rounded-2xl p-6 border border-[#24283b] shadow-2xl relative flex flex-col gap-5 max-h-[90vh] overflow-y-auto">
-        {/* Modal Header */}
-        <div className="flex items-center justify-between pb-3 border-b border-[#24283b]">
-          <div className="flex items-center gap-2.5">
-            <div className="w-8 h-8 rounded-lg bg-[#7aa2f7]/15 border border-[#7aa2f7]/30 flex items-center justify-center">
-              <GitFork className="w-4 h-4 text-[#7aa2f7]" />
-            </div>
-            <div>
-              <h2 className="text-sm font-bold text-white tracking-tight">Deploy to Your Fork</h2>
-              <p className="text-[11px] text-[#7982a9]">Choose your preferred method to apply your layout</p>
-            </div>
-          </div>
-          <button
-            onClick={onClose}
-            className="p-1 rounded-lg text-[#7982a9] hover:text-white hover:bg-[#1f2335] transition-colors cursor-pointer"
-          >
-            <X className="w-4 h-4" />
-          </button>
-        </div>
-
-        {/* Path A: 1-Click Fork Sync */}
-        <div className="rounded-xl p-4 bg-[#121420]/80 border border-[#24283b] flex flex-col gap-3">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-2">
-              <span className="w-5 h-5 rounded-full bg-[#7aa2f7] text-[#090a0f] text-[11px] font-extrabold flex items-center justify-center">
-                A
-              </span>
-              <h3 className="text-xs font-bold text-white tracking-tight">1-Click Direct Sync</h3>
-            </div>
-            <span className="text-[10px] font-semibold text-[#73daca] bg-[#73daca]/10 px-2 py-0.5 rounded-full border border-[#73daca]/20">
-              Zero Terminal
-            </span>
-          </div>
-
-          <p className="text-[11px] text-[#7982a9] leading-relaxed">
-            Provide a temporary fine-grained Personal Access Token with <code className="text-[#c0caf5]">contents:write</code> & <code className="text-[#c0caf5]">actions:write</code> on your <code className="text-[#c0caf5]">git-stats</code> fork.
-          </p>
-
-          <div className="relative">
-            <KeyRound className="w-4 h-4 text-[#565f89] absolute left-3 top-1/2 -translate-y-1/2" />
-            <input
-              type="password"
-              value={pat}
-              onChange={(e) => setPat(e.target.value)}
-              placeholder="github_pat_..."
-              className="w-full glass-input text-xs text-white rounded-lg pl-9 pr-3 py-2 font-mono placeholder-[#565f89]"
-            />
-          </div>
-
-          <div className="flex items-center justify-between pt-1">
-            <div className="flex items-center gap-1.5 text-[10px] text-[#7982a9]">
-              <ShieldCheck className="w-3.5 h-3.5 text-[#73daca]" />
-              <span>Token remains in your browser session only. Never stored remotely.</span>
-            </div>
-
-            <button
-              onClick={handleSync}
-              disabled={syncStatus === 'syncing'}
-              className="flex items-center gap-2 px-3.5 py-1.5 rounded-lg bg-[#7aa2f7] hover:bg-[#70a5fd] disabled:opacity-50 text-[#090a0f] text-xs font-bold transition-all shadow-md active:scale-95 cursor-pointer"
-            >
-              {syncStatus === 'syncing' ? (
-                <>
-                  <Loader2 className="w-3.5 h-3.5 animate-spin" />
-                  <span>Syncing...</span>
-                </>
-              ) : (
-                <>
-                  <GitFork className="w-3.5 h-3.5" />
-                  <span>Sync to Fork</span>
-                </>
-              )}
-            </button>
-          </div>
-
-          {/* Sync Status Banner */}
-          {syncStatus === 'success' && (
-            <div className="mt-2 p-2.5 rounded-lg bg-[#73daca]/10 border border-[#73daca]/30 text-xs text-[#73daca] flex items-center gap-2">
-              <CheckCircle2 className="w-4 h-4 shrink-0" />
-              <span>Workflow successfully committed and GitHub Actions bot triggered!</span>
-            </div>
-          )}
-          {syncStatus === 'error' && (
-            <div className="mt-2 p-2.5 rounded-lg bg-[#f7768e]/10 border border-[#f7768e]/30 text-xs text-[#f7768e] flex items-center gap-2">
-              <AlertCircle className="w-4 h-4 shrink-0" />
-              <span>{errorMessage}</span>
-            </div>
-          )}
-        </div>
-
-        {/* Path B: Zero-Token Web Editor */}
-        <div className="rounded-xl p-4 bg-[#121420]/80 border border-[#24283b] flex flex-col gap-3">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-2">
-              <span className="w-5 h-5 rounded-full bg-[#565f89] text-white text-[11px] font-extrabold flex items-center justify-center">
-                B
-              </span>
-              <h3 className="text-xs font-bold text-white tracking-tight">Zero-Token Web Editor</h3>
-            </div>
-            <span className="text-[10px] font-semibold text-[#7982a9] bg-[#24283b] px-2 py-0.5 rounded-full">
-              No Token Required
-            </span>
-          </div>
-
-          <p className="text-[11px] text-[#7982a9] leading-relaxed">
-            If you don't want to enter a token, you can paste the YAML straight into GitHub's web file editor:
-          </p>
-
-          <ol className="text-[11px] text-[#c0caf5] space-y-1 list-decimal list-inside bg-[#0e1017] p-3 rounded-lg border border-[#24283b]">
-            <li>Copy the <strong>Workflow YAML</strong> from the code deck below.</li>
-            <li>Click the link below to open the workflow file in your fork.</li>
-            <li>Paste the YAML and click <strong>Commit changes</strong>.</li>
-          </ol>
-
-          <div className="flex justify-end pt-1">
-            <a
-              href={webEditUrl}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-[#24283b] hover:border-[#7aa2f7]/50 bg-[#161826] text-xs font-semibold text-[#c0caf5] hover:text-white transition-all cursor-pointer"
-            >
-              <ExternalLink className="w-3.5 h-3.5 text-[#7aa2f7]" />
-              <span>Open in GitHub Web Editor</span>
-            </a>
-          </div>
-        </div>
-      </div>
-    </div>
-  )
+  const sync = async () => {
+    setBusy(true); setStatus(null)
+    try { const result = await syncWorkflowToFork({ username, pat, yamlContent, target }); setStatus(result); setPat('') }
+    catch (e) { setStatus({ error: e.message }) }
+    finally { setBusy(false) }
+  }
+  const check = async () => {
+    setBusy(true); setStatus(null)
+    try { const result = await inspectRepository(username, pat, target); setFileExists(Boolean(result.file)); onTarget({ branch: result.branch }); setStatus({ checked: true, message: `Repository found. ${result.file ? 'The workflow will be updated.' : 'A new workflow will be created.'}` }) }
+    catch (e) { setStatus({ error: `${e.message} Fork the engine first, or check the destination settings.` }) }
+    finally { setBusy(false) }
+  }
+  return <Dialog onClose={() => { if (!busy) onClose() }} labelledBy="deploy-title" className="deploy-dialog"><div className="dialog-heading"><div><span className="eyebrow">FROM CANVAS TO PROFILE</span><h2 id="deploy-title">Ship your new profile.</h2></div><button className="icon-button" disabled={busy} aria-label="Close deployment" onClick={onClose}><X size={18} /></button></div><p>Your fork runs the Zig engine on GitHub Actions. This studio remains a static website.</p>
+    <div className="deploy-destination"><GitFork size={19} /><div><strong>{target.owner || username}/{target.repo}</strong><small>{target.branch} / generated/</small></div><a href="https://github.com/adityapandeydev/git-stats/fork" target="_blank" rel="noreferrer">Fork engine <ArrowUpRight size={13} /></a></div>
+    <div className="segmented deploy-methods"><button className={method === 'editor' ? 'active' : ''} onClick={() => setMethod('editor')}>GitHub web editor</button><button className={method === 'sync' ? 'active' : ''} onClick={() => setMethod('sync')}><KeyRound size={13} />Direct sync</button></div>
+    {error && <div className="notice error" role="alert">{error}</div>}
+    {method === 'editor' ? <div className="deploy-steps"><div><span>01</span><p><strong>Fork the engine</strong>Your own git-stats repository generates and stores the SVGs.</p></div><div><span>02</span><p><strong>Commit your workflow</strong>Copy the YAML, open GitHub’s editor, then paste and commit.</p></div><label className="checkbox-field"><input type="checkbox" checked={fileExists} onChange={e => setFileExists(e.target.checked)} />The workflow file already exists in my fork</label><div className="dialog-actions"><button className="button secondary" disabled={!!error} onClick={copy}>{copied ? <Check size={14} /> : <Copy size={14} />}{copied ? 'Workflow copied' : 'Copy workflow'}</button><a className={`button primary ${error ? 'disabled' : ''}`} href={editUrl || undefined} target="_blank" rel="noreferrer">Open editor <ExternalLink size={14} /></a></div></div> : <div className="direct-sync"><label className="field-label" htmlFor="deploy-token">Fine-grained deployment token</label><input id="deploy-token" type="password" autoComplete="off" placeholder="github_pat_…" value={pat} onChange={e => setPat(e.target.value)} /><p className="field-help">Select your fork and grant Contents, Workflows, and Actions write permissions. Kept in memory only and cleared after a successful commit.</p><div className="dialog-actions"><button className="button secondary" disabled={busy || !!error} onClick={check}>Check repository</button><button className="button primary" disabled={busy || !pat.trim() || !!error} onClick={sync}>{busy ? <LoaderCircle size={14} className="spin" /> : <ArrowUpRight size={14} />}{busy ? 'Working…' : 'Commit & run'}</button></div></div>}
+    {status && <div className={`notice ${status.error || (status.committed && !status.dispatched) ? 'error' : 'success'}`} role="status">{status.error ? <AlertCircle size={16} /> : <Check size={16} />}<span>{status.error || status.message || 'Workflow committed and generation requested.'}{status.actionsUrl && <> <a href={status.actionsUrl} target="_blank" rel="noreferrer">Open Actions</a></>}</span></div>}
+    <div className="deploy-last-step"><span>03</span><p><strong>Add to your profile README</strong>Once generation succeeds, copy the README snippet from Export into your username/username repository.</p></div>
+    <p className="field-help">Private data may need a GH_TOKEN repository secret. Forks may require enabling Actions and scheduled workflows. Updates can take time to appear through GitHub’s image cache.</p>
+  </Dialog>
 }

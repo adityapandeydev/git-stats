@@ -90,7 +90,6 @@ export const CARD_DEFINITIONS = [
 ]
 
 export const DEFAULT_ACTIVE_CARDS = [
-  { id: 'milestones', width: 840, height: 180, isHero: true },
   { id: 'streak', width: 424, height: 180, sparkline: true, isHero: false },
   { id: 'stats', width: 424, height: 180, timeframe: 'all-time', isHero: false },
   { id: 'languages', width: 400, height: 294, langsCount: 12, isHero: false },
@@ -101,6 +100,11 @@ export function getCardDef(id) {
 }
 
 export function computeLanguagesHeight(langsCount) {
-  const rows = Math.max(1, Math.ceil(langsCount / 2))
+  const rows = Math.max(1, Math.ceil(Math.max(0, Number(langsCount) || 0) / 2))
   return 124 + (rows - 1) * 34
+}
+
+export function createCard(id) {
+  const def = getCardDef(id)
+  return { id, width: def.defaultWidth, height: def.defaultHeight, ...(def.supportsCount ? { langsCount: 12, hide: '', excludeRepos: '' } : {}), ...(def.supportsSparkline ? { sparkline: true } : {}), ...(def.supportsTimeframe ? { timeframe: 'all-time' } : {}), ...(id === 'rhythm' ? { timezone: 5.5 } : {}) }
 }
