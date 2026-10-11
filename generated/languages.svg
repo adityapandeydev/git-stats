@@ -22,40 +22,37 @@
         </clipPath>
     </defs>
     <rect class="bar-bg" x="25" y="52" width="350" height="10" rx="5"/>
-<g clip-path="url(#bar-clip)" class="bar-container"><rect x="25.00" y="52" width="119.66" height="10" fill="#3178c6" class="bar-segment"><title>TypeScript: 34.19%</title></rect><rect x="144.66" y="52" width="60.20" height="10" fill="#dea584" class="bar-segment"><title>Rust: 17.20%</title></rect><rect x="204.86" y="52" width="49.85" height="10" fill="#00ADD8" class="bar-segment"><title>Go: 14.24%</title></rect><rect x="254.71" y="52" width="42.05" height="10" fill="#b07219" class="bar-segment"><title>Java: 12.01%</title></rect><rect x="296.76" y="52" width="26.71" height="10" fill="#ec915c" class="bar-segment"><title>Zig: 7.63%</title></rect><rect x="323.47" y="52" width="18.95" height="10" fill="#3572A5" class="bar-segment"><title>Python: 5.41%</title></rect><rect x="342.42" y="52" width="10.53" height="10" fill="#5e5086" class="bar-segment"><title>Haskell: 3.01%</title></rect><rect x="352.95" y="52" width="9.20" height="10" fill="#f34b7d" class="bar-segment"><title>C++: 2.63%</title></rect><rect x="362.14" y="52" width="8.75" height="10" fill="#000080" class="bar-segment"><title>Lua: 2.50%</title></rect><rect x="370.89" y="52" width="1.68" height="10" fill="#89e051" class="bar-segment"><title>Shell: 0.48%</title></rect><rect x="372.57" y="52" width="1.33" height="10" fill="#555555" class="bar-segment"><title>C: 0.38%</title></rect><rect x="373.91" y="52" width="1.09" height="10" fill="#7355dd" class="bar-segment"><title>C#: 0.31%</title></rect></g><g class="animate-item" style="animation-delay: 100ms;">
+<g clip-path="url(#bar-clip)" class="bar-container"><rect x="25.00" y="52" width="304.71" height="10" fill="#3178c6" class="bar-segment"><title>TypeScript: 87.06%</title></rect><rect x="329.71" y="52" width="24.04" height="10" fill="#00ADD8" class="bar-segment"><title>Go: 6.87%</title></rect><rect x="353.75" y="52" width="14.04" height="10" fill="#3572A5" class="bar-segment"><title>Python: 4.01%</title></rect><rect x="367.80" y="52" width="4.90" height="10" fill="#b07219" class="bar-segment"><title>Java: 1.40%</title></rect><rect x="372.70" y="52" width="1.00" height="10" fill="#c6538c" class="bar-segment"><title>SCSS: 0.19%</title></rect><rect x="373.70" y="52" width="1.00" height="10" fill="#89e051" class="bar-segment"><title>Shell: 0.17%</title></rect><rect x="374.70" y="52" width="1.00" height="10" fill="#384d54" class="bar-segment"><title>Dockerfile: 0.16%</title></rect><rect x="375.70" y="52" width="1.00" height="10" fill="#C1F12E" class="bar-segment"><title>Batchfile: 0.08%</title></rect><rect x="376.70" y="52" width="1.00" height="10" fill="#012456" class="bar-segment"><title>PowerShell: 0.05%</title></rect><rect x="377.70" y="52" width="1.00" height="10" fill="#427819" class="bar-segment"><title>Makefile: 0.01%</title></rect><rect x="378.70" y="52" width="1.00" height="10" fill="#7355dd" class="bar-segment"><title>C#: 0.01%</title></rect></g><g class="animate-item" style="animation-delay: 100ms;">
 <circle cx="30.0" cy="106.5" r="4.5" fill="#3178c6"/>
-<text x="41.0" y="111.0" class="lang-name">TypeScript</text><text x="185.0" y="111.0" text-anchor="end" class="lang-pct">34.19%</text>
+<text x="41.0" y="111.0" class="lang-name">TypeScript</text><text x="185.0" y="111.0" text-anchor="end" class="lang-pct">87.06%</text>
 </g><g class="animate-item" style="animation-delay: 140ms;">
-<circle cx="30.0" cy="151.5" r="4.5" fill="#dea584"/>
-<text x="41.0" y="156.0" class="lang-name">Rust</text><text x="185.0" y="156.0" text-anchor="end" class="lang-pct">17.20%</text>
+<circle cx="30.0" cy="151.5" r="4.5" fill="#00ADD8"/>
+<text x="41.0" y="156.0" class="lang-name">Go</text><text x="185.0" y="156.0" text-anchor="end" class="lang-pct">6.87%</text>
 </g><g class="animate-item" style="animation-delay: 180ms;">
-<circle cx="30.0" cy="196.5" r="4.5" fill="#00ADD8"/>
-<text x="41.0" y="201.0" class="lang-name">Go</text><text x="185.0" y="201.0" text-anchor="end" class="lang-pct">14.24%</text>
+<circle cx="30.0" cy="196.5" r="4.5" fill="#3572A5"/>
+<text x="41.0" y="201.0" class="lang-name">Python</text><text x="185.0" y="201.0" text-anchor="end" class="lang-pct">4.01%</text>
 </g><g class="animate-item" style="animation-delay: 220ms;">
 <circle cx="30.0" cy="241.5" r="4.5" fill="#b07219"/>
-<text x="41.0" y="246.0" class="lang-name">Java</text><text x="185.0" y="246.0" text-anchor="end" class="lang-pct">12.01%</text>
+<text x="41.0" y="246.0" class="lang-name">Java</text><text x="185.0" y="246.0" text-anchor="end" class="lang-pct">1.40%</text>
 </g><g class="animate-item" style="animation-delay: 260ms;">
-<circle cx="30.0" cy="286.5" r="4.5" fill="#ec915c"/>
-<text x="41.0" y="291.0" class="lang-name">Zig</text><text x="185.0" y="291.0" text-anchor="end" class="lang-pct">7.63%</text>
+<circle cx="30.0" cy="286.5" r="4.5" fill="#c6538c"/>
+<text x="41.0" y="291.0" class="lang-name">SCSS</text><text x="185.0" y="291.0" text-anchor="end" class="lang-pct">0.19%</text>
 </g><g class="animate-item" style="animation-delay: 300ms;">
-<circle cx="30.0" cy="331.5" r="4.5" fill="#3572A5"/>
-<text x="41.0" y="336.0" class="lang-name">Python</text><text x="185.0" y="336.0" text-anchor="end" class="lang-pct">5.41%</text>
+<circle cx="30.0" cy="331.5" r="4.5" fill="#89e051"/>
+<text x="41.0" y="336.0" class="lang-name">Shell</text><text x="185.0" y="336.0" text-anchor="end" class="lang-pct">0.17%</text>
 </g><g class="animate-item" style="animation-delay: 340ms;">
-<circle cx="205.0" cy="106.5" r="4.5" fill="#5e5086"/>
-<text x="216.0" y="111.0" class="lang-name">Haskell</text><text x="360.0" y="111.0" text-anchor="end" class="lang-pct">3.01%</text>
+<circle cx="205.0" cy="106.5" r="4.5" fill="#384d54"/>
+<text x="216.0" y="111.0" class="lang-name">Dockerfile</text><text x="360.0" y="111.0" text-anchor="end" class="lang-pct">0.16%</text>
 </g><g class="animate-item" style="animation-delay: 380ms;">
-<circle cx="205.0" cy="151.5" r="4.5" fill="#f34b7d"/>
-<text x="216.0" y="156.0" class="lang-name">C++</text><text x="360.0" y="156.0" text-anchor="end" class="lang-pct">2.63%</text>
+<circle cx="205.0" cy="151.5" r="4.5" fill="#C1F12E"/>
+<text x="216.0" y="156.0" class="lang-name">Batchfile</text><text x="360.0" y="156.0" text-anchor="end" class="lang-pct">0.08%</text>
 </g><g class="animate-item" style="animation-delay: 420ms;">
-<circle cx="205.0" cy="196.5" r="4.5" fill="#000080"/>
-<text x="216.0" y="201.0" class="lang-name">Lua</text><text x="360.0" y="201.0" text-anchor="end" class="lang-pct">2.50%</text>
+<circle cx="205.0" cy="196.5" r="4.5" fill="#012456"/>
+<text x="216.0" y="201.0" class="lang-name">PowerShell</text><text x="360.0" y="201.0" text-anchor="end" class="lang-pct">0.05%</text>
 </g><g class="animate-item" style="animation-delay: 460ms;">
-<circle cx="205.0" cy="241.5" r="4.5" fill="#89e051"/>
-<text x="216.0" y="246.0" class="lang-name">Shell</text><text x="360.0" y="246.0" text-anchor="end" class="lang-pct">0.48%</text>
+<circle cx="205.0" cy="241.5" r="4.5" fill="#427819"/>
+<text x="216.0" y="246.0" class="lang-name">Makefile</text><text x="360.0" y="246.0" text-anchor="end" class="lang-pct">0.01%</text>
 </g><g class="animate-item" style="animation-delay: 500ms;">
-<circle cx="205.0" cy="286.5" r="4.5" fill="#555555"/>
-<text x="216.0" y="291.0" class="lang-name">C</text><text x="360.0" y="291.0" text-anchor="end" class="lang-pct">0.38%</text>
-</g><g class="animate-item" style="animation-delay: 540ms;">
-<circle cx="205.0" cy="331.5" r="4.5" fill="#7355dd"/>
-<text x="216.0" y="336.0" class="lang-name">C#</text><text x="360.0" y="336.0" text-anchor="end" class="lang-pct">0.31%</text>
+<circle cx="205.0" cy="286.5" r="4.5" fill="#7355dd"/>
+<text x="216.0" y="291.0" class="lang-name">C#</text><text x="360.0" y="291.0" text-anchor="end" class="lang-pct">0.01%</text>
 </g></svg>
