@@ -227,7 +227,7 @@ pub fn renderStreakSVG(
         \\  <g transform="translate({d:.1}, {d:.1})">
         \\    <text x="0" y="60" text-anchor="middle" class="stat-val" font-size="24" fill="{s}">{d}</text>
         \\    <text x="0" y="82" text-anchor="middle" class="stat-lbl" font-size="12" fill="#a9b1d6">Total Contributions</text>
-        \\    <text x="0" y="103" text-anchor="middle" class="stat-sub" font-size="10.5" fill="#565f89">{s} - {s}</text>
+        \\    <text x="0" y="101" text-anchor="middle" class="stat-sub" font-size="9.5" fill="#787c99">{s}<tspan x="0" dy="12">{s}</tspan></text>
         \\  </g>
         \\
     , .{
@@ -240,7 +240,7 @@ pub fn renderStreakSVG(
     });
 
     // --- CENTER COLUMN: Energy Core & Current Streak ---
-    const flame_cy = 33.0 + y_shift;
+    const flame_cy = 28.0 + y_shift;
     const anim_flame = if (opts.animate) "style=\"animation: flamePulse 2.8s ease-in-out infinite; transform-origin: 0px 0px;\"" else "";
     const anim_aura = if (opts.animate) "style=\"animation: auraPulse 3.5s ease-in-out infinite; transform-origin: 0px 0px;\"" else "";
     const anim_ring = if (opts.animate) "style=\"animation: ringSpin 12s linear infinite;\"" else "";
@@ -271,7 +271,7 @@ pub fn renderStreakSVG(
         \\  </g>
         \\
         \\  <!-- Range Subtitle -->
-        \\  <text x="{d:.1}" y="{d:.1}" text-anchor="middle" class="stat-sub" font-size="10.5" fill="#787c99">{s} - {s}</text>
+        \\  <text x="{d:.1}" y="{d:.1}" text-anchor="middle" class="stat-sub" font-size="9.5" fill="#787c99">{s}<tspan x="{d:.1}" dy="12">{s}</tspan></text>
         \\
     , .{
         col2_x,
@@ -280,16 +280,17 @@ pub fn renderStreakSVG(
         anim_ring,
         anim_flame,
         col2_x,
-        76.0 + y_shift,
+        78.0 + y_shift,
         stats.current_streak,
         col2_x,
-        86.0 + y_shift,
+        90.0 + y_shift,
         tier.primary_color,
         tier.badge_label,
         col2_x,
         118.0 + y_shift,
-        stats.current_streak_start,
-        stats.current_streak_end,
+        if (stats.current_streak == 0) "No active streak" else stats.current_streak_start,
+        col2_x,
+        if (stats.current_streak == 0) "" else stats.current_streak_end,
     });
 
     // --- RIGHT COLUMN: Longest Streak ---
@@ -298,7 +299,7 @@ pub fn renderStreakSVG(
         \\  <g transform="translate({d:.1}, {d:.1})">
         \\    <text x="0" y="60" text-anchor="middle" class="stat-val" font-size="24" fill="{s}">{d}</text>
         \\    <text x="0" y="82" text-anchor="middle" class="stat-lbl" font-size="12" fill="#a9b1d6">Longest Streak</text>
-        \\    <text x="0" y="103" text-anchor="middle" class="stat-sub" font-size="10.5" fill="#565f89">{s} - {s}</text>
+        \\    <text x="0" y="101" text-anchor="middle" class="stat-sub" font-size="9.5" fill="#787c99">{s}<tspan x="0" dy="12">{s}</tspan></text>
         \\  </g>
         \\
     , .{

@@ -32,7 +32,8 @@ pub fn replace(a: std.mem.Allocator, svg: []const u8, color: []const u8) ![]cons
                 const size_str = std.mem.trimEnd(u8, attribute(tag, "font-size") orelse "9", "px");
                 const size = std.fmt.parseFloat(f64, size_str) catch 9;
                 const anchor = attribute(tag, "text-anchor") orelse "start";
-                const estimated_width = @as(f64, @floatFromInt(clean.len)) * size * 0.53;
+                const spacing = std.fmt.parseFloat(f64, attribute(tag, "letter-spacing") orelse "0") catch 0;
+                const estimated_width = @as(f64, @floatFromInt(clean.len)) * (size * 0.62 + spacing);
                 const left = if (std.mem.eql(u8, anchor, "middle")) x - (estimated_width + size + 3) / 2 else if (std.mem.eql(u8, anchor, "end")) x - estimated_width - size - 3 else x;
                 try w.print("<svg x=\"{d:.1}\" y=\"{d:.1}\" width=\"{d:.1}\" height=\"{d:.1}\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"{s}\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\">{s}</svg>", .{ if (clean.len == 0) x - size / 2 else left, y - size + 1, size, size, attribute(tag, "fill") orelse color, icon.paths });
                 if (clean.len > 0) {

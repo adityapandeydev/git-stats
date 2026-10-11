@@ -42,3 +42,10 @@ test('sparkline and theme settings reach the native renderer', () => {
   assert.match(render('stats', { theme: 'nord' }), /#2e3440/)
   assert.doesNotMatch(render('streak', { sparkline: false }), /14-DAY MOMENTUM/)
 })
+
+test('streak dates have separate lines and an inactive streak has a clear label', () => {
+  const svg = render('streak')
+  assert.match(svg, /<tspan x="0" dy="12">/)
+  assert.doesNotMatch(svg, /Oct 16, 2025 - Oct 11, 2026/)
+  assert.match(render('streak', { streak: { ...DEMO_DATA.streak, current_streak: 0 } }), /No active streak/)
+})
