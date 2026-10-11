@@ -12,6 +12,18 @@ pub const radar = @import("renderer/radar.zig");
 pub const velocity = @import("renderer/velocity.zig");
 pub const milestones = @import("renderer/milestones.zig");
 pub const bento = @import("renderer/bento.zig");
+pub const icons = @import("renderer/icons.zig");
+
+test "optional SVG icons preserve plain labels and release temporary allocations" {
+    const allocator = std.testing.allocator;
+    const input = "<svg><text x=\"20\" y=\"30\" font-size=\"10\">\u{1f525} Active</text><text x=\"1\" y=\"2\">Plain label</text></svg>";
+    const output = try icons.replace(allocator, input, "#ffffff");
+    defer allocator.free(output);
+    try std.testing.expect(std.mem.indexOf(u8, output, "viewBox=\"0 0 24 24\"") != null);
+    try std.testing.expect(std.mem.indexOf(u8, output, "\u{1f525}") == null);
+    try std.testing.expect(std.mem.indexOf(u8, output, "Active</text>") != null);
+    try std.testing.expect(std.mem.indexOf(u8, output, "<text x=\"1\" y=\"2\">Plain label</text>") != null);
+}
 
 test "colors: official Linguist mapping and fallback" {
     try std.testing.expectEqualStrings("#ec915c", colors.getLanguageColor("Zig", null));
@@ -454,7 +466,3 @@ test "bento: composeBentoSVG produces isolated valid SVG" {
     try std.testing.expect(std.mem.indexOf(u8, bento_svg, "url(#b0_test-grad)") != null);
     try std.testing.expect(std.mem.indexOf(u8, bento_svg, "url(#b1_test-grad)") != null);
 }
-
-
-
-

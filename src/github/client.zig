@@ -915,17 +915,30 @@ pub const Client = struct {
 
             const MultiPayload = struct { query: []const u8 };
             const multi_payload_obj = MultiPayload{ .query = q_buf.written() };
-            const multi_payload = std.json.Stringify.valueAlloc(self.allocator, multi_payload_obj, .{}) catch null;
+            const multi_payload = std.json.Stringify.valueAlloc(self.allocator, multi_payload_obj, .{}) catch |err| blk: {
+                if (self.strict_data) return err;
+                break :blk null;
+            };
             if (multi_payload) |mp| {
                 defer self.allocator.free(mp);
-                const multi_body = self.executeGraphQL(mp, token) catch null;
+                const multi_body = self.executeGraphQL(mp, token) catch |err| blk: {
+                    if (self.strict_data) return err;
+                    break :blk null;
+                };
                 if (multi_body) |mb| {
                     defer self.allocator.free(mb);
-                    const parsed_multi = std.json.parseFromSlice(std.json.Value, self.allocator, mb, .{}) catch null;
+                    const parsed_multi = std.json.parseFromSlice(std.json.Value, self.allocator, mb, .{}) catch |err| blk: {
+                        if (self.strict_data) return err;
+                        break :blk null;
+                    };
                     if (parsed_multi) |pm| {
                         defer pm.deinit();
+                        if (pm.value != .object) return error.InvalidResponse;
+                        if (self.strict_data and pm.value.object.contains("errors")) return error.GraphQLError;
                         if (pm.value.object.get("data")) |m_data| {
+                            if (m_data != .object) return error.InvalidResponse;
                             if (m_data.object.get("user")) |m_user| {
+                                if (m_user != .object) return error.UserNotFound;
                                 var sum_multi: u64 = 0;
                                 for (years_list.items) |yr| {
                                     var k_buf: [16]u8 = undefined;
@@ -939,7 +952,7 @@ pub const Client = struct {
                                         }
                                     }
                                 }
-                                if (sum_multi > 0) {
+                                if (sum_multi > 0 or self.strict_data) {
                                     total_commits = sum_multi;
                                 }
                             }
@@ -1636,7 +1649,7 @@ pub const Client = struct {
         }
 
         // Fallback to 1-year calendar if getStreakStats was unavailable
-        if (effective_streak == 0 or total_contribs == 0) {
+        if (!self.strict_data and (effective_streak == 0 or total_contribs == 0)) {
             var fallback_contribs: u64 = 0;
             var longest_streak: u32 = 0;
             var current_streak: u32 = 0;
@@ -1783,4 +1796,3 @@ pub fn formatHumanDateShort(allocator: std.mem.Allocator, ymd: []const u8) ![]u8
     const day_num = std.fmt.parseInt(u32, ymd[8..10], 10) catch return try allocator.dupe(u8, ymd);
     return try std.fmt.allocPrint(allocator, "{s} {d}", .{ month_name, day_num });
 }
-

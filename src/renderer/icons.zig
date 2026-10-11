@@ -12,6 +12,7 @@ fn attribute(tag: []const u8, name: []const u8) ?[]const u8 {
 
 pub fn replace(a: std.mem.Allocator, svg: []const u8, color: []const u8) ![]const u8 {
     var stream = std.Io.Writer.Allocating.init(a);
+    defer stream.deinit();
     const w = &stream.writer;
     var cursor: usize = 0;
     while (std.mem.indexOfPos(u8, svg, cursor, "<text ")) |start| {
@@ -23,7 +24,9 @@ pub fn replace(a: std.mem.Allocator, svg: []const u8, color: []const u8) ![]cons
         var changed = false;
         for (paths.icons) |icon| {
             if (std.mem.indexOf(u8, text, icon.symbol)) |pos| {
-                const clean = std.mem.trim(u8, try std.mem.concat(a, u8, &.{ text[0..pos], text[pos + icon.symbol.len ..] }), " ");
+                const combined = try std.mem.concat(a, u8, &.{ text[0..pos], text[pos + icon.symbol.len ..] });
+                defer a.free(combined);
+                const clean = std.mem.trim(u8, combined, " ");
                 const x = std.fmt.parseFloat(f64, attribute(tag, "x") orelse "0") catch 0;
                 const y = std.fmt.parseFloat(f64, attribute(tag, "y") orelse "0") catch 0;
                 const size_str = std.mem.trimEnd(u8, attribute(tag, "font-size") orelse "9", "px");

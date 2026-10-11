@@ -74,7 +74,11 @@ pub fn render(a: std.mem.Allocator, r: Request) ![]const u8 {
         return @import("renderer/radar.zig").renderRadarSVG(a, &data, .{ .theme = theme, .card_width = width, .card_height = height, .animate = false });
     }
     if (std.mem.eql(u8, r.card, "rhythm")) {
-        const data = r.rhythm orelse return error.MissingData;
+        var data = r.rhythm orelse return error.MissingData;
+        const persona = models.calculateRhythmPersona(data.total_commits, data.night_commits, data.weekend_commits, data.peak_hour);
+        data.persona_title = if (data.total_commits == 0) "No commit activity" else persona.title;
+        data.persona_icon = persona.icon;
+        data.persona_color = persona.color;
         return @import("renderer/rhythm.zig").renderRhythmSVG(a, &data, .{ .theme = theme, .card_width = width, .card_height = height, .animate = false });
     }
     if (std.mem.eql(u8, r.card, "velocity")) {
