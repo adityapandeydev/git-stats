@@ -12,7 +12,7 @@ async function request(url, { token = '', signal, ...options } = {}) {
   const json = await response.json().catch(() => ({}))
   if (!response.ok) {
     const reset = Number(response.headers.get('x-ratelimit-reset'))
-    const message = response.status === 404 ? 'GitHub could not find this profile or repository.' : response.status === 401 ? 'GitHub rejected this token.' : response.status === 403 || response.status === 429 ? `GitHub denied access or reached its rate limit.${reset ? ` Try again after ${new Date(reset * 1000).toLocaleTimeString()}.` : ''}` : json.message || `GitHub request failed (${response.status}).`
+    const message = response.status === 404 ? 'GitHub could not find this profile or repository.' : response.status === 401 ? 'GitHub rejected this token. It may be expired or revoked; create a replacement.' : response.status === 403 || response.status === 429 ? `GitHub denied access or reached its rate limit. Check token permissions, organization approval, and repository access.${reset ? ` Try again after ${new Date(reset * 1000).toLocaleTimeString()}.` : ''}` : response.status === 409 ? 'The branch or workflow changed while deploying. Reload its latest state and try again.' : response.status === 422 ? 'GitHub could not apply this change. Check the branch, workflow permissions, and repository rules.' : json.message || `GitHub request failed (${response.status}).`
     throw Object.assign(new Error(message), { status: response.status })
   }
   return json
@@ -134,7 +134,12 @@ export async function syncWorkflowToFork({ username, pat, yamlContent, target = 
   const base = `${api}/repos/${destination.owner}/${destination.repo}`
   const bytes = new TextEncoder().encode(yamlContent)
   const content = btoa(Array.from(bytes, byte => String.fromCharCode(byte)).join(''))
-  await request(`${base}/contents/${path}`, { token: pat.trim(), method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ message: 'chore(stats): configure profile with GitStats Studio', branch: destination.branch, content, ...(destination.file ? { sha: destination.file.sha } : {}) }) })
+  try {
+    await request(`${base}/contents/${path}`, { token: pat.trim(), method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ message: 'chore(stats): configure profile with GitStats Studio', branch: destination.branch, content, ...(destination.file ? { sha: destination.file.sha } : {}) }) })
+  } catch (error) {
+    if (error.status === 403) throw new Error('GitHub refused the workflow commit. Grant Contents and Workflows write access on the destination fork, and check branch protection and organization approval.')
+    throw error
+  }
   try {
     await request(`${base}/actions/workflows/generate-stats.yml/dispatches`, { token: pat.trim(), method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ ref: destination.branch }) })
     return { committed: true, dispatched: true, actionsUrl: destination.actionsUrl }

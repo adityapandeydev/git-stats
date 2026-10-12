@@ -7,6 +7,7 @@ import Inspector from './components/Inspector'
 import ExportDeck from './components/ExportDeck'
 import DeployModal from './components/DeployModal'
 import Dialog from './components/Dialog'
+import TokenGuide from './components/TokenGuide'
 import { DEFAULT_ACTIVE_CARDS, createCard, computeLanguagesHeight, getCardDef, cardRadius } from './constants/cards'
 import { THEMES } from './constants/themes'
 import { generateProfileHtml, generateWorkflowYaml } from './services/compiler'
@@ -124,7 +125,7 @@ export default function App() {
         <div className="sidebar-note"><Code2 size={17} /><div><strong>Native by design</strong><p>These SVGs come from the same Zig renderer as your profile.</p></div></div>
       </aside>
       <section className="canvas-column" aria-label="Profile designer">
-        <ProfileCanvas activeCards={activeCards} selected={selected} onSelect={id => { setSelected(id); setMobilePanel('settings') }} layoutMode={layoutMode} onLayout={value => update({ layoutMode: value })} themeId={themeId} userData={data} onReorder={reorder} onMove={move} onToggle={toggle} onWidth={(id, width) => updateCard(id, 'width', width)} />
+        <ProfileCanvas username={username} target={target} activeCards={activeCards} selected={selected} onSelect={id => { setSelected(id); setMobilePanel('settings') }} layoutMode={layoutMode} onLayout={value => update({ layoutMode: value })} themeId={themeId} userData={data} onReorder={reorder} onMove={move} onToggle={toggle} onWidth={(id, width) => updateCard(id, 'width', width)} />
         <div className="data-strip"><span className={`status-dot ${data?.source === 'authenticated' ? 'live' : ''}`} /><strong>{sourceLabel}</strong>{loading && <LoaderCircle size={13} className="spin" />}<span className="data-account">{data && data.source !== 'demo' ? `@${data.login}` : 'Design freely, then load your profile'}</span><button onClick={() => { setTokenDraft(token); setConnectOpen(true) }}><Link2 size={13} />{token ? 'Manage connection' : 'Connect GitHub'}</button></div>
         {error && <div className="notice error" role="alert">{error}<button onClick={() => { setLive(false); setLoading(false); setError(''); setData(DEMO_DATA) }}>Use sample data</button></div>}
         <details className="data-details"><summary><CircleHelp size={13} /> About this preview</summary>{(data?.notes || ['Load a profile to view its available data.']).map(note => <p key={note}>{note}</p>)}</details>
@@ -133,12 +134,14 @@ export default function App() {
     </main>
     <footer className="studio-footer"><span><span className="footer-mark">gs</span> Engineered in Zig. Designed by you.</span><button onClick={() => { update({ activeCards: DEFAULT_ACTIVE_CARDS, themeId: 'tokyonight', layoutMode: 'pillar-right' }); setSelected('streak') }}><RotateCcw size={12} /> Reset design</button><span className="footer-version">STUDIO / v1.0</span></footer>
     {exportOpen && <ExportDeck htmlCode={compiled.html} yamlCode={compiled.yaml} error={compiled.error} onClose={() => setExportOpen(false)} />}
-    {deployOpen && <DeployModal username={username} yamlContent={compiled.yaml} error={compiled.error} target={target} onTarget={value => update({ target: { ...target, ...value } })} onClose={() => setDeployOpen(false)} />}
+    {deployOpen && <DeployModal dataSource={data?.source} username={username} yamlContent={compiled.yaml} error={compiled.error} target={target} onTarget={value => update({ target: { ...target, ...value } })} onClose={() => setDeployOpen(false)} />}
     {connectOpen && <Dialog onClose={() => setConnectOpen(false)} labelledBy="connection-title" className="connection-dialog">
       <div className="dialog-heading"><div><span className="eyebrow">DATA CONNECTION</span><h2 id="connection-title">Bring your profile to life.</h2></div><button className="icon-button" aria-label="Close connection" onClick={() => setConnectOpen(false)}><X size={18} /></button></div>
-      <p>Public previews show languages. A read token unlocks contribution history, rhythm, PR velocity, and achievements.</p>
-      <label className="field-label" htmlFor="read-token">GitHub read token</label><input autoFocus id="read-token" type="password" autoComplete="off" placeholder="github_pat_…" value={tokenDraft} onChange={e => setTokenDraft(e.target.value)} />
-      <p className="field-help">Kept in memory for this tab. Never saved to your draft. Permissions determine which repositories can be read.</p>
+      <p>Preview with read access. A token lets Studio load contribution history, rhythm, PR velocity, and achievements. Public previews include languages and developer DNA.</p>
+      <label className="field-label" htmlFor="read-token">Preview token · read access</label><input autoFocus id="read-token" type="password" autoComplete="off" placeholder="github_pat_…" value={tokenDraft} onChange={e => setTokenDraft(e.target.value)} />
+      <p className="field-help">Choose the repositories you want included and grant read access to their contents, pull requests, and issues. GitHub account and organization policies can limit visibility. Tokens stay in tab memory, never in drafts or exports.</p>
+      <TokenGuide />
+      <p className="field-help">Want Studio to commit the workflow? Deploy profile has a separate temporary write-token field. A deployment token restricted to your fork can be used in both fields for public data. For broader private previews, keep the read token separate so those repositories do not receive write access.</p>
       <div className="dialog-actions"><button className="button secondary" onClick={() => { setToken(''); setTokenDraft(''); setConnectOpen(false) }}>Disconnect</button><button className="button primary" onClick={() => { setToken(tokenDraft.trim()); setTokenDraft(''); setLive(true); setRefresh(n => n + 1); setConnectOpen(false) }}>Load profile <ArrowUpRight size={15} /></button></div>
     </Dialog>}
   </div>

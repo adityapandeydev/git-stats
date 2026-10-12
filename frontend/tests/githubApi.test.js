@@ -78,3 +78,15 @@ test('public language colors come from GitHub Linguist, including languages abse
   const result = aggregateLanguages([{ languages: { edges: ['Jupyter Notebook', 'Haskell', 'Shell', 'QML', 'Unknown'].map(name => ({ size: 1, node: { name } })) } }])
   assert.deepEqual(result.map(l => l.color), ['#DA5B0B', '#5e5086', '#89e051', '#44a51c', '#586069'])
 })
+
+test('workflow permission failure never dispatches or reports a successful commit', async t => {
+  const calls = mockFetch(t, [[200, { permissions: { push: true } }], [200, {}], [200, { sha: 'old' }], [403, {}]])
+  await assert.rejects(syncWorkflowToFork({ username: 'octocat', pat: 'test-token', yamlContent: 'name: Test', target: { branch: 'main' } }), /Contents and Workflows write/)
+  assert.equal(calls.some(c => c.url.includes('/dispatches')), false)
+})
+
+test('a concurrent workflow update has an actionable error and never dispatches', async t => {
+  const calls = mockFetch(t, [[200, { permissions: { push: true } }], [200, {}], [200, { sha: 'old' }], [409, {}]])
+  await assert.rejects(syncWorkflowToFork({ username: 'octocat', pat: 'test-token', yamlContent: 'name: Test', target: { branch: 'main' } }), /changed while deploying/)
+  assert.equal(calls.some(c => c.url.includes('/dispatches')), false)
+})

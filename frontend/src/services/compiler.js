@@ -36,10 +36,10 @@ export function layoutCards(cards, mode = 'pillar-right') {
 const escapeHtml = value => value.replaceAll('&', '&amp;').replaceAll('"', '&quot;').replaceAll('<', '&lt;')
 const quote = value => `'${String(value).replaceAll("'", "'\\''")}'`
 
-export function generateProfileHtml(username, cards, mode = 'pillar-right', target = {}) {
+export function generateProfileHtml(username, cards, mode = 'pillar-right', target = {}, imageSource = null) {
   const { owner, repo, branch } = validateTarget(username, target)
   const base = `https://raw.githubusercontent.com/${owner}/${repo}/${branch.split('/').map(encodeURIComponent).join('/')}/generated`
-  const image = (c, align = '') => `  <img${align} src="${escapeHtml(base)}/${c.id}.svg" width="${c.width}" alt="${getCardDef(c.id).name}" />`
+  const image = (c, align = '') => `  <img${align} src="${escapeHtml(imageSource ? imageSource(c) : `${base}/${c.id}.svg`)}" width="${c.width}" alt="${getCardDef(c.id).name}" />`
   const layout = layoutCards(cards, mode)
   const lines = ['<div align="center">']
   for (const c of layout.heroes) lines.push(image(c), '  <br/>')

@@ -1,9 +1,8 @@
 import { useEffect, useMemo, useState } from 'react'
 import { LockKeyhole, AlertCircle, LoaderCircle } from 'lucide-react'
 import { loadEngine, renderNative } from '../../services/engine'
-import { aggregateLanguages } from '../../services/githubApi'
 import { cardRadius } from '../../constants/cards'
-import { calculateRhythm } from '../../services/analytics'
+import { cardRequest } from '../../services/cardRequest'
 
 export default function CardRenderer({ card, themeId, userData }) {
   const [engine, setEngine] = useState(null)
@@ -18,16 +17,7 @@ export default function CardRenderer({ card, themeId, userData }) {
   const result = useMemo(() => {
     if (!engine || !userData || !available) return null
     try {
-      const hidden = (card.hide || '').split(',').map(s => s.trim().toLowerCase()).filter(Boolean)
-      const excluded = (card.excludeRepos || '').split(',').map(s => s.trim().toLowerCase()).filter(Boolean)
-      const allLanguages = excluded.length && userData.repositories ? aggregateLanguages(userData.repositories.filter(r => !excluded.includes(r.name.toLowerCase()))) : userData.languages
-      const languages = card.id === 'languages' ? allLanguages.filter(l => !hidden.includes(l.name.toLowerCase())) : card.id === 'milestones' ? userData.milestoneLanguages || userData.languages : userData.languages
-      const svg = renderNative(engine, {
-        card: card.id, theme: themeId, username: userData.login, width: card.width, height: card.height,
-        border_radius: cardRadius(card), count: card.langsCount || 12, sparkline: card.sparkline !== false, timeframe: card.timeframe || 'all-time', languages,
-        metrics: card.id === 'milestones' ? userData.milestoneMetrics || userData.metrics : card.timeframe === 'this-year' ? userData.yearMetrics : userData.metrics,
-        streak: userData.streak, rhythm: card.id === 'rhythm' ? calculateRhythm(userData.login, userData.commits, card.timezone ?? 5.5) : userData.rhythm, velocity: userData.velocity,
-      })
+      const svg = renderNative(engine, cardRequest(card, themeId, userData))
       return { svg }
     } catch (e) { return { error: e.message } }
   }, [engine, card, themeId, userData, available])
