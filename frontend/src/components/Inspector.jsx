@@ -31,6 +31,6 @@ export default function Inspector({ card, themeId, onTheme, onUpdate, onRemove, 
     </div>}
     <div className="inspector-divider" />
     <details className="destination-settings"><summary><span>EXPORT DESTINATION</span><ChevronDown size={13} /></summary><label className="field-label" htmlFor="repo-owner">Repository owner</label><input id="repo-owner" value={target.owner} placeholder={username || 'username'} onChange={e => onTarget({ owner: e.target.value })} /><label className="field-label" htmlFor="repo-name">Repository</label><input id="repo-name" value={target.repo} onChange={e => onTarget({ repo: e.target.value })} /><label className="field-label" htmlFor="repo-branch">Branch</label><input id="repo-branch" value={target.branch} onChange={e => onTarget({ branch: e.target.value })} /><p className="field-help">Generated SVGs live in this repository. Embed them in your separate profile README.</p></details>
-    <a className="inspector-docs" href="https://github.com/adityapandeydev/git-stats#cli-reference--local-usage" target="_blank" rel="noreferrer">Explore the native engine <ArrowUpRight size={12} /></a>
+    <a className="inspector-docs" href="https://github.com/adityapandeydev/git-stats/blob/main/docs/cli.md" target="_blank" rel="noreferrer">Explore the native engine <ArrowUpRight size={12} /></a>
   </>
 }

@@ -1,10 +1,12 @@
 # GitStats Studio
 
-A static React workspace for arranging GitStats cards, previewing native SVGs, and exporting a GitHub Actions workflow and profile README snippet. Authored source is JavaScript/JSX only.
+[Back to GitStats](../README.md) · [Native CLI](../docs/cli.md)
 
-## Develop
+A static React/Vite workspace for designing GitHub profile layouts. The UI is JavaScript/JSX, and its preview engine compiles the same Zig SVG renderers as the native CLI into WebAssembly. There is no hosted rendering API or OAuth sign-in flow.
 
-Install Zig **0.16.0** and Node **22.12+** (or Node 24). From PowerShell:
+## Run locally
+
+Use **Node 24**. From the repository root in PowerShell:
 
 ```powershell
 cd frontend
@@ -12,63 +14,87 @@ npm ci
 npm run dev
 ```
 
-`npm run dev` uses the checked-in `public/engine.wasm`; Zig compilation is unnecessary for ordinary React/CSS edits. Run `npm run engine` after changing a Zig renderer during development. `npm run build` rebuilds the WebAssembly engine before Vite produces `dist/`. The engine has no operating system, network, or WASI imports; GitHub data fetching stays in browser JavaScript. SVGs are isolated in image elements.
+Open the localhost URL Vite prints, normally **http://localhost:5173/**. `npm run dev` uses the checked-in `public/engine.wasm`; ordinary React/CSS edits do not require Zig. After changing a native renderer, install **Zig 0.16.0**, run `npm run engine`, and refresh the page.
 
-The flow is: GitHub API → JavaScript data preparation → native Zig renderer running as WebAssembly in the browser → SVG preview. Exporting creates CLI commands for GitHub Actions, which compiles a separate native executable to generate the published SVG files. Browsers and visitors to the deployed studio do not need Zig installed.
+To check the production bundle:
 
-**Connect GitHub** in the top bar opens the read-token form. Authentication currently uses a personal access token, with no OAuth sign-in flow. Preview tokens are separate from deployment tokens and Actions secrets. Public language colors come from the bundled GitHub Linguist snapshot in `src/constants/linguist-colors.json`; builds need no network request to retrieve the palette.
+```powershell
+npm run build
+npm run preview
+```
 
-## Preview data
+Open the URL printed by preview, normally **http://localhost:4173/**. Build rebuilds the WebAssembly engine before creating `dist/`, so Zig is required for this step. Visitors to a deployed Studio need only a browser.
 
-The initial canvas uses explicitly labelled sample data. Load a username for public language data; connect a read token for contribution, stats, rhythm, velocity, and milestone cards. Missing authentication and failed requests never silently become sample metrics. Tokens stay in tab memory, while layout settings are saved locally. Closing the tab discards tokens.
+## Design and preview
 
-Authenticated sampling mirrors the native engine: up to 100 language repositories, commit history from 20 repositories with 100 commits each, and turnaround/churn from the latest 30 PRs. Token visibility affects results. Tier percentiles are native heuristic labels. The native `this-year` option means the default rolling contribution collection, not January to today. Public language sampling is bounded to 20 non-fork repositories to conserve the unauthenticated API budget.
+- Drag grip handles in the card layers or canvas; up/down controls are available too.
+- **Pillar right** places languages beside standard cards and heroes above them. **Flow** packs cards into sequential rows.
+- Choose eight native themes, card widths, corner radii, language limits/exclusions, streak momentum, stats scope, and rhythm timezone.
+- Numeric fields allow unfinished edits. Enter or leaving the field commits the value; invalid or out-of-range input shows a correction message.
+- Open **Profile preview** to see the exported HTML with local SVGs in an isolated frame, without editing controls. Desktop/mobile widths, light/dark backgrounds, fit/actual size, and a large preview are available.
 
-## Customize and export
+The preview matches the generated snippet's image dimensions and ordering. Other README content, GitHub's available width, and future GitHub styles can affect final wrapping. Defaults retain 4.5px corners; `0` gives square corners. Layout settings are saved on this device, while tokens stay in tab memory.
 
-Drag grip handles in either card layers or canvas. Up/down controls provide an alternative. Pillar right pins languages beside standard cards, with hero cards above both columns. Flow packs cards into rows. Language counts range from 6–16 and taller cards distribute extra space between rows. Themes and per-card options feed both the preview renderer and workflow compiler.
+## Preview data and limits
 
-Export produces individual SVG commands and README image markup. The Profile preview tab renders the same exported HTML in a sandboxed frame, replacing remote image URLs with local native SVGs. It uses GitHub-style image sizing, float padding, and normal HTML wrapping. Edit mode remains a separate arrangement canvas. Desktop/mobile widths, light/dark README backgrounds, actual-size/fit views, and an expanded preview are available. The preview covers the exported snippet; other README content and GitHub style changes can still affect the result. Unified native bento CLI layouts remain available separately and retain their existing behavior.
+The initial canvas explicitly uses **sample data**. Enter a username for public languages, or use **Connect GitHub** for authenticated metrics. Missing authentication and failed requests do not silently become sample data.
 
-Choose the repository owner, name, and branch under **Export destination**. Fork the updated engine first: generated workflows use the additive `--svg-icons` and `--strict-data` flags introduced with Studio. Existing CLI defaults and production workflows remain unchanged.
+The browser flow is GitHub API → JavaScript analytics → Zig WebAssembly → SVG. The engine has no OS, network, or WASI imports. SVG cards are displayed in isolated image elements, and the README preview uses a sandboxed frame.
 
-Deployment offers two paths:
+Sampling mirrors the native engine: up to 100 language repositories, commit history from 20 repositories with 100 commits each, and turnaround/churn from the latest 30 PRs. Public language loading samples at most 20 non-fork repositories. Access depends on token visibility and organization policy. Percentile tiers are heuristic labels. Native `this-year` uses a rolling contribution collection rather than January-to-today totals.
 
-- **GitHub web editor:** copy/download YAML, open the existing file or new-file editor, then commit it yourself.
-- **Direct sync:** a fine-grained token needs Contents, Workflows, and Actions write permissions on the destination fork. Studio reads the selected branch's file SHA, commits the workflow, and requests a run. A dispatch failure is reported separately from a successful commit. No fork is created automatically. Enable Actions in the fork if GitHub requires it.
+Language colors come from the bundled GitHub Linguist snapshot; builds do not download a color palette. Empty accounts retain zero activity.
 
-Generation uses `GH_TOKEN` if supplied as a repository secret, otherwise the workflow token. Add a suitable read token secret when broader/private profile data is needed. Copy the README snippet into the separate `username/username` repository after generation succeeds. GitHub's image cache can delay visible updates.
+## Tokens and deployment
+
+Fork the current engine and enable Actions before deploying a layout. Set the owner, repository, and branch under **Export destination**.
+
+| Token | Purpose | Lifetime and scope |
+| --- | --- | --- |
+| Read-only preview token | Connect GitHub for authenticated metrics | Access only the repositories needed for preview |
+| Optional deployment PAT | Commit the workflow and request a run | Temporary fine-grained token, restricted to the engine fork; Contents, Workflows, and Actions write permissions |
+| Actions secret `GH_TOKEN` | Fetch data on the schedule | Separate, longer-lived read token with access to the repositories included in your stats; set an expiration and renew it |
+
+Fine-grained PAT permissions apply equally to every selected repository. Keep the deployment PAT separate from a broader private-data preview token. Studio does not create the `GH_TOKEN` secret. See GitHub's [Contents API permissions](https://docs.github.com/en/rest/repos/contents#create-or-update-file-contents), [workflow dispatch permissions](https://docs.github.com/en/rest/actions/workflows#create-a-workflow-dispatch-event), and [PAT guide](https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/managing-your-personal-access-tokens).
+
+Two deployment paths are available:
+
+1. **Manual:** copy/download the YAML from Export, then commit it using the GitHub web editor. No Studio write token is needed.
+2. **Direct sync:** select **Deploy profile → Commit from Studio**, review the destination and YAML, and supply the deployment PAT. Studio commits only `.github/workflows/generate-stats.yml` and requests a run. A successful commit with a failed dispatch is reported separately.
+
+Actions then compiles the **native** engine, fetches data, and commits selected SVGs to `generated/`. It uses its own repository token for those commits; your read secret does not need write access. Studio-generated workflows use `GH_TOKEN` when present and otherwise the workflow token. Restricted/private data may require the separate read secret.
+
+After generation succeeds, copy **Export → Profile README** into `username/username/README.md`. Studio does not edit that separate repository. Branch rules or organization policies can block direct sync, in which case use the repository's usual review process. GitHub's image cache can delay updates.
+
+Studio exports use `--strict-data`, `--svg-icons`, and `--animate=false`. Existing native workflows retain their configured flags and fallback behavior. Unified bento CLI layouts remain available separately.
 
 ## GitHub Pages
 
-Vite uses a relative asset base, so the app and WebAssembly work under `/git-stats/`. Set Pages' build source to GitHub Actions. A Pages workflow should check out the repository, install Node and Zig 0.16.0, run `npm ci` then `npm run build` in `frontend/`, upload `frontend/dist` with `actions/upload-pages-artifact`, and deploy with `actions/deploy-pages`. Grant `pages: write` and `id-token: write`, and use the `github-pages` environment. Trigger it for frontend changes **and `src/**` changes**, since native renderers are bundled into Studio.
+The tracked [.github/workflows/deploy-pages.yml](../.github/workflows/deploy-pages.yml) builds and deploys Studio. It responds to changes under `frontend/**` and `src/**` on `main`, and supports manual runs. Vite's relative asset base supports repository subpaths, including the WebAssembly file.
 
-The local ignored `.github/workflows/deploy-pages.yml` includes Node 24, Zig 0.16.0, and native-source triggers, but remains untracked. The same configuration is available in `frontend/deploy-pages.example.yml`. Publish the workflow separately when ready. No hosted runtime backend is required.
+1. Push the code and Pages workflow to your repository.
+2. Open **Settings → Pages → Build and deployment → Source**, then select **GitHub Actions** ([GitHub guide](https://docs.github.com/en/pages/getting-started-with-github-pages/configuring-a-publishing-source-for-your-github-pages-site)).
+3. Run **Actions → Deploy GitStats Studio to GitHub Pages → Run workflow**.
+4. Open the deployed URL shown by the `github-pages` environment.
 
-## Verify
+A `configure-pages` **Not Found** error commonly means Pages has not been enabled or repository policy/plan does not permit it. Check Pages settings and rerun the workflow. Pages deployment needs no PAT or `GH_TOKEN`. The existing workflow uses Node 24, Zig 0.16.0, and the standard Pages upload/deploy actions.
+
+The Pages workflow publishes the Studio, while `generate-stats.yml` publishes profile images. They are independent.
+
+## Verification
+
+From `frontend/`:
 
 ```powershell
 npm run lint
-npm test
 npm run build
+npm test
 npm run test:parity
 cd ..
-zig build
+zig build -Doptimize=ReleaseFast
 zig build test
 ```
 
-Parity checks compare native and browser SVG output byte-for-byte for all seven cards in all eight themes. API deployment tests use mocked requests and never write to GitHub. Browser checks cover drag handles, quick controls, exports, repeated modal opening, and responsive panels. Real authenticated GitHub data and a production write should be verified with your own token and disposable fork before deployment.
+[Project checks](../.github/workflows/checks.yml) runs these checks for code changes and pull requests. Parity compares all seven cards across eight themes, byte-for-byte, between native and browser engines. API tests use mocked requests; checks never commit to GitHub or require credentials. Real authenticated data and direct sync should be tested with your own token and a disposable fork.
 
-### Card corners and streak layout
-
-Every card has a **Corner radius** control in Card settings. The default remains **4.5 px**, matching existing CLI workflows. Set `0` for square corners; custom values persist in your draft and export as `--border-radius=<value>`.
-
-The streak card uses a dedicated current-streak column, stacked contribution and longest-streak metrics, single-line date ranges, and an optional 14-day momentum chart. Empty accounts display clear activity labels. The Studio and CLI share this renderer.
-
-### Tokens and deployment
-
-Read-only preview and manual export never require write access. **Deploy profile → Commit from Studio** accepts a separate temporary fine-grained PAT restricted to your engine fork, with Contents, Workflows, and Actions write permissions. Review the destination and generated YAML before committing. Studio commits only the workflow and requests a run; Actions generates and commits the SVGs. You copy the README snippet into your profile repository.
-
-For ongoing authenticated generation, add a separate longer-lived read token to the fork’s Actions secrets as `GH_TOKEN`. Set an expiration and renew it before expiry. Studio does not create this secret. Fine-grained PAT permissions apply equally to all selected repositories: keep a separate read-only preview token if previewing broader private data would otherwise grant those repositories write access. A fork-only deployment token can also serve public previews. Tokens remain in memory, never in saved drafts, preview documents, or exports.
-
-Initial Pages setup: in the engine repository, open **Settings → Pages → Source → GitHub Actions**, then run **Deploy GitStats Studio to GitHub Pages** from Actions. A `configure-pages` “Not Found” error commonly means Pages has not been enabled. The Pages deployment itself needs no PAT or `GH_TOKEN` secret.
+To refresh documentation examples after a renderer change, run `npm run engine` followed by `npm run previews` from `frontend/`. This uses deterministic sample data and changes only the standalone non-language showcase SVGs; it does not overwrite `generated/`, language examples, or bento artifacts.
