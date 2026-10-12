@@ -28,7 +28,7 @@ Authenticated sampling mirrors the native engine: up to 100 language repositorie
 
 Drag grip handles in either card layers or canvas. Up/down controls provide an alternative. Pillar right pins languages beside standard cards, with hero cards above both columns. Flow packs cards into rows. Language counts range from 6–16 and taller cards distribute extra space between rows. Themes and per-card options feed both the preview renderer and workflow compiler.
 
-Export produces individual SVG commands and README image markup. Mobile preview stacks individual images; GitHub controls actual README wrapping. Unified native bento CLI layouts remain available separately and retain their existing behavior.
+Export produces individual SVG commands and README image markup. The Profile preview tab renders the same exported HTML in a sandboxed frame, replacing remote image URLs with local native SVGs. It uses GitHub-style image sizing, float padding, and normal HTML wrapping. Edit mode remains a separate arrangement canvas. Desktop/mobile widths, light/dark README backgrounds, actual-size/fit views, and an expanded preview are available. The preview covers the exported snippet; other README content and GitHub style changes can still affect the result. Unified native bento CLI layouts remain available separately and retain their existing behavior.
 
 Choose the repository owner, name, and branch under **Export destination**. Fork the updated engine first: generated workflows use the additive `--svg-icons` and `--strict-data` flags introduced with Studio. Existing CLI defaults and production workflows remain unchanged.
 
@@ -64,3 +64,11 @@ Parity checks compare native and browser SVG output byte-for-byte for all seven 
 Every card has a **Corner radius** control in Card settings. The default remains **4.5 px**, matching existing CLI workflows. Set `0` for square corners; custom values persist in your draft and export as `--border-radius=<value>`.
 
 The streak card uses a dedicated current-streak column, stacked contribution and longest-streak metrics, single-line date ranges, and an optional 14-day momentum chart. Empty accounts display clear activity labels. The Studio and CLI share this renderer.
+
+### Tokens and deployment
+
+Read-only preview and manual export never require write access. **Deploy profile → Commit from Studio** accepts a separate temporary fine-grained PAT restricted to your engine fork, with Contents, Workflows, and Actions write permissions. Review the destination and generated YAML before committing. Studio commits only the workflow and requests a run; Actions generates and commits the SVGs. You copy the README snippet into your profile repository.
+
+For ongoing authenticated generation, add a separate longer-lived read token to the fork’s Actions secrets as `GH_TOKEN`. Set an expiration and renew it before expiry. Studio does not create this secret. Fine-grained PAT permissions apply equally to all selected repositories: keep a separate read-only preview token if previewing broader private data would otherwise grant those repositories write access. A fork-only deployment token can also serve public previews. Tokens remain in memory, never in saved drafts, preview documents, or exports.
+
+Initial Pages setup: in the engine repository, open **Settings → Pages → Source → GitHub Actions**, then run **Deploy GitStats Studio to GitHub Pages** from Actions. A `configure-pages` “Not Found” error commonly means Pages has not been enabled. The Pages deployment itself needs no PAT or `GH_TOKEN` secret.
