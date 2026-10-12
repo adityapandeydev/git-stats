@@ -11,6 +11,7 @@
     "build": "vite build",
     "lint": "oxlint src scripts tests vite.config.js",
     "test:parity": "node scripts/check-parity.js",
+    "previews": "node scripts/generate-previews.js",
     "preview": "vite preview"
   },
   "dependencies": {
