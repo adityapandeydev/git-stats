@@ -63,3 +63,43 @@ test('large streak counts and compact dimensions remain finite', () => {
   assert.doesNotMatch(svg, /NaN|Infinity/)
   assert.match(svg, /4294967295/)
 })
+
+test('redesigned cards fit compact and hero sizes with large metrics', () => {
+  const metrics = Object.fromEntries(Object.keys(DEMO_DATA.metrics).map(key => [key, 1e12]))
+  for (const card of ['stats', 'rhythm', 'radar', 'velocity', 'milestones']) {
+    for (const [width, height] of [[300, 124], [424, 180], [840, 180], [424, 360]]) {
+      const svg = render(card, { width, height, metrics })
+      assert.doesNotMatch(svg, /NaN|Infinity|\p{Extended_Pictographic}/u)
+      assert.match(svg, new RegExp(`viewBox="0 0 ${width} ${height}"`))
+    }
+  }
+})
+
+test('empty rhythm and PR data retain honest zero states', () => {
+  const rhythm = { ...DEMO_DATA.rhythm, total_commits: 0, day_commits: 0, night_commits: 0, matrix: Array.from({ length: 7 }, () => Array(24).fill(0)) }
+  const svg = render('rhythm', { rhythm })
+  assert.match(svg, /No activity yet/)
+  assert.match(svg, /0% day/)
+  assert.match(svg, /0% night/)
+  assert.doesNotMatch(svg, /100% night|NaN/)
+  assert.equal((svg.match(/height="7.10"/g) || []).length, 168)
+  const velocity = { ...DEMO_DATA.velocity, total_prs: 0, merged_prs: 0, open_prs: 0, closed_prs: 0, merge_rate: 0, velocity_score: 0 }
+  const empty = render('velocity', { velocity })
+  assert.match(empty, /No pull requests/)
+  assert.doesNotMatch(empty, /Hypersonic Shipper|18.5h|NaN/)
+})
+
+test('wide milestones use six tiles; the compact layout preserves all six values', () => {
+  for (const width of [424, 840]) {
+    const svg = render('milestones', { width })
+    for (const value of ['69 Days', '16 Stacks', '3.1k Contribs', '64 Merged', '32 Repos', '520 Stars']) assert.ok(svg.includes(value))
+    assert.equal((svg.match(/viewBox="0 0 24 24"/g) || []).length, 6)
+  }
+})
+
+test('rhythm percentage labels sum to 100 for complementary day/night activity', () => {
+  const rhythm = { ...DEMO_DATA.rhythm, total_commits: 200, day_commits: 123, night_commits: 77 }
+  const svg = render('rhythm', { rhythm })
+  assert.match(svg, /61% day/)
+  assert.match(svg, /39% night/)
+})

@@ -14,6 +14,46 @@ pub const milestones = @import("renderer/milestones.zig");
 pub const bento = @import("renderer/bento.zig");
 pub const icons = @import("renderer/icons.zig");
 
+test "stats score ring is exact at zero, three quarters, and full score" {
+    const a = std.testing.allocator;
+    var data = models.OverallStats{ .username = "test", .name = "test", .total_commits = 0, .total_prs = 0, .merged_prs = 0, .total_issues = 0, .closed_issues = 0, .total_stars = 0, .contributed_repos = 0, .rating = models.calculateDeveloperRating(0, 0, 0, 0, 0, 0) };
+    for ([_]u32{ 0, 750, 1000, 1200 }, [_][]const u8{ "100.000", "25.000", "0.000", "0.000" }) |score, offset| {
+        data.rating.score = score;
+        // The renderer must use score/1000, not an inconsistent stale progress.
+        data.rating.progress = 0.9;
+        const rendered = try stats.renderStatsSVG(a, &data, .{ .theme = themes.tokyonight, .animate = false });
+        defer a.free(rendered);
+        const expected = try std.fmt.allocPrint(a, "stroke-dashoffset=\"{s}\"", .{offset});
+        defer a.free(expected);
+        try std.testing.expect(std.mem.indexOf(u8, rendered, expected) != null);
+        try std.testing.expect(std.mem.indexOf(u8, rendered, "pathLength=\"100\"") != null);
+    }
+}
+
+test "DNA labels share one fixed gap from the outer vertices" {
+    for (0..5) |i| {
+        const v = radar.vertex(i, 1);
+        const p = radar.labelPosition(i);
+        const distance = @sqrt((p[0] - v[0]) * (p[0] - v[0]) + (p[1] - v[1]) * (p[1] - v[1]));
+        try std.testing.expectApproxEqAbs(radar.label_gap, distance, 0.0001);
+        if (i > 0 and i < 3) try std.testing.expect(p[0] > v[0]);
+        if (i >= 3) try std.testing.expect(p[0] < v[0]);
+    }
+}
+
+test "milestone progress retains empty, fractional and completed targets" {
+    const a = std.testing.allocator;
+    const empty = try models.evaluateStreakMilestone(a, 0);
+    defer a.free(empty.value_str);
+    const partial = try models.evaluateStreakMilestone(a, 69);
+    defer a.free(partial.value_str);
+    const complete = try models.evaluateStarMilestone(a, 520);
+    defer a.free(complete.value_str);
+    try std.testing.expectEqual(@as(f64, 0), milestones.progress(empty));
+    try std.testing.expectApproxEqAbs(@as(f64, 0.69), milestones.progress(partial), 0.0001);
+    try std.testing.expectEqual(@as(f64, 1), milestones.progress(complete));
+}
+
 test "optional SVG icons preserve plain labels and release temporary allocations" {
     const allocator = std.testing.allocator;
     const input = "<svg><text x=\"20\" y=\"30\" font-size=\"10\">\u{1f525} Active</text><text x=\"1\" y=\"2\">Plain label</text></svg>";
@@ -191,10 +231,10 @@ test "stats: renderStatsSVG produces valid reimagined card with radial rating ri
     try std.testing.expect(std.mem.indexOf(u8, rendered, "width=\"424\" height=\"180\"") != null);
     try std.testing.expect(std.mem.indexOf(u8, rendered, "DEVELOPER STATS") != null);
     try std.testing.expect(std.mem.indexOf(u8, rendered, "2,030") != null);
-    try std.testing.expect(std.mem.indexOf(u8, rendered, "COMMITS") != null);
-    try std.testing.expect(std.mem.indexOf(u8, rendered, "MERGED PRS") != null);
-    try std.testing.expect(std.mem.indexOf(u8, rendered, "TOTAL STARS") != null);
-    try std.testing.expect(std.mem.indexOf(u8, rendered, "REPOSITORIES") != null);
+    try std.testing.expect(std.mem.indexOf(u8, rendered, "Commits") != null);
+    try std.testing.expect(std.mem.indexOf(u8, rendered, "Merged PRs") != null);
+    try std.testing.expect(std.mem.indexOf(u8, rendered, "Total stars") != null);
+    try std.testing.expect(std.mem.indexOf(u8, rendered, "Repositories") != null);
     try std.testing.expect(std.mem.indexOf(u8, rendered, "tier-badge-txt") != null);
     try std.testing.expect(std.mem.indexOf(u8, rendered, "</svg>") != null);
 }
