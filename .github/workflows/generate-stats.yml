@@ -38,7 +38,7 @@ jobs:
           # 2. Generate Languages Card
           ./zig-out/bin/git_stats --generate \
             --username="${{ github.repository_owner }}" \
-            --langs-count=13 \
+            --langs-count=14 \
             --theme="tokyonight" \
             --layout="standard" \
             --columns=2 \
