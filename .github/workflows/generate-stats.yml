@@ -45,7 +45,7 @@ jobs:
             --card-width=400 \
             --card-height=364 \
             --border-radius=4.5 \
-            --hide="jupyter notebook,qml,javascript,html,css,tex" \
+            --hide="jupyter notebook,qml,javascript,html,css,tex,nsis" \
             --output="generated/languages.svg"
 
           # 3. Generate Streak Card (with 14-day momentum sparkline)
