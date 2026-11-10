@@ -131,10 +131,10 @@ pub fn renderStreakSVG(allocator: std.mem.Allocator, stats: *const models.Streak
         \\<rect x="18" y="79" width="115" height="17" rx="8.5" fill="{s}" fill-opacity=".08" stroke="{s}" stroke-opacity=".3"/>
         \\<circle cx="28" cy="87.5" r="2" fill="{s}"/><text x="37" y="90.5" fill="{s}" font-size="7.7" font-weight="650" letter-spacing=".65">{s}</text>
         \\<path d="M149 18V96" stroke="{s}"/>
-        \\<text x="165" y="28" fill="{s}" font-size="11">Total Contributions</text><text x="405" y="29" text-anchor="end" fill="{s}" font-size="{d}" font-weight="700">{d}</text>
+        \\<text x="165" y="28" fill="{s}" font-size="11">Total Contributions</text><text x="405" y="31" text-anchor="end" fill="{s}" font-size="{d}" font-weight="700">{d}</text>
         \\<text x="165" y="45" fill="{s}" font-size="9">{s}</text>
         \\<path d="M165 55H405" stroke="{s}"/>
-        \\<text x="165" y="76" fill="{s}" font-size="11">Longest Streak</text><text x="405" y="77" text-anchor="end" fill="{s}" font-size="{d}" font-weight="700">{d}</text>
+        \\<text x="165" y="76" fill="{s}" font-size="11">Longest Streak</text><text x="405" y="79" text-anchor="end" fill="{s}" font-size="{d}" font-weight="700">{d}</text>
         \\<text x="165" y="93" fill="{s}" font-size="9">{s}</text>
         \\<path d="M18 105H406" stroke="{s}"/>
     , .{

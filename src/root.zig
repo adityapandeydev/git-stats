@@ -36,9 +36,69 @@ test "DNA labels share one fixed gap from the outer vertices" {
         const p = radar.labelPosition(i);
         const distance = @sqrt((p[0] - v[0]) * (p[0] - v[0]) + (p[1] - v[1]) * (p[1] - v[1]));
         try std.testing.expectApproxEqAbs(radar.label_gap, distance, 0.0001);
-        if (i > 0 and i < 3) try std.testing.expect(p[0] > v[0]);
-        if (i >= 3) try std.testing.expect(p[0] < v[0]);
     }
+}
+
+test "DNA radius is relative to the strongest domain" {
+    try std.testing.expectEqual(@as(f64, 1), radar.radiusFraction(37, 37));
+    try std.testing.expectApproxEqAbs(@as(f64, 28.0 / 37.0), radar.radiusFraction(28, 37), 1e-9);
+    try std.testing.expectEqual(@as(f64, 0), radar.radiusFraction(0, 0));
+    // Vertex distance from the centre equals fraction x radius on every axis.
+    for (0..5) |i| {
+        const v = radar.vertex(i, 0.5);
+        const d = @sqrt((v[0] - radar.chart_x) * (v[0] - radar.chart_x) + (v[1] - radar.chart_y) * (v[1] - radar.chart_y));
+        try std.testing.expectApproxEqAbs(radar.chart_radius * 0.5, d, 1e-9);
+    }
+}
+
+test "DNA honours hidden languages and splits multi-domain languages" {
+    const a = std.testing.allocator;
+    const langs = [_]models.LanguageStat{
+        .{ .name = "Rust", .color = "#dea584", .size = 600, .percentage = 0 },
+        .{ .name = "Python", .color = "#3572A5", .size = 200, .percentage = 0 },
+        .{ .name = "Jupyter Notebook", .color = "#DA5B0B", .size = 5000, .percentage = 0 },
+        .{ .name = "TeX", .color = "#3D6117", .size = 900, .percentage = 0 },
+    };
+    const visible = try models.filterHiddenLanguages(a, &langs, " jupyter notebook ,html");
+    defer a.free(visible);
+    try std.testing.expectEqual(@as(usize, 3), visible.len);
+    const dna = models.calculateDeveloperDNA("t", visible);
+    // TeX is ignored; Python splits half backend, half data.
+    try std.testing.expectApproxEqAbs(@as(f64, 75), dna.systems_pct, 1e-9);
+    try std.testing.expectApproxEqAbs(@as(f64, 12.5), dna.backend_pct, 1e-9);
+    try std.testing.expectApproxEqAbs(@as(f64, 12.5), dna.data_pct, 1e-9);
+    try std.testing.expectEqual(@as(usize, 2), dna.total_languages);
+    try std.testing.expectEqualStrings("Systems Engineer", dna.archetype);
+}
+
+test "rating breakdown always adds up to the score" {
+    const cases = [_][6]u64{ .{ 2764, 113, 110, 6, 1, 44 }, .{ 0, 0, 0, 0, 0, 0 }, .{ 15, 0, 0, 0, 0, 1 }, .{ 99999, 500, 480, 300, 9000, 80 } };
+    for (cases) |k| {
+        const r = models.calculateDeveloperRating(k[0], k[1], k[2], k[3], k[4], k[5]);
+        try std.testing.expectEqual(r.score, r.commits_pts + r.prs_pts + r.collab_pts + r.impact_pts);
+        try std.testing.expect(r.commits_pts <= 350 and r.prs_pts <= 300 and r.collab_pts <= 200 and r.impact_pts <= 150);
+    }
+}
+
+test "milestones use the real next tier threshold" {
+    const a = std.testing.allocator;
+    const star = try models.evaluateStarMilestone(a, 1);
+    defer a.free(star.value_str);
+    try std.testing.expectEqual(@as(u64, 3), star.next); // silver unlocks at 3
+    const top = try models.evaluateStreakMilestone(a, 703);
+    defer a.free(top.value_str);
+    try std.testing.expectEqual(@as(u64, 0), top.next);
+    try std.testing.expectEqual(@as(f64, 1), milestones.progress(top));
+}
+
+test "rhythm timezone labels and heat levels" {
+    var buf: [32]u8 = undefined;
+    try std.testing.expectEqualStrings("UTC+5:30", try rhythm.formatOffset(&buf, 5.5));
+    try std.testing.expectEqualStrings("UTC\u{2212}3", try rhythm.formatOffset(&buf, -3));
+    try std.testing.expectEqualStrings("UTC", try rhythm.formatOffset(&buf, 0));
+    try std.testing.expectEqual(@as(u8, 0), rhythm.level(0, 10));
+    try std.testing.expectEqual(@as(u8, 1), rhythm.level(1, 10));
+    try std.testing.expectEqual(@as(u8, 4), rhythm.level(10, 10));
 }
 
 test "milestone progress retains empty, fractional and completed targets" {
@@ -229,13 +289,12 @@ test "stats: renderStatsSVG produces valid reimagined card with radial rating ri
 
     try std.testing.expect(std.mem.indexOf(u8, rendered, "<svg xmlns=\"http://www.w3.org/2000/svg\"") != null);
     try std.testing.expect(std.mem.indexOf(u8, rendered, "width=\"424\" height=\"180\"") != null);
-    try std.testing.expect(std.mem.indexOf(u8, rendered, "DEVELOPER STATS") != null);
+    try std.testing.expect(std.mem.indexOf(u8, rendered, "Developer Stats") != null);
     try std.testing.expect(std.mem.indexOf(u8, rendered, "2,030") != null);
-    try std.testing.expect(std.mem.indexOf(u8, rendered, "Commits") != null);
-    try std.testing.expect(std.mem.indexOf(u8, rendered, "Merged PRs") != null);
-    try std.testing.expect(std.mem.indexOf(u8, rendered, "Total stars") != null);
-    try std.testing.expect(std.mem.indexOf(u8, rendered, "Repositories") != null);
-    try std.testing.expect(std.mem.indexOf(u8, rendered, "tier-badge-txt") != null);
+    for ([_][]const u8{ "Commits", "Merged PRs", "Stars", "Repos", "Pull requests", "Collaboration", "Impact", "rating-progress" }) |label|
+        try std.testing.expect(std.mem.indexOf(u8, rendered, label) != null);
+    // No unsupported percentile claim on the card.
+    try std.testing.expect(std.mem.indexOf(u8, rendered, "Top ") == null);
     try std.testing.expect(std.mem.indexOf(u8, rendered, "</svg>") != null);
 }
 
@@ -269,17 +328,18 @@ test "rhythm: renderRhythmSVG produces valid circadian punchcard matrix" {
         .card_width = 424,
         .card_height = 180,
         .border_radius = 4.5,
+        .tz_offset_hours = 5.5,
     });
     defer allocator.free(rendered);
 
     try std.testing.expect(std.mem.indexOf(u8, rendered, "<svg xmlns=\"http://www.w3.org/2000/svg\"") != null);
     try std.testing.expect(std.mem.indexOf(u8, rendered, "width=\"424\" height=\"180\"") != null);
-    try std.testing.expect(std.mem.indexOf(u8, rendered, "COMMIT RHYTHM") != null);
-    try std.testing.expect(std.mem.indexOf(u8, rendered, "24H × 7D MATRIX") != null);
-    try std.testing.expect(std.mem.indexOf(u8, rendered, "PEAK WINDOW") != null);
+    try std.testing.expect(std.mem.indexOf(u8, rendered, "Commit Rhythm") != null);
+    try std.testing.expect(std.mem.indexOf(u8, rendered, "UTC+5:30") != null);
     try std.testing.expect(std.mem.indexOf(u8, rendered, "21:00 – 01:00") != null);
-    try std.testing.expect(std.mem.indexOf(u8, rendered, "CIRCADIAN SPLIT") != null);
+    try std.testing.expect(std.mem.indexOf(u8, rendered, "240 recent commits sampled") != null);
     try std.testing.expect(std.mem.indexOf(u8, rendered, "Night Owl") != null);
+    try std.testing.expect(std.mem.indexOf(u8, rendered, "rhythm-matrix") != null);
     try std.testing.expect(std.mem.indexOf(u8, rendered, "</svg>") != null);
 }
 
@@ -310,11 +370,13 @@ test "radar: renderRadarSVG produces valid polyglot radar chart" {
 
     try std.testing.expect(std.mem.indexOf(u8, rendered, "<svg xmlns=\"http://www.w3.org/2000/svg\"") != null);
     try std.testing.expect(std.mem.indexOf(u8, rendered, "width=\"424\" height=\"180\"") != null);
-    try std.testing.expect(std.mem.indexOf(u8, rendered, "DEVELOPER DNA") != null);
-    try std.testing.expect(std.mem.indexOf(u8, rendered, "5-AXIS POLYGLOT RADAR") != null);
+    try std.testing.expect(std.mem.indexOf(u8, rendered, "Developer DNA") != null);
     try std.testing.expect(std.mem.indexOf(u8, rendered, "Systems Architect") != null);
-    try std.testing.expect(std.mem.indexOf(u8, rendered, "8 Languages Mapped") != null);
+    try std.testing.expect(std.mem.indexOf(u8, rendered, "8 languages") != null);
+    try std.testing.expect(std.mem.indexOf(u8, rendered, "Strongest in Systems") != null);
     try std.testing.expect(std.mem.indexOf(u8, rendered, "Data &amp; AI") != null);
+    // The strongest domain (45%) reaches the outer ring: the shape starts at the top outer vertex.
+    try std.testing.expect(std.mem.indexOf(u8, rendered, "class=\"dna-shape\" points=\"104.00,60.00 ") != null);
     try std.testing.expect(std.mem.indexOf(u8, rendered, "</svg>") != null);
 }
 
@@ -349,16 +411,14 @@ test "velocity: renderVelocitySVG produces valid PR velocity & cadence card" {
 
     try std.testing.expect(std.mem.indexOf(u8, rendered, "<svg xmlns=\"http://www.w3.org/2000/svg\"") != null);
     try std.testing.expect(std.mem.indexOf(u8, rendered, "width=\"424\" height=\"180\"") != null);
-    try std.testing.expect(std.mem.indexOf(u8, rendered, "PULL REQUEST VELOCITY") != null);
-    try std.testing.expect(std.mem.indexOf(u8, rendered, "CADENCE &amp; IMPACT") != null);
-    try std.testing.expect(std.mem.indexOf(u8, rendered, "Hypersonic Shipper") != null);
+    try std.testing.expect(std.mem.indexOf(u8, rendered, "Pull Requests") != null);
     try std.testing.expect(std.mem.indexOf(u8, rendered, "18.5h") != null);
-    try std.testing.expect(std.mem.indexOf(u8, rendered, "MERGE RATE") != null);
-    try std.testing.expect(std.mem.indexOf(u8, rendered, "87.5%") != null);
-    try std.testing.expect(std.mem.indexOf(u8, rendered, "MERGED PRS") != null);
-    try std.testing.expect(std.mem.indexOf(u8, rendered, "CODE SHIPPED") != null);
-    try std.testing.expect(std.mem.indexOf(u8, rendered, "PEER REVIEWS") != null);
-    try std.testing.expect(std.mem.indexOf(u8, rendered, "VELOCITY INDEX") != null);
+    try std.testing.expect(std.mem.indexOf(u8, rendered, "Merge rate") != null);
+    try std.testing.expect(std.mem.indexOf(u8, rendered, "88%") != null);
+    try std.testing.expect(std.mem.indexOf(u8, rendered, "28 merged") != null);
+    try std.testing.expect(std.mem.indexOf(u8, rendered, "+42.8k / \u{2212}14.3k") != null);
+    try std.testing.expect(std.mem.indexOf(u8, rendered, "Reviews given") != null);
+    try std.testing.expect(std.mem.indexOf(u8, rendered, "Velocity") == null);
     try std.testing.expect(std.mem.indexOf(u8, rendered, "</svg>") != null);
 }
 
@@ -400,15 +460,11 @@ test "milestones: renderMilestonesSVG produces valid achievements showcase card"
 
     try std.testing.expect(std.mem.indexOf(u8, rendered, "<svg xmlns=\"http://www.w3.org/2000/svg\"") != null);
     try std.testing.expect(std.mem.indexOf(u8, rendered, "width=\"424\" height=\"180\"") != null);
-    try std.testing.expect(std.mem.indexOf(u8, rendered, "CAREER MILESTONES") != null);
-    try std.testing.expect(std.mem.indexOf(u8, rendered, "ACHIEVEMENTS &amp; TROPHIES") != null);
+    try std.testing.expect(std.mem.indexOf(u8, rendered, "Milestones") != null);
     try std.testing.expect(std.mem.indexOf(u8, rendered, "Diamond Architect") != null);
-    try std.testing.expect(std.mem.indexOf(u8, rendered, "STREAK RUNNER") != null);
-    try std.testing.expect(std.mem.indexOf(u8, rendered, "POLYGLOT") != null);
-    try std.testing.expect(std.mem.indexOf(u8, rendered, "CODE TITAN") != null);
-    try std.testing.expect(std.mem.indexOf(u8, rendered, "PR SPECIALIST") != null);
-    try std.testing.expect(std.mem.indexOf(u8, rendered, "REPO MASTER") != null);
-    try std.testing.expect(std.mem.indexOf(u8, rendered, "STAR MAGNET") != null);
+    for ([_][]const u8{ "184 days", "Languages", "2,480", "Merged PRs", "Repositories", "Stars", "PLATINUM", "next 365" }) |label|
+        try std.testing.expect(std.mem.indexOf(u8, rendered, label) != null);
+    try std.testing.expect(std.mem.indexOf(u8, rendered, "Max Tier") == null);
     try std.testing.expect(std.mem.indexOf(u8, rendered, "</svg>") != null);
 }
 

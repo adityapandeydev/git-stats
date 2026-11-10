@@ -254,12 +254,13 @@ fn renderCardById(
             .card_width = slot_w,
             .card_height = slot_h,
             .border_radius = cli.border_radius,
+            .tz_offset_hours = cli.tz_offset_hours,
             .hide_border = true,
             .hide_title = cli.hide_title,
             .animate = cli.animate,
         });
     } else if (std.mem.eql(u8, card_id, "radar")) {
-        const dna_data = try client_ptr.getDeveloperDNA(username, auth_token, excluded_repos);
+        const dna_data = try client_ptr.getDeveloperDNA(username, auth_token, excluded_repos, cli.hide);
         return try radar_renderer.renderRadarSVG(arena, dna_data, .{
             .theme = active_theme,
             .card_width = slot_w,
@@ -630,6 +631,7 @@ pub fn main(init: std.process.Init) !void {
 
         const rhythm_opts = rhythm_renderer.RhythmRenderOptions{
             .theme = active_theme,
+            .tz_offset_hours = cli.tz_offset_hours,
             .card_width = if (cli.card_width != 400) cli.card_width else 424,
             .card_height = if (cli.card_height > 0) cli.card_height else 180,
             .border_radius = cli.border_radius,
@@ -662,7 +664,7 @@ pub fn main(init: std.process.Init) !void {
     // Check if generating developer DNA radar card
     if (std.mem.eql(u8, cli.card, "radar")) {
         std.debug.print("Fetching GitHub developer DNA for user '{s}'...\n", .{username});
-        const dna = client.getDeveloperDNA(username, auth_token, excluded_repos.items) catch |err| {
+        const dna = client.getDeveloperDNA(username, auth_token, excluded_repos.items, cli.hide) catch |err| {
             std.debug.print("❌ Error fetching developer DNA: {}\n", .{err});
             return err;
         };

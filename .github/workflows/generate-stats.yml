@@ -84,6 +84,7 @@ jobs:
             --card-width=424 \
             --card-height=180 \
             --border-radius=4.5 \
+            --hide="jupyter notebook,qml,javascript,html,css,tex,nsis" \
             --output="generated/radar.svg"
 
           # 7. Generate PR Velocity & Impact Card (Turnaround + Impact Matrix)

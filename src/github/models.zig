@@ -52,6 +52,11 @@ pub const DeveloperRating = struct {
     color: []const u8, // Primary tier color
     glow_color: []const u8, // Secondary aura color
     progress: f64, // 0.0 - 1.0 (for circular ring gauge stroke-dashoffset)
+    // Score breakdown shown on the stats card. score is their sum.
+    commits_pts: u32 = 0, // of 350
+    prs_pts: u32 = 0, // of 300
+    collab_pts: u32 = 0, // of 200
+    impact_pts: u32 = 0, // of 150
 };
 
 /// Calculate 1000-point Craft & Consistency Developer Rating.
@@ -105,9 +110,14 @@ pub fn calculateDeveloperRating(
         s_stars = @min(150.0, 125.0 + (st - 50.0) * 0.25); // 125 - 150
     }
 
-    const total_f = @min(1000.0, s_commits + s_prs + s_collab + s_stars);
-    const score = @as(u32, @intFromFloat(total_f));
-    const progress = total_f / 1000.0;
+    // Round each part once and define the score as their sum, so the four
+    // numbers shown on the card always add up to the score exactly.
+    const p_commits: u32 = @intFromFloat(@round(s_commits));
+    const p_prs: u32 = @intFromFloat(@round(s_prs));
+    const p_collab: u32 = @intFromFloat(@round(s_collab));
+    const p_impact: u32 = @intFromFloat(@round(s_stars));
+    const score: u32 = @min(1000, p_commits + p_prs + p_collab + p_impact);
+    const progress = @as(f64, @floatFromInt(score)) / 1000.0;
 
     if (score >= 880) {
         return .{
@@ -118,6 +128,10 @@ pub fn calculateDeveloperRating(
             .color = "#f7768e",
             .glow_color = "#ff9e64",
             .progress = progress,
+            .commits_pts = p_commits,
+            .prs_pts = p_prs,
+            .collab_pts = p_collab,
+            .impact_pts = p_impact,
         };
     } else if (score >= 760) {
         return .{
@@ -128,6 +142,10 @@ pub fn calculateDeveloperRating(
             .color = "#bb9af7",
             .glow_color = "#7aa2f7",
             .progress = progress,
+            .commits_pts = p_commits,
+            .prs_pts = p_prs,
+            .collab_pts = p_collab,
+            .impact_pts = p_impact,
         };
     } else if (score >= 640) {
         return .{
@@ -138,6 +156,10 @@ pub fn calculateDeveloperRating(
             .color = "#70a5fd",
             .glow_color = "#7dcfff",
             .progress = progress,
+            .commits_pts = p_commits,
+            .prs_pts = p_prs,
+            .collab_pts = p_collab,
+            .impact_pts = p_impact,
         };
     } else if (score >= 520) {
         return .{
@@ -148,6 +170,10 @@ pub fn calculateDeveloperRating(
             .color = "#7dcfff",
             .glow_color = "#73daca",
             .progress = progress,
+            .commits_pts = p_commits,
+            .prs_pts = p_prs,
+            .collab_pts = p_collab,
+            .impact_pts = p_impact,
         };
     } else if (score >= 400) {
         return .{
@@ -158,6 +184,10 @@ pub fn calculateDeveloperRating(
             .color = "#73daca",
             .glow_color = "#9ece6a",
             .progress = progress,
+            .commits_pts = p_commits,
+            .prs_pts = p_prs,
+            .collab_pts = p_collab,
+            .impact_pts = p_impact,
         };
     } else if (score >= 280) {
         return .{
@@ -168,6 +198,10 @@ pub fn calculateDeveloperRating(
             .color = "#e0af68",
             .glow_color = "#ff9e64",
             .progress = progress,
+            .commits_pts = p_commits,
+            .prs_pts = p_prs,
+            .collab_pts = p_collab,
+            .impact_pts = p_impact,
         };
     } else {
         return .{
@@ -178,6 +212,10 @@ pub fn calculateDeveloperRating(
             .color = "#9aa5ce",
             .glow_color = "#565f89",
             .progress = progress,
+            .commits_pts = p_commits,
+            .prs_pts = p_prs,
+            .collab_pts = p_collab,
+            .impact_pts = p_impact,
         };
     }
 }
@@ -333,40 +371,69 @@ pub const DeveloperDNA = struct {
     frontend_pct: f64 = 0.0,
     devops_pct: f64 = 0.0,
     data_pct: f64 = 0.0,
-    archetype: []const u8 = "Fullstack Polyglot",
+    archetype: []const u8 = "Polyglot Engineer",
     archetype_icon: []const u8 = "🧬",
     archetype_color: []const u8 = "#70a5fd",
     total_languages: usize = 0,
     top_domain_name: []const u8 = "Systems",
 };
 
-pub fn calculateDeveloperDNA(username: []const u8, langs: []const LanguageStat) DeveloperDNA {
-    var systems_bytes: u64 = 0;
-    var backend_bytes: u64 = 0;
-    var frontend_bytes: u64 = 0;
-    var devops_bytes: u64 = 0;
-    var data_bytes: u64 = 0;
-    var total_bytes: u64 = 0;
+/// Domain weights in DomainKind order (systems, backend, frontend, devops, data).
+/// Languages that are commonly used in two domains split their bytes; document
+/// formats return all zeros and are left out of the DNA entirely.
+pub fn domainWeights(lang_name: []const u8) [5]f64 {
+    const eq = std.ascii.eqlIgnoreCase;
+    if (eq(lang_name, "TeX") or eq(lang_name, "Markdown") or eq(lang_name, "Roff") or eq(lang_name, "Typst") or eq(lang_name, "Rich Text Format"))
+        return .{ 0, 0, 0, 0, 0 };
+    if (eq(lang_name, "Python")) return .{ 0, 0.5, 0, 0, 0.5 };
+    if (eq(lang_name, "TypeScript") or eq(lang_name, "JavaScript")) return .{ 0, 0.2, 0.8, 0, 0 };
+    if (eq(lang_name, "Go")) return .{ 0, 0.8, 0, 0.2, 0 };
+    if (eq(lang_name, "Mojo")) return .{ 0, 0, 0, 0, 1 };
+    var w = [5]f64{ 0, 0, 0, 0, 0 };
+    w[@intFromEnum(classifyLanguageDomain(lang_name))] = 1;
+    return w;
+}
 
-    for (langs) |l| {
-        total_bytes += l.size;
-        switch (classifyLanguageDomain(l.name)) {
-            .systems => systems_bytes += l.size,
-            .backend => backend_bytes += l.size,
-            .frontend => frontend_bytes += l.size,
-            .devops => devops_bytes += l.size,
-            .data => data_bytes += l.size,
+/// Languages whose names are not in the comma-separated hide list (case-insensitive).
+pub fn filterHiddenLanguages(allocator: std.mem.Allocator, langs: []const LanguageStat, hide_csv: ?[]const u8) ![]LanguageStat {
+    var out: std.ArrayList(LanguageStat) = .empty;
+    outer: for (langs) |l| {
+        if (hide_csv) |csv| {
+            var it = std.mem.splitScalar(u8, csv, ',');
+            while (it.next()) |item| {
+                const name = std.mem.trim(u8, item, " \t\r\n");
+                if (name.len > 0 and std.ascii.eqlIgnoreCase(name, l.name)) continue :outer;
+            }
         }
+        try out.append(allocator, l);
+    }
+    return out.toOwnedSlice(allocator);
+}
+
+pub fn calculateDeveloperDNA(username: []const u8, langs: []const LanguageStat) DeveloperDNA {
+    var bytes = [5]f64{ 0, 0, 0, 0, 0 };
+    var total: f64 = 0;
+    var mapped: usize = 0;
+    for (langs) |l| {
+        const w = domainWeights(l.name);
+        const size: f64 = @floatFromInt(l.size);
+        var counted = false;
+        for (w, 0..) |share, i| if (share > 0) {
+            bytes[i] += size * share;
+            total += size * share;
+            counted = true;
+        };
+        if (counted) mapped += 1;
     }
 
-    const total_f: f64 = @floatFromInt(@max(1, total_bytes));
-    const s_pct = (@as(f64, @floatFromInt(systems_bytes)) / total_f) * 100.0;
-    const b_pct = (@as(f64, @floatFromInt(backend_bytes)) / total_f) * 100.0;
-    const f_pct = (@as(f64, @floatFromInt(frontend_bytes)) / total_f) * 100.0;
-    const d_pct = (@as(f64, @floatFromInt(devops_bytes)) / total_f) * 100.0;
-    const a_pct = (@as(f64, @floatFromInt(data_bytes)) / total_f) * 100.0;
+    const denom = if (total > 0) total else 1;
+    const s_pct = bytes[0] / denom * 100.0;
+    const b_pct = bytes[1] / denom * 100.0;
+    const f_pct = bytes[2] / denom * 100.0;
+    const d_pct = bytes[3] / denom * 100.0;
+    const a_pct = bytes[4] / denom * 100.0;
 
-    var archetype: []const u8 = "Polyglot Architect";
+    var archetype: []const u8 = "Polyglot Engineer";
     var icon: []const u8 = "🧬";
     var color: []const u8 = "#bb9af7";
     var top_name: []const u8 = "Polyglot";
@@ -374,17 +441,17 @@ pub fn calculateDeveloperDNA(username: []const u8, langs: []const LanguageStat) 
     const max_pct = @max(s_pct, @max(b_pct, @max(f_pct, @max(d_pct, a_pct))));
 
     if (s_pct == max_pct and s_pct >= 30.0) {
-        archetype = "Systems Architect";
+        archetype = "Systems Engineer";
         icon = "⚙️";
         color = "#ec915c";
         top_name = "Systems";
     } else if (b_pct == max_pct and b_pct >= 35.0) {
-        archetype = "Backend Specialist";
+        archetype = "Backend Engineer";
         icon = "🛡️";
         color = "#70a5fd";
         top_name = "Backend";
     } else if (f_pct == max_pct and f_pct >= 35.0) {
-        archetype = "Frontend Craftsman";
+        archetype = "Frontend Engineer";
         icon = "🎨";
         color = "#7aa2f7";
         top_name = "Frontend";
@@ -399,7 +466,7 @@ pub fn calculateDeveloperDNA(username: []const u8, langs: []const LanguageStat) 
         color = "#73daca";
         top_name = "Data & AI";
     } else {
-        archetype = "Polyglot Architect";
+        archetype = "Polyglot Engineer";
         icon = "🧬";
         color = "#70a5fd";
         top_name = "Polyglot";
@@ -415,7 +482,7 @@ pub fn calculateDeveloperDNA(username: []const u8, langs: []const LanguageStat) 
         .archetype = archetype,
         .archetype_icon = icon,
         .archetype_color = color,
-        .total_languages = langs.len,
+        .total_languages = mapped,
         .top_domain_name = top_name,
     };
 }
@@ -539,7 +606,16 @@ pub const MilestoneItem = struct {
     tier_color: []const u8,
     value_str: []const u8,
     target_str: []const u8,
+    // Numeric value and next tier threshold (0 once the top tier is reached).
+    value: u64 = 0,
+    next: u64 = 0,
 };
+
+/// First threshold above value, or 0 when every tier is unlocked.
+pub fn nextThreshold(value: u64, thresholds: [4]u64) u64 {
+    for (thresholds) |t| if (value < t) return t;
+    return 0;
+}
 
 pub const MilestonesOverview = struct {
     username: []const u8,
@@ -571,6 +647,8 @@ pub fn evaluateStreakMilestone(allocator: std.mem.Allocator, streak: u32) !Miles
     const val_str = try std.fmt.allocPrint(allocator, "{d} Days", .{streak});
     return MilestoneItem{
         .id = "streak",
+        .value = @intCast(streak),
+        .next = nextThreshold(@intCast(streak), .{ 14, 30, 100, 365 }),
         .title = "STREAK RUNNER",
         .icon = "🔥",
         .tier = tier,
@@ -603,6 +681,8 @@ pub fn evaluatePolyglotMilestone(allocator: std.mem.Allocator, lang_count: usize
         try std.fmt.allocPrint(allocator, "{d} Stacks", .{lang_count});
     return MilestoneItem{
         .id = "polyglot",
+        .value = @intCast(lang_count),
+        .next = nextThreshold(@intCast(lang_count), .{ 3, 6, 10, 18 }),
         .title = "POLYGLOT",
         .icon = "🌐",
         .tier = tier,
@@ -635,6 +715,8 @@ pub fn evaluateContribsMilestone(allocator: std.mem.Allocator, contribs: u64) !M
         try std.fmt.allocPrint(allocator, "{d} Contribs", .{contribs});
     return MilestoneItem{
         .id = "contribs",
+        .value = @intCast(contribs),
+        .next = nextThreshold(@intCast(contribs), .{ 250, 750, 2000, 5000 }),
         .title = "CODE TITAN",
         .icon = "⚡",
         .tier = tier,
@@ -664,6 +746,8 @@ pub fn evaluatePRMilestone(allocator: std.mem.Allocator, prs: u64) !MilestoneIte
     const val_str = try std.fmt.allocPrint(allocator, "{d} Merged", .{prs});
     return MilestoneItem{
         .id = "pr",
+        .value = @intCast(prs),
+        .next = nextThreshold(@intCast(prs), .{ 3, 8, 20, 40 }),
         .title = "PR SPECIALIST",
         .icon = "🔀",
         .tier = tier,
@@ -696,6 +780,8 @@ pub fn evaluateRepoMilestone(allocator: std.mem.Allocator, repos: u64) !Mileston
         try std.fmt.allocPrint(allocator, "{d} Repos", .{repos});
     return MilestoneItem{
         .id = "repos",
+        .value = @intCast(repos),
+        .next = nextThreshold(@intCast(repos), .{ 4, 8, 15, 30 }),
         .title = "REPO MASTER",
         .icon = "📦",
         .tier = tier,
@@ -728,6 +814,8 @@ pub fn evaluateStarMilestone(allocator: std.mem.Allocator, stars: u64) !Mileston
         try std.fmt.allocPrint(allocator, "{d} Stars", .{stars});
     return MilestoneItem{
         .id = "stars",
+        .value = @intCast(stars),
+        .next = nextThreshold(@intCast(stars), .{ 3, 10, 30, 100 }),
         .title = "STAR MAGNET",
         .icon = "⭐",
         .tier = tier,

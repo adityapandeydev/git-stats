@@ -25,6 +25,7 @@ pub const Request = struct {
     count: usize = 12,
     sparkline: bool = true,
     timeframe: []const u8 = "all-time",
+    timezone: ?f64 = null,
     languages: []models.LanguageStat = &.{},
     metrics: Metrics = .{},
     streak: ?models.StreakStats = null,
@@ -81,7 +82,7 @@ pub fn render(a: std.mem.Allocator, r: Request) ![]const u8 {
         data.persona_title = if (data.total_commits == 0) "No commit activity" else persona.title;
         data.persona_icon = persona.icon;
         data.persona_color = persona.color;
-        return @import("renderer/rhythm.zig").renderRhythmSVG(a, &data, .{ .theme = theme, .card_width = width, .card_height = height, .border_radius = radius, .animate = false });
+        return @import("renderer/rhythm.zig").renderRhythmSVG(a, &data, .{ .theme = theme, .card_width = width, .card_height = height, .border_radius = radius, .tz_offset_hours = r.timezone, .animate = false });
     }
     if (std.mem.eql(u8, r.card, "velocity")) {
         var data = r.velocity orelse return error.MissingData;

@@ -78,28 +78,40 @@ test('redesigned cards fit compact and hero sizes with large metrics', () => {
 test('empty rhythm and PR data retain honest zero states', () => {
   const rhythm = { ...DEMO_DATA.rhythm, total_commits: 0, day_commits: 0, night_commits: 0, matrix: Array.from({ length: 7 }, () => Array(24).fill(0)) }
   const svg = render('rhythm', { rhythm })
-  assert.match(svg, /No activity yet/)
-  assert.match(svg, /0% day/)
-  assert.match(svg, /0% night/)
-  assert.doesNotMatch(svg, /100% night|NaN/)
-  assert.equal((svg.match(/height="7.10"/g) || []).length, 168)
+  assert.match(svg, /No commits in the sampled repositories/)
+  assert.doesNotMatch(svg, /% night|NaN/)
+  assert.equal((svg.match(/height="8.50"/g) || []).length, 168)
   const velocity = { ...DEMO_DATA.velocity, total_prs: 0, merged_prs: 0, open_prs: 0, closed_prs: 0, merge_rate: 0, velocity_score: 0 }
   const empty = render('velocity', { velocity })
-  assert.match(empty, /No pull requests/)
-  assert.doesNotMatch(empty, /Hypersonic Shipper|18.5h|NaN/)
+  assert.match(empty, /No pull requests yet/)
+  assert.doesNotMatch(empty, /Hypersonic Shipper|18.5h|NaN|Merge rate/)
 })
 
-test('wide milestones use six tiles; the compact layout preserves all six values', () => {
+test('wide milestones use one row; both layouts keep all six values and tiers', () => {
   for (const width of [424, 840]) {
     const svg = render('milestones', { width })
-    for (const value of ['69 Days', '16 Stacks', '3.1k Contribs', '64 Merged', '32 Repos', '520 Stars']) assert.ok(svg.includes(value))
-    assert.equal((svg.match(/viewBox="0 0 24 24"/g) || []).length, 6)
+    for (const value of ['69 days', '16', '3,066', '64', '32', '520']) assert.ok(svg.includes(`>${value}<`), `${width}: ${value}`)
+    assert.equal((svg.match(/letter-spacing="0.6"/g) || []).length, 6)
+    assert.doesNotMatch(svg, /Max Tier|Stacks|Contribs/)
   }
+  const rows = new Set([...render('milestones', { width: 840 }).matchAll(/y="([\d.]+)" font-size="17.00"/g)].map(m => m[1]))
+  assert.equal(rows.size, 1)
+})
+
+test('stats score parts add up to the score and DNA follows hidden languages', () => {
+  const svg = render('stats')
+  const score = Number(svg.match(/>(\d+) \/ 1000</)[1])
+  const parts = [...svg.matchAll(/font-weight="600">(\d+)<\/tspan>/g)].map(m => Number(m[1]))
+  assert.equal(parts.length, 4)
+  assert.equal(parts.reduce((a, b) => a + b, 0), score)
+  const dna = render('radar', { languages: DEMO_DATA.languages.filter(l => l.name === 'Zig') })
+  assert.match(dna, /Systems Engineer/)
+  assert.match(dna, /1 language</)
 })
 
 test('rhythm percentage labels sum to 100 for complementary day/night activity', () => {
   const rhythm = { ...DEMO_DATA.rhythm, total_commits: 200, day_commits: 123, night_commits: 77 }
   const svg = render('rhythm', { rhythm })
-  assert.match(svg, /61% day/)
-  assert.match(svg, /39% night/)
+  // 61.5% rounds to 62%; night is its complement so the pair adds up to 100.
+  assert.match(svg, /62% day · 38% night/)
 })

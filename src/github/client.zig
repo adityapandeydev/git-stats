@@ -1236,6 +1236,7 @@ pub const Client = struct {
         username: []const u8,
         token: []const u8,
         excluded_repos: []const []const u8,
+        hide: ?[]const u8,
     ) !*models.DeveloperDNA {
         const clean_user = std.mem.trim(u8, username, " \t\r\n");
         if (clean_user.len == 0 or std.ascii.eqlIgnoreCase(clean_user, "demo")) {
@@ -1243,7 +1244,9 @@ pub const Client = struct {
         }
 
         const user_stats = try self.getUserLanguages(username, token, excluded_repos);
-        const dna = models.calculateDeveloperDNA(user_stats.username, user_stats.languages);
+        // Same --hide list as the languages card, so both cards describe the same code.
+        const visible = try models.filterHiddenLanguages(self.allocator, user_stats.languages, hide);
+        const dna = models.calculateDeveloperDNA(user_stats.username, visible);
 
         const ptr = try self.allocator.create(models.DeveloperDNA);
         ptr.* = dna;
@@ -1259,8 +1262,8 @@ pub const Client = struct {
             .frontend_pct = 18.0,
             .devops_pct = 12.0,
             .data_pct = 6.0,
-            .archetype = "Polyglot Architect",
-            .archetype_icon = "🧬",
+            .archetype = "Backend Engineer",
+            .archetype_icon = "🛡️",
             .archetype_color = "#70a5fd",
             .total_languages = 14,
             .top_domain_name = "Backend",

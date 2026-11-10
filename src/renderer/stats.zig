@@ -29,39 +29,65 @@ pub fn formatCommas(a: std.mem.Allocator, n: u64) ![]const u8 {
 pub fn scoreProgress(score: u32) f64 {
     return @as(f64, @floatFromInt(@min(score, 1000))) / 1000;
 }
+
+// Ring geometry. The inner edge is ring_r - ring_stroke / 2 = 37px. Grade and
+// score form one block centred on the ring, so the widest score
+// ("1000 / 1000", ~52px at 10px) keeps its corners ~31px from the centre.
+pub const ring_cx: f64 = 77;
+pub const ring_cy: f64 = 96;
+pub const ring_r: f64 = 40;
+pub const ring_stroke: f64 = 6;
+
 pub fn renderStatsSVG(a: std.mem.Allocator, stats: *const models.OverallStats, opts: StatsRenderOptions) ![]const u8 {
     var stream = std.Io.Writer.Allocating.init(a);
     defer stream.deinit();
     const w = &stream.writer;
-    const width = try c.begin(w, opts, "Developer stats", "Craft rating, commits, merged pull requests, total stars and repositories.");
-    try c.header(w, width, "DEVELOPER STATS", if (std.mem.eql(u8, stats.timeframe, "this-year")) "THIS YEAR" else "ALL-TIME", opts.theme, opts.hide_title);
     const rating = stats.rating;
-    try w.print("<defs><linearGradient id=\"stats-rating\"><stop stop-color=\"{s}\"/><stop offset=\"1\" stop-color=\"{s}\"/></linearGradient><radialGradient id=\"stats-aura\"><stop stop-color=\"{s}\" stop-opacity=\".12\"/><stop offset=\"1\" stop-color=\"{s}\" stop-opacity=\"0\"/></radialGradient></defs><circle cx=\"76\" cy=\"94\" r=\"58\" fill=\"url(#stats-aura)\"/><circle cx=\"76\" cy=\"94\" r=\"40\" fill=\"none\" stroke=\"{s}\" stroke-width=\"4\"/>", .{ c.violet, opts.theme.title_color, c.violet, c.violet, opts.theme.border_color });
-    // pathLength makes 750/1000 exactly 75% of a turn. Butt caps preserve the
-    // proportion at 0, 750 and 1000 rather than adding a minimum visible arc.
-    try w.print("<circle class=\"rating-progress\" cx=\"76\" cy=\"94\" r=\"40\" fill=\"none\" stroke=\"url(#stats-rating)\" stroke-width=\"4\" pathLength=\"100\" stroke-dasharray=\"100\" stroke-dashoffset=\"{d:.3}\" transform=\"rotate(-90 76 94)\"/>", .{100 * (1 - scoreProgress(rating.score))});
-    try w.writeAll("<g class=\"tier-badge-txt\">");
-    try c.text(w, 76, 96, rating.tier, 34, c.violet, 750, "middle", 66);
-    try c.fmt(w, 76, 117, "{d} / 1,000", .{rating.score}, 9, opts.theme.muted_color, 500, "middle", 72);
-    try w.writeAll("</g>");
-    try c.pill(w, 33, 143, 86, rating.percentile, c.violet);
-    try c.rect(w, 148, 48, 1, 110, 0, opts.theme.border_color, 1);
-    const nums = [_]u64{ stats.total_commits, stats.merged_prs, stats.total_stars, stats.contributed_repos };
-    const labels = [_][]const u8{ "Commits", "Merged PRs", "Total stars", "Repositories" };
-    const colors = [_][]const u8{ opts.theme.title_color, c.violet, c.gold, c.mint };
-    const glyphs = [_]@import("card_icons.zig").Icon{ .commit, .pr, .star, .book };
-    const col_w = (width - 176) / 2;
-    for (nums, 0..) |n, i| {
-        const x = 168 + @as(f64, @floatFromInt(i % 2)) * col_w;
-        const y = 54 + @as(f64, @floatFromInt(i / 2)) * 57;
-        try c.icon(w, glyphs[i], x, y - 2, 14, colors[i]);
-        try c.text(w, x + 22, y + 9, labels[i], 9, opts.theme.muted_color, 500, "start", col_w - 30);
-        const number = try formatCommas(a, n);
-        defer a.free(number);
-        try c.text(w, x, y + 37, number, 24, opts.theme.text_color, 650, "start", col_w - 14);
+    var desc_buf: [256]u8 = undefined;
+    const desc = try std.fmt.bufPrint(&desc_buf, "Grade {s}, {d} of 1000. {d} commits, {d} merged pull requests, {d} stars, {d} repositories.", .{ rating.tier, rating.score, stats.total_commits, stats.merged_prs, stats.total_stars, stats.contributed_repos });
+    const width = try c.begin(w, opts, "Developer Stats", desc);
+    const t = opts.theme;
+    try c.heading(w, width, "Developer Stats", if (std.mem.eql(u8, stats.timeframe, "this-year")) "Last 12 months" else "All-time", t, opts.hide_title);
+
+    // Score ring: pathLength makes 750/1000 exactly 75% of a turn; butt caps
+    // keep 0, 750 and 1000 exact instead of adding a visible minimum arc.
+    try w.print("<circle cx=\"{d}\" cy=\"{d}\" r=\"{d}\" fill=\"none\" stroke=\"{s}\" stroke-width=\"{d}\"/>", .{ ring_cx, ring_cy, ring_r, t.bar_bg_color, ring_stroke });
+    try w.print("<circle class=\"rating-progress\" cx=\"{d}\" cy=\"{d}\" r=\"{d}\" fill=\"none\" stroke=\"{s}\" stroke-width=\"{d}\" pathLength=\"100\" stroke-dasharray=\"100\" stroke-dashoffset=\"{d:.3}\" transform=\"rotate(-90 {d} {d})\"/>", .{ ring_cx, ring_cy, ring_r, t.title_color, ring_stroke, 100 * (1 - scoreProgress(rating.score)), ring_cx, ring_cy });
+    try c.text(w, ring_cx, ring_cy + 3, rating.tier, 28, t.text_color, 700, "middle", 56);
+    try c.fmt(w, ring_cx, ring_cy + 16, "{d} / 1000", .{rating.score}, 10, t.muted_color, 500, "middle", 60);
+    try c.text(w, ring_cx, 158, rating.title, 11, t.title_color, 600, "middle", 2 * (ring_cx - 8));
+
+    // Headline metrics. Column offsets are tuned for 424px and stretch with width.
+    const x0: f64 = 150;
+    const span = width - c.pad - x0;
+    const offsets = [_]f64{ 0, 68, 148, 202 };
+    const labels = [_][]const u8{ "Commits", "Merged PRs", "Stars", "Repos" };
+    const values = [_]u64{ stats.total_commits, stats.merged_prs, stats.total_stars, stats.contributed_repos };
+    for (labels, values, offsets, 0..) |label, value, off, i| {
+        const x = x0 + off * span / 249;
+        const next = if (i + 1 < offsets.len) x0 + offsets[i + 1] * span / 249 else width - c.pad;
+        try c.text(w, x, 58, label, 11, t.muted_color, 500, "start", next - x - 6);
+        const n = try formatCommas(a, value);
+        defer a.free(n);
+        try c.text(w, x, 80, n, 18, t.text_color, 650, "start", next - x - 6);
     }
-    try c.rule(w, 168, 155, width - 191, opts.theme);
-    try c.text(w, 168, 170, rating.title, 9, opts.theme.muted_color, 500, "start", width - 191);
+    try c.rule(w, x0, 93, span, t);
+
+    // How the score is made: four parts that add up to it exactly.
+    const parts = [_]struct { []const u8, u32, u32 }{
+        .{ "Commits", rating.commits_pts, 350 },
+        .{ "Pull requests", rating.prs_pts, 300 },
+        .{ "Collaboration", rating.collab_pts, 200 },
+        .{ "Impact", rating.impact_pts, 150 },
+    };
+    const bar_x = x0 + 86;
+    const bar_w = width - c.pad - 59 - bar_x;
+    for (parts, 0..) |part, i| {
+        const y = 114 + @as(f64, @floatFromInt(i)) * 16;
+        try c.text(w, x0, y, part[0], 11, t.muted_color, 500, "start", 84);
+        try c.meter(w, bar_x, y - 6, bar_w, @as(f64, @floatFromInt(part[1])) / @as(f64, @floatFromInt(part[2])), t.title_color, t, 5);
+        try w.print("<text x=\"{d:.2}\" y=\"{d:.2}\" font-size=\"11\" fill=\"{s}\" text-anchor=\"end\"><tspan fill=\"{s}\" font-weight=\"600\">{d}</tspan> / {d}</text>", .{ width - c.pad, y, t.muted_color, t.text_color, part[1], part[2] });
+    }
     try c.end(w);
     return stream.toOwnedSlice();
 }

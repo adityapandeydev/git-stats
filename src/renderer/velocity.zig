@@ -11,48 +11,83 @@ pub const VelocityRenderOptions = struct {
     hide_title: bool = false,
     animate: bool = true,
 };
+
+// Merge time, lines and files come from the latest 30 pull requests (see the
+// GraphQL query in client.zig); outcome counts are lifetime totals.
 pub fn renderVelocitySVG(a: std.mem.Allocator, stats: *const models.VelocityStats, opts: VelocityRenderOptions) ![]const u8 {
     var stream = std.Io.Writer.Allocating.init(a);
     defer stream.deinit();
     const w = &stream.writer;
-    const width = try c.begin(w, opts, "Pull request velocity", "CADENCE & IMPACT. MERGE RATE, MERGED PRS, CODE SHIPPED, PEER REVIEWS and VELOCITY INDEX.");
-    try c.header(w, width, "PULL REQUEST VELOCITY", "CADENCE & IMPACT", opts.theme, opts.hide_title);
-    try c.icon(w, .timer, 18, 43, 16, opts.theme.title_color);
-    try c.text(w, 41, 52, "Average merge time", 10, opts.theme.muted_color, 500, "start", 138);
-    try c.text(w, 18, 94, if (stats.merged_prs == 0) "—" else stats.turnaround_str, 36, opts.theme.text_color, 700, "start", 148);
-    try c.pill(w, 18, 106, 133, if (stats.total_prs == 0) "No pull requests" else stats.tier.name, c.mint);
-    try c.fmt(w, width - 18, 60, "{d}", .{stats.velocity_score}, 30, c.mint, 700, "end", 100);
-    try c.text(w, width - 18, 77, "/ 100 velocity index", 8, opts.theme.muted_color, 500, "end", 130);
-    try c.text(w, width - 18, 94, if (stats.total_prs == 0) "No activity yet" else stats.tier.percentile, 9, c.mint, 600, "end", 130);
-    const nums = [_]u64{ stats.merged_prs, stats.reviews_completed, stats.changed_files };
-    const labels = [_][]const u8{ "merged", "reviews", "files" };
-    const colors = [_][]const u8{ opts.theme.title_color, c.violet, c.gold };
-    const step = (width - 193) / 3;
-    for (nums, 0..) |n, i| {
-        const x = 184 + @as(f64, @floatFromInt(i)) * step;
-        const str = try c.compact(a, n);
-        defer a.free(str);
-        try c.text(w, x, 117, str, 20, colors[i], 650, "start", step - 8);
-        try c.text(w, x, 132, labels[i], 9, opts.theme.muted_color, 500, "start", step - 8);
+    const t = opts.theme;
+    const p = c.palette(t);
+    const total = stats.total_prs;
+    const rate: u64 = if (total == 0) 0 else @intFromFloat(@round(@as(f64, @floatFromInt(stats.merged_prs)) * 100 / @as(f64, @floatFromInt(total))));
+    var desc_buf: [256]u8 = undefined;
+    const desc = try std.fmt.bufPrint(&desc_buf, "Average merge time {s}. {d} of {d} pull requests merged, {d} open, {d} closed.", .{ if (stats.merged_prs == 0) "unavailable" else stats.turnaround_str, stats.merged_prs, total, stats.open_prs, stats.closed_prs });
+    const width = try c.begin(w, opts, "Pull Requests", desc);
+    try c.heading(w, width, "Pull Requests", "Timing & size: last 30 PRs", t, opts.hide_title);
+    const inner = width - 2 * c.pad;
+
+    if (total == 0) {
+        try c.text(w, c.pad, 92, "No pull requests yet", 18, t.text_color, 650, "start", inner);
+        try c.text(w, c.pad, 112, "Opened pull requests will appear here after the next update.", 11, t.muted_color, 500, "start", inner);
+        try c.end(w);
+        return stream.toOwnedSlice();
     }
-    try c.rule(w, 18, 141, width - 36, opts.theme);
-    const denom = @as(f64, @floatFromInt(@max(1, stats.total_prs)));
-    const merged = c.fraction(@as(f64, @floatFromInt(stats.merged_prs)) / denom);
-    const open = @min(1 - merged, c.fraction(@as(f64, @floatFromInt(stats.open_prs)) / denom));
-    const closed = @min(1 - merged - open, c.fraction(@as(f64, @floatFromInt(stats.closed_prs)) / denom));
-    try c.fmt(w, 18, 153, "{d:.1}% merged", .{merged * 100}, 10, opts.theme.text_color, 600, "start", 150);
-    const adds = try c.compact(a, stats.total_additions);
-    defer a.free(adds);
-    const dels = try c.compact(a, stats.total_deletions);
-    defer a.free(dels);
-    try c.fmt(w, width - 18, 153, "+{s} / −{s} lines", .{ adds, dels }, 9, opts.theme.muted_color, 500, "end", 210);
-    const bw = width - 36;
-    try c.rect(w, 18, 160, bw, 4, 2, opts.theme.border_color, 1);
-    try c.rect(w, 18, 160, bw * merged, 4, 0, opts.theme.title_color, 1);
-    try c.rect(w, 18 + bw * merged, 160, bw * open, 4, 0, c.gold, 1);
-    try c.rect(w, 18 + bw * (merged + open), 160, bw * closed, 4, 0, c.pink, 1);
-    try c.fmt(w, 18, 175, "{d} merged / {d} authored", .{ stats.merged_prs, stats.total_prs }, 8, opts.theme.muted_color, 500, "start", bw * 0.58);
-    try c.fmt(w, width - 18, 175, "{d} open · {d} closed", .{ stats.open_prs, stats.closed_prs }, 8, opts.theme.muted_color, 500, "end", bw * 0.40);
+
+    // Two headline numbers.
+    const right_x = c.pad + inner * 0.55;
+    try c.text(w, c.pad, 56, "Average time to merge", 11, t.muted_color, 500, "start", right_x - c.pad - 8);
+    try c.text(w, c.pad, 90, if (stats.merged_prs == 0) "\u{2014}" else stats.turnaround_str, 30, t.text_color, 700, "start", right_x - c.pad - 8);
+    try c.text(w, right_x, 56, "Merge rate", 11, t.muted_color, 500, "start", 90);
+    try c.fmt(w, right_x, 90, "{d}%", .{rate}, 30, t.text_color, 700, "start", 90);
+    try c.fmt(w, width - c.pad, 90, "{d} of {d}", .{ stats.merged_prs, total }, 11, t.muted_color, 500, "end", 80);
+
+    // Outcome bar: merged / open / closed, clipped to one rounded track.
+    const denom = @as(f64, @floatFromInt(total));
+    const segments = [_]struct { u64, []const u8, []const u8 }{
+        .{ stats.merged_prs, t.title_color, "merged" },
+        .{ stats.open_prs, p.gold, "open" },
+        .{ stats.closed_prs, p.pink, "closed" },
+    };
+    try w.print("<clipPath id=\"pr-outcomes\"><rect x=\"{d}\" y=\"102\" width=\"{d:.2}\" height=\"6\" rx=\"3\"/></clipPath>", .{ c.pad, inner });
+    try c.rect(w, c.pad, 102, inner, 6, 3, t.bar_bg_color, 1);
+    try w.writeAll("<g clip-path=\"url(#pr-outcomes)\">");
+    var x: f64 = c.pad;
+    for (segments) |s| {
+        const sw = inner * c.fraction(@as(f64, @floatFromInt(s[0])) / denom);
+        try c.rect(w, x, 102, @min(sw, c.pad + inner - x), 6, 0, s[1], 1);
+        x += sw;
+    }
+    try w.writeAll("</g>");
+    var lx: f64 = c.pad;
+    for (segments) |s| {
+        var buf: [48]u8 = undefined;
+        const label = try std.fmt.bufPrint(&buf, "{d} {s}", .{ s[0], s[2] });
+        try w.print("<circle cx=\"{d:.2}\" cy=\"123\" r=\"3\" fill=\"{s}\"/>", .{ lx + 3, s[1] });
+        try c.text(w, lx + 10, 127, label, 11, t.muted_color, 500, "start", 100);
+        lx += 24 + @as(f64, @floatFromInt(label.len)) * 6;
+    }
+    try c.rule(w, c.pad, 136, inner, t);
+
+    // Size of the recent work.
+    var adds: [24]u8 = undefined;
+    var dels: [24]u8 = undefined;
+    var lines_buf: [64]u8 = undefined;
+    const lines = try std.fmt.bufPrint(&lines_buf, "+{s} / \u{2212}{s}", .{ try c.number(&adds, stats.total_additions), try c.number(&dels, stats.total_deletions) });
+    var files_buf: [24]u8 = undefined;
+    var reviews_buf: [24]u8 = undefined;
+    const cols = [_]struct { []const u8, []const u8 }{
+        .{ "Lines changed", lines },
+        .{ "Files touched", try c.number(&files_buf, stats.changed_files) },
+        .{ "Reviews given", try c.number(&reviews_buf, stats.reviews_completed) },
+    };
+    const col_w = inner / 3;
+    for (cols, 0..) |col, i| {
+        const cx = c.pad + @as(f64, @floatFromInt(i)) * col_w;
+        try c.text(w, cx, 154, col[0], 11, t.muted_color, 500, "start", col_w - 8);
+        try c.text(w, cx, 169, col[1], 12.5, t.text_color, 600, "start", col_w - 8);
+    }
     try c.end(w);
     return stream.toOwnedSlice();
 }

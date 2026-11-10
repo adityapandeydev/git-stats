@@ -81,3 +81,47 @@ pub fn compact(a: std.mem.Allocator, n: u64) ![]const u8 {
     if (n >= 1000) return std.fmt.allocPrint(a, "{d:.1}k", .{@as(f64, @floatFromInt(n)) / 1000});
     return std.fmt.allocPrint(a, "{d}", .{n});
 }
+
+// ---- Shared visual rules for the redesigned cards ---------------------------
+// Same frame as the languages card: 25px side padding, a 16px/600 title in the
+// theme title colour, 11px context on the right, nothing smaller than 9px.
+pub const pad: f64 = 25;
+
+/// Accent colours tuned to the background. Light themes get darker accents so
+/// small text and thin bars keep their contrast on white.
+pub const Palette = struct { mint: []const u8, violet: []const u8, gold: []const u8, pink: []const u8, bronze: []const u8 };
+pub fn palette(theme: themes.Theme) Palette {
+    if (isLight(theme.bg_color)) return .{ .mint = "#1a7f37", .violet = "#8250df", .gold = "#9a6700", .pink = "#cf222e", .bronze = "#a0522d" };
+    return .{ .mint = mint, .violet = violet, .gold = gold, .pink = pink, .bronze = "#c08457" };
+}
+pub fn isLight(hex: []const u8) bool {
+    if (hex.len != 7 or hex[0] != '#') return false;
+    const r = std.fmt.parseInt(u8, hex[1..3], 16) catch return false;
+    const g = std.fmt.parseInt(u8, hex[3..5], 16) catch return false;
+    const b = std.fmt.parseInt(u8, hex[5..7], 16) catch return false;
+    return @as(u32, r) * 299 + @as(u32, g) * 587 + @as(u32, b) * 114 > 128_000;
+}
+
+pub fn heading(w: *Writer, width: f64, value: []const u8, meta: []const u8, theme: themes.Theme, hide: bool) !void {
+    if (hide) return;
+    try text(w, pad, 31, value, 16, theme.title_color, 600, "start", width * 0.55);
+    if (meta.len > 0) try text(w, width - pad, 31, meta, 11, theme.muted_color, 500, "end", width * 0.42);
+}
+
+/// Rounded progress bar on the theme track colour.
+pub fn meter(w: *Writer, x: f64, y: f64, width: f64, progress: f64, color: []const u8, theme: themes.Theme, h: f64) !void {
+    try rect(w, x, y, width, h, h / 2, theme.bar_bg_color, 1);
+    const p = fraction(progress);
+    if (p > 0) try rect(w, x, y, @max(h, width * p), h, h / 2, color, 1);
+}
+
+/// Full numbers with thousands separators below 10,000, compact above.
+pub fn number(buf: []u8, n: u64) ![]const u8 {
+    if (n >= 10_000) {
+        const f: f64 = @floatFromInt(n);
+        if (n >= 1_000_000) return std.fmt.bufPrint(buf, "{d:.1}M", .{f / 1_000_000});
+        return std.fmt.bufPrint(buf, "{d:.1}k", .{f / 1000});
+    }
+    if (n >= 1000) return std.fmt.bufPrint(buf, "{d},{d:0>3}", .{ n / 1000, n % 1000 });
+    return std.fmt.bufPrint(buf, "{d}", .{n});
+}
