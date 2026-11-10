@@ -1,6 +1,6 @@
 import test from 'node:test'
 import assert from 'node:assert/strict'
-import { aggregateLanguages, fetchUserData, syncWorkflowToFork } from '../src/services/githubApi.js'
+import { aggregateLanguages, commitWorkflow, fetchUserData } from '../src/services/githubApi.js'
 
 function mockFetch(t, responses) {
   const calls = []
@@ -48,24 +48,25 @@ test('rejected tokens and GraphQL errors never substitute demo data', async t =>
   await assert.rejects(fetchUserData('octocat', 'test-token'), /cannot read this field/)
 })
 
-test('sync updates the chosen branch with its SHA and reports dispatch failure separately', async t => {
-  const calls = mockFetch(t, [[200, { default_branch: 'main', permissions: { push: true } }], [200, {}], [200, { sha: 'branch-specific-sha' }], [200, {}], [403, {}]])
-  const result = await syncWorkflowToFork({ username: 'octocat', pat: 'test-token', yamlContent: 'name: Profile\n', target: { owner: 'example', repo: 'cards', branch: 'profile/test' } })
+test('commit updates the profile repository workflow on its default branch', async t => {
+  const calls = mockFetch(t, [[200, { default_branch: 'trunk', permissions: { push: true } }], [200, { sha: 'existing-sha' }], [200, {}], [403, {}]])
+  const result = await commitWorkflow({ username: 'octocat', pat: 'test-token', yamlContent: 'name: Profile\n' })
   assert.equal(result.committed, true)
-  assert.equal(result.dispatched, false)
-  assert.match(calls[2].url, /ref=profile%2Ftest$/)
-  assert.equal(calls[3].body.sha, 'branch-specific-sha')
-  assert.equal(calls[3].body.branch, 'profile/test')
-  assert.equal(atob(calls[3].body.content), 'name: Profile\n')
-  assert.deepEqual(calls[4].body, { ref: 'profile/test' })
+  assert.match(calls[0].url, /\/repos\/octocat\/octocat$/)
+  assert.match(calls[1].url, /\/contents\/\.github\/workflows\/gitstats\.yml\?ref=trunk$/)
+  assert.equal(calls[2].method, 'PUT')
+  assert.equal(calls[2].body.sha, 'existing-sha')
+  assert.equal(calls[2].body.branch, 'trunk')
+  assert.equal(atob(calls[2].body.content), 'name: Profile\n')
+  assert.deepEqual(calls[3].body, { ref: 'trunk' }, 'A failed dispatch is not fatal; the push trigger runs it')
 })
 
-test('sync creates missing files and refuses read-only destinations before writing', async t => {
-  const calls = mockFetch(t, [[200, { permissions: { push: false } }], [200, {}], [404, {}], [200, { permissions: { push: true } }], [200, {}], [404, {}], [201, {}], [204, null]])
-  const args = { username: 'octocat', pat: 'test-token', yamlContent: 'name: Test', target: { branch: 'main' } }
-  await assert.rejects(syncWorkflowToFork(args), /cannot write/)
+test('commit creates a missing workflow and refuses read-only tokens before writing', async t => {
+  const calls = mockFetch(t, [[200, { default_branch: 'main', permissions: { push: false } }], [404, {}], [200, { default_branch: 'main', permissions: { push: true } }], [404, {}], [201, {}], [204, null]])
+  const args = { username: 'octocat', pat: 'test-token', yamlContent: 'name: Test' }
+  await assert.rejects(commitWorkflow(args), /cannot write/)
   assert.equal(calls.some(c => c.method === 'PUT'), false)
-  assert.equal((await syncWorkflowToFork(args)).dispatched, true)
+  assert.equal((await commitWorkflow(args)).committed, true)
   assert.equal('sha' in calls.find(c => c.method === 'PUT').body, false)
 })
 
@@ -80,13 +81,13 @@ test('public language colors come from GitHub Linguist, including languages abse
 })
 
 test('workflow permission failure never dispatches or reports a successful commit', async t => {
-  const calls = mockFetch(t, [[200, { permissions: { push: true } }], [200, {}], [200, { sha: 'old' }], [403, {}]])
-  await assert.rejects(syncWorkflowToFork({ username: 'octocat', pat: 'test-token', yamlContent: 'name: Test', target: { branch: 'main' } }), /Contents and Workflows write/)
+  const calls = mockFetch(t, [[200, { default_branch: 'main', permissions: { push: true } }], [200, { sha: 'old' }], [403, {}]])
+  await assert.rejects(commitWorkflow({ username: 'octocat', pat: 'test-token', yamlContent: 'name: Test' }), /Contents and Workflows write/)
   assert.equal(calls.some(c => c.url.includes('/dispatches')), false)
 })
 
 test('a concurrent workflow update has an actionable error and never dispatches', async t => {
-  const calls = mockFetch(t, [[200, { permissions: { push: true } }], [200, {}], [200, { sha: 'old' }], [409, {}]])
-  await assert.rejects(syncWorkflowToFork({ username: 'octocat', pat: 'test-token', yamlContent: 'name: Test', target: { branch: 'main' } }), /changed while deploying/)
+  const calls = mockFetch(t, [[200, { default_branch: 'main', permissions: { push: true } }], [200, { sha: 'old' }], [409, {}]])
+  await assert.rejects(commitWorkflow({ username: 'octocat', pat: 'test-token', yamlContent: 'name: Test' }), /changed while/)
   assert.equal(calls.some(c => c.url.includes('/dispatches')), false)
 })

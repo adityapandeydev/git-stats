@@ -95,6 +95,18 @@ export const THEMES = [
     accent: '#05d9e8',
     badge: 'rgba(249, 42, 173, 0.15)',
   },
+  {
+    id: 'github_light',
+    name: 'GitHub Light',
+    bg: '#ffffff',
+    title: '#0969da',
+    text: '#24292f',
+    muted: '#57606a',
+    border: '#d0d7de',
+    barBg: '#eaeef2',
+    accent: '#0969da',
+    badge: 'rgba(9, 105, 218, 0.12)',
+  },
 ]
 
 export const DEFAULT_THEME = THEMES[0]

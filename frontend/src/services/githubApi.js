@@ -1,9 +1,13 @@
-import { validateTarget } from './compiler.js'
+import { validUsername, WORKFLOW_PATH } from './profileConfig.js'
 import { calculateStreak, calculateRhythm, calculateVelocity } from './analytics.js'
 import { LANGUAGE_COLORS, DEFAULT_LANGUAGE_COLOR } from '../constants/languageColors.js'
 
 const api = 'https://api.github.com'
-const path = '.github/workflows/generate-stats.yml'
+const checkedUser = username => {
+  const user = String(username || '').trim()
+  if (!validUsername(user)) throw new Error('Enter a valid GitHub username.')
+  return user
+}
 const safeColor = (value, name) => /^#[\da-f]{6}$/i.test(value || '') ? value : LANGUAGE_COLORS[name.toLowerCase()] || DEFAULT_LANGUAGE_COLOR
 
 async function request(url, { token = '', signal, ...options } = {}) {
@@ -39,7 +43,7 @@ export function aggregateLanguages(repositories) {
 
 const profileCache = new Map()
 export async function fetchUserData(username, token = '', { signal, force = false } = {}) {
-  const user = validateTarget(username).username.toLowerCase()
+  const user = checkedUser(username).toLowerCase()
   if (signal?.aborted) throw new DOMException('Request aborted', 'AbortError')
   const cached = profileCache.get(user)
   if (!force && cached?.token === token.trim() && Date.now() - cached.data.fetchedAt < 60000) return cached.data
@@ -53,7 +57,7 @@ export async function fetchUserData(username, token = '', { signal, force = fals
 }
 
 async function fetchFreshUserData(username, token, signal) {
-  const user = validateTarget(username).username
+  const user = checkedUser(username)
   const encoded = encodeURIComponent(user)
   if (!token.trim()) {
     const profile = await request(`${api}/users/${encoded}`, { signal })
@@ -114,36 +118,47 @@ async function fetchFreshUserData(username, token, signal) {
 }
 
 
-export async function inspectRepository(username, token, target = {}, signal) {
-  const destination = validateTarget(username, target)
-  const base = `${api}/repos/${destination.owner}/${destination.repo}`
+/** The user's profile repository (username/username) and its workflow file, if any. */
+export async function inspectProfileRepository(username, token, signal) {
+  const user = checkedUser(username)
+  const base = `${api}/repos/${user}/${user}`
   const repository = await request(base, { token, signal })
-  const branch = target.branch?.trim() || repository.default_branch
-  await request(`${base}/branches/${encodeURIComponent(branch)}`, { token, signal })
   let file = null
-  try { file = await request(`${base}/contents/${path}?ref=${encodeURIComponent(branch)}`, { token, signal }) }
+  try { file = await request(`${base}/contents/${WORKFLOW_PATH}?ref=${encodeURIComponent(repository.default_branch)}`, { token, signal }) }
   catch (error) { if (error.status !== 404) throw error }
-  return { ...destination, branch, file, canPush: repository.permissions?.push !== false, actionsUrl: `https://github.com/${destination.owner}/${destination.repo}/actions` }
+  return { owner: user, repo: user, branch: repository.default_branch, file, canPush: repository.permissions?.push !== false, actionsUrl: `https://github.com/${user}/${user}/actions` }
 }
 
-export async function syncWorkflowToFork({ username, pat, yamlContent, target = {} }) {
-  if (!pat.trim()) throw new Error('A token is required for direct sync.')
-  if (!yamlContent?.trim()) throw new Error('Generate a valid workflow before syncing.')
-  const destination = await inspectRepository(username, pat.trim(), target)
-  if (!destination.canPush) throw new Error('This token cannot write to the selected repository.')
+/** Commit the workflow to username/username and start the first run. Needs a write token. */
+export async function commitWorkflow({ username, pat, yamlContent }) {
+  if (!pat.trim()) throw new Error('A token is required to commit for you.')
+  if (!yamlContent?.trim()) throw new Error('Generate a valid workflow first.')
+  const destination = await inspectProfileRepository(username, pat.trim())
+  if (!destination.canPush) throw new Error('This token cannot write to your profile repository.')
   const base = `${api}/repos/${destination.owner}/${destination.repo}`
   const bytes = new TextEncoder().encode(yamlContent)
   const content = btoa(Array.from(bytes, byte => String.fromCharCode(byte)).join(''))
   try {
-    await request(`${base}/contents/${path}`, { token: pat.trim(), method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ message: 'chore(stats): configure profile with GitStats Studio', branch: destination.branch, content, ...(destination.file ? { sha: destination.file.sha } : {}) }) })
+    await request(`${base}/contents/${WORKFLOW_PATH}`, { token: pat.trim(), method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ message: 'chore: set up GitStats cards', branch: destination.branch, content, ...(destination.file ? { sha: destination.file.sha } : {}) }) })
   } catch (error) {
-    if (error.status === 403) throw new Error('GitHub refused the workflow commit. Grant Contents and Workflows write access on the destination fork, and check branch protection and organization approval.')
+    if (error.status === 403 || error.status === 404) throw new Error('GitHub refused the commit. The token needs Contents and Workflows write access to your profile repository.')
     throw error
   }
+  // The push trigger in the workflow starts the first run; dispatch is a fallback.
   try {
-    await request(`${base}/actions/workflows/generate-stats.yml/dispatches`, { token: pat.trim(), method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ ref: destination.branch }) })
-    return { committed: true, dispatched: true, actionsUrl: destination.actionsUrl }
-  } catch (error) {
-    return { committed: true, dispatched: false, actionsUrl: destination.actionsUrl, message: `Workflow committed. Immediate dispatch failed: ${error.message} Open Actions to enable or run it.` }
+    await request(`${base}/actions/workflows/gitstats.yml/dispatches`, { token: pat.trim(), method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ ref: destination.branch }) })
+  } catch { /* Not fatal: the push trigger already queued a run. */ }
+  return { committed: true, actionsUrl: destination.actionsUrl }
+}
+
+/** Public, token-free check of the profile repository and the GitStats workflow. */
+export async function checkPublicProfile(username, signal) {
+  const user = checkedUser(username)
+  const base = `${api}/repos/${user}/${user}`
+  const exists = async url => {
+    try { await request(url, { signal }); return true }
+    catch (error) { if (error.status === 404) return false; throw error }
   }
+  const repo = await exists(base)
+  return { repo, workflow: repo ? await exists(`${base}/contents/${WORKFLOW_PATH}`) : false }
 }

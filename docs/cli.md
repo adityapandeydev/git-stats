@@ -2,6 +2,8 @@
 
 [Back to GitStats](../README.md)
 
+Most people don't need the CLI: the GitHub Action (`uses: adityapandeydev/git-stats@main`, set up from Studio) runs it for you. This page is for running the engine yourself.
+
 The engine requires **Zig 0.16.0**. Build from the repository root:
 
 ```powershell
@@ -28,7 +30,7 @@ GraphQL contribution metrics require authentication. Public language fetching ca
 .\zig-out\bin\git_stats.exe --milestones --username=YOUR_USERNAME --card-width=840 --svg-icons --strict-data --animate=false --output=generated/milestones.svg
 ```
 
-Language layout choices are `standard`, `donut`, and `compact`. Use `--hide="HTML,CSS"` to exclude languages and `--exclude-repo="repo-one,repo-two"` to exclude repositories. Standard languages recalculate displayed percentages after filtering. The two-column minimum height grows with the actual displayed language count; additional height distributes space between rows. Studio's 6–16 language control uses the same renderer.
+Language layout choices are `standard`, `donut`, and `compact`. Use `--hide="HTML,CSS"` to exclude languages (the radar card accepts the same flag) and `--exclude-repo="repo-one,repo-two"` to exclude repositories. Standard languages recalculate displayed percentages after filtering. The two-column minimum height grows with the actual displayed language count; additional height distributes space between rows. Studio's 6–16 language control uses the same renderer.
 
 ## Unified bento grids
 
@@ -65,7 +67,7 @@ Embed the desktop/mobile pair only after generating **both** files:
 | `--border-radius` | Outer corner radius, default 4.5; `0` gives square corners |
 | `--layout`, `--columns` | Language layout and grid columns |
 | `--langs-count` | Language limit, 6–16; default 8 |
-| `--hide`, `--exclude-repo` | Comma-separated exclusions |
+| `--hide`, `--exclude-repo` | Comma-separated exclusions for `--generate` and `--radar`; pass the same values to both so the cards agree |
 | `--hide-sparkline`, `--show-sparkline=false` | Omit streak momentum |
 | `--timeframe` | `all-time` or `this-year`; the latter uses the rolling contribution collection |
 | `--tz` | Commit-rhythm UTC offset in hours; default 5.5 |
@@ -78,6 +80,6 @@ Embed the desktop/mobile pair only after generating **both** files:
 | `--output` | Output SVG path; use an explicit path for each card |
 | `--token` | Explicit authentication override |
 
-The CLI supports `tokyonight`, `github_dark`, `catppuccin`, `dracula`, `nord`, `synthwave`, `onedark`, `radical`, `midnight`, and `github_light`. Studio exposes eight dark presets.
+The CLI supports `tokyonight`, `github_dark`, `catppuccin`, `dracula`, `nord`, `synthwave`, `onedark`, `radical`, `midnight`, and `github_light`. Studio exposes eight dark presets and GitHub Light.
 
 The checked-in personal workflow is intentionally separate from Studio's generated workflow. Replacing it with an export adopts the flags and card settings from that export; it does not change the engine's legacy defaults.

@@ -8,6 +8,8 @@ on:
       - 'frontend/**'
       - 'build.zig'
       - 'build.zig.zon'
+      - 'action.yml'
+      - 'action/**'
       - '.github/workflows/checks.yml'
   pull_request:
     paths:
@@ -15,6 +17,8 @@ on:
       - 'frontend/**'
       - 'build.zig'
       - 'build.zig.zon'
+      - 'action.yml'
+      - 'action/**'
       - '.github/workflows/checks.yml'
   workflow_dispatch:
 

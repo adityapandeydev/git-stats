@@ -2,7 +2,7 @@ import { useState } from 'react'
 import { validateNumber } from '../services/numberField.js'
 
 // Keep unfinished input (including an empty string) separate from saved settings.
-export default function NumberField({ id, value, min, max, integer = false, onCommit }) {
+export default function NumberField({ id, value, min, max, integer = false, onCommit, className = 'input' }) {
   const [entry, setEntry] = useState({ saved: value, draft: String(value) })
   const [warning, setWarning] = useState('')
   if (entry.saved !== value) setEntry({ saved: value, draft: String(value) })
@@ -15,7 +15,7 @@ export default function NumberField({ id, value, min, max, integer = false, onCo
   }
 
   return <>
-    <input id={id} type="text" inputMode={integer ? 'numeric' : 'decimal'} autoComplete="off" spellCheck={false}
+    <input id={id} className={className} type="text" inputMode={integer ? 'numeric' : 'decimal'} autoComplete="off" spellCheck={false}
       value={entry.draft} aria-describedby={warning ? `${id}-warning` : undefined}
       onChange={event => { setEntry({ saved: value, draft: event.target.value }); setWarning('') }}
       onBlur={commit} onKeyDown={event => {
