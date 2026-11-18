@@ -22,27 +22,27 @@
         </clipPath>
     </defs>
     <rect class="bar-bg" x="25" y="52" width="350" height="10" rx="5"/>
-<g clip-path="url(#bar-clip)" class="bar-container"><rect x="25.00" y="52" width="93.05" height="10" fill="#dea584" class="bar-segment"><title>Rust: 26.59%</title></rect><rect x="118.05" y="52" width="82.04" height="10" fill="#3178c6" class="bar-segment"><title>TypeScript: 23.44%</title></rect><rect x="200.09" y="52" width="61.38" height="10" fill="#3572A5" class="bar-segment"><title>Python: 17.54%</title></rect><rect x="261.47" y="52" width="35.87" height="10" fill="#00ADD8" class="bar-segment"><title>Go: 10.25%</title></rect><rect x="297.34" y="52" width="27.23" height="10" fill="#b07219" class="bar-segment"><title>Java: 7.78%</title></rect><rect x="324.57" y="52" width="16.87" height="10" fill="#ec915c" class="bar-segment"><title>Zig: 4.82%</title></rect><rect x="341.44" y="52" width="15.12" height="10" fill="#5e5086" class="bar-segment"><title>Haskell: 4.32%</title></rect><rect x="356.56" y="52" width="7.46" height="10" fill="#f34b7d" class="bar-segment"><title>C++: 2.13%</title></rect><rect x="364.02" y="52" width="5.31" height="10" fill="#000080" class="bar-segment"><title>Lua: 1.52%</title></rect><rect x="369.33" y="52" width="1.73" height="10" fill="#012456" class="bar-segment"><title>PowerShell: 0.49%</title></rect><rect x="371.06" y="52" width="1.33" height="10" fill="#555555" class="bar-segment"><title>C: 0.38%</title></rect><rect x="372.39" y="52" width="1.02" height="10" fill="#89e051" class="bar-segment"><title>Shell: 0.29%</title></rect><rect x="373.41" y="52" width="1.00" height="10" fill="#ff4c1f" class="bar-segment"><title>Mojo: 0.27%</title></rect><rect x="374.41" y="52" width="1.00" height="10" fill="#7355dd" class="bar-segment"><title>C#: 0.19%</title></rect></g><g class="animate-item" style="animation-delay: 100ms;">
+<g clip-path="url(#bar-clip)" class="bar-container"><rect x="25.00" y="52" width="92.91" height="10" fill="#dea584" class="bar-segment"><title>Rust: 26.54%</title></rect><rect x="117.91" y="52" width="81.91" height="10" fill="#3178c6" class="bar-segment"><title>TypeScript: 23.40%</title></rect><rect x="199.82" y="52" width="61.83" height="10" fill="#3572A5" class="bar-segment"><title>Python: 17.67%</title></rect><rect x="261.65" y="52" width="35.82" height="10" fill="#00ADD8" class="bar-segment"><title>Go: 10.23%</title></rect><rect x="297.47" y="52" width="27.18" height="10" fill="#b07219" class="bar-segment"><title>Java: 7.77%</title></rect><rect x="324.65" y="52" width="16.84" height="10" fill="#ec915c" class="bar-segment"><title>Zig: 4.81%</title></rect><rect x="341.50" y="52" width="15.09" height="10" fill="#5e5086" class="bar-segment"><title>Haskell: 4.31%</title></rect><rect x="356.59" y="52" width="7.45" height="10" fill="#f34b7d" class="bar-segment"><title>C++: 2.13%</title></rect><rect x="364.04" y="52" width="5.30" height="10" fill="#000080" class="bar-segment"><title>Lua: 1.52%</title></rect><rect x="369.34" y="52" width="1.72" height="10" fill="#012456" class="bar-segment"><title>PowerShell: 0.49%</title></rect><rect x="371.06" y="52" width="1.33" height="10" fill="#555555" class="bar-segment"><title>C: 0.38%</title></rect><rect x="372.39" y="52" width="1.02" height="10" fill="#89e051" class="bar-segment"><title>Shell: 0.29%</title></rect><rect x="373.41" y="52" width="1.00" height="10" fill="#ff4c1f" class="bar-segment"><title>Mojo: 0.26%</title></rect><rect x="374.41" y="52" width="1.00" height="10" fill="#7355dd" class="bar-segment"><title>C#: 0.19%</title></rect></g><g class="animate-item" style="animation-delay: 100ms;">
 <circle cx="30.0" cy="97.5" r="4.5" fill="#dea584"/>
-<text x="41.0" y="102.0" class="lang-name">Rust</text><text x="185.0" y="102.0" text-anchor="end" class="lang-pct">26.59%</text>
+<text x="41.0" y="102.0" class="lang-name">Rust</text><text x="185.0" y="102.0" text-anchor="end" class="lang-pct">26.54%</text>
 </g><g class="animate-item" style="animation-delay: 140ms;">
 <circle cx="30.0" cy="136.5" r="4.5" fill="#3178c6"/>
-<text x="41.0" y="141.0" class="lang-name">TypeScript</text><text x="185.0" y="141.0" text-anchor="end" class="lang-pct">23.44%</text>
+<text x="41.0" y="141.0" class="lang-name">TypeScript</text><text x="185.0" y="141.0" text-anchor="end" class="lang-pct">23.40%</text>
 </g><g class="animate-item" style="animation-delay: 180ms;">
 <circle cx="30.0" cy="175.5" r="4.5" fill="#3572A5"/>
-<text x="41.0" y="180.0" class="lang-name">Python</text><text x="185.0" y="180.0" text-anchor="end" class="lang-pct">17.54%</text>
+<text x="41.0" y="180.0" class="lang-name">Python</text><text x="185.0" y="180.0" text-anchor="end" class="lang-pct">17.67%</text>
 </g><g class="animate-item" style="animation-delay: 220ms;">
 <circle cx="30.0" cy="214.5" r="4.5" fill="#00ADD8"/>
-<text x="41.0" y="219.0" class="lang-name">Go</text><text x="185.0" y="219.0" text-anchor="end" class="lang-pct">10.25%</text>
+<text x="41.0" y="219.0" class="lang-name">Go</text><text x="185.0" y="219.0" text-anchor="end" class="lang-pct">10.23%</text>
 </g><g class="animate-item" style="animation-delay: 260ms;">
 <circle cx="30.0" cy="253.5" r="4.5" fill="#b07219"/>
-<text x="41.0" y="258.0" class="lang-name">Java</text><text x="185.0" y="258.0" text-anchor="end" class="lang-pct">7.78%</text>
+<text x="41.0" y="258.0" class="lang-name">Java</text><text x="185.0" y="258.0" text-anchor="end" class="lang-pct">7.77%</text>
 </g><g class="animate-item" style="animation-delay: 300ms;">
 <circle cx="30.0" cy="292.5" r="4.5" fill="#ec915c"/>
-<text x="41.0" y="297.0" class="lang-name">Zig</text><text x="185.0" y="297.0" text-anchor="end" class="lang-pct">4.82%</text>
+<text x="41.0" y="297.0" class="lang-name">Zig</text><text x="185.0" y="297.0" text-anchor="end" class="lang-pct">4.81%</text>
 </g><g class="animate-item" style="animation-delay: 340ms;">
 <circle cx="30.0" cy="331.5" r="4.5" fill="#5e5086"/>
-<text x="41.0" y="336.0" class="lang-name">Haskell</text><text x="185.0" y="336.0" text-anchor="end" class="lang-pct">4.32%</text>
+<text x="41.0" y="336.0" class="lang-name">Haskell</text><text x="185.0" y="336.0" text-anchor="end" class="lang-pct">4.31%</text>
 </g><g class="animate-item" style="animation-delay: 380ms;">
 <circle cx="205.0" cy="97.5" r="4.5" fill="#f34b7d"/>
 <text x="216.0" y="102.0" class="lang-name">C++</text><text x="360.0" y="102.0" text-anchor="end" class="lang-pct">2.13%</text>
@@ -60,7 +60,7 @@
 <text x="216.0" y="258.0" class="lang-name">Shell</text><text x="360.0" y="258.0" text-anchor="end" class="lang-pct">0.29%</text>
 </g><g class="animate-item" style="animation-delay: 580ms;">
 <circle cx="205.0" cy="292.5" r="4.5" fill="#ff4c1f"/>
-<text x="216.0" y="297.0" class="lang-name">Mojo</text><text x="360.0" y="297.0" text-anchor="end" class="lang-pct">0.27%</text>
+<text x="216.0" y="297.0" class="lang-name">Mojo</text><text x="360.0" y="297.0" text-anchor="end" class="lang-pct">0.26%</text>
 </g><g class="animate-item" style="animation-delay: 620ms;">
 <circle cx="205.0" cy="331.5" r="4.5" fill="#7355dd"/>
 <text x="216.0" y="336.0" class="lang-name">C#</text><text x="360.0" y="336.0" text-anchor="end" class="lang-pct">0.19%</text>
